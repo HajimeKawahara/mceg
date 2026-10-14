@@ -1,0 +1,136 @@
+schema_version: "0.1"
+model:
+  id: exoeos.second_virial_eos
+  name: Constant-coefficient second virial EOS
+  description: >-
+    Density-form second-virial residual Helmholtz model with a supplied pair matrix.
+    The generic implementation is distinct from the synthetic matrix used in its tests.
+  implementation:
+    repository: https://github.com/HajimeKawahara/exoeos
+    revision: d7681db4393fd85904846b083013230d81d45d4e
+    entry_points:
+      - exoeos.SecondVirialEOS.alphar
+      - exoeos.SecondVirialEOS.molar_density
+      - exoeos.state_trho
+      - exoeos.state_tp
+assumptions:
+  - statement: >-
+      B_ij is a constant symmetric pair-coefficient matrix in m^3 mol^-1;
+      B_mix = sum_i sum_j x_i x_j B_ij and alphar = rho B_mix.
+    evidence: [implementation, equations]
+  - statement: >-
+      The density expansion is truncated after its second virial term;
+      the supplied coefficients do not vary with temperature in this implementation.
+    evidence: [implementation]
+domains:
+  - kind: scientific_applicability
+    status: documented
+    description: Qualitative applicability requirements stated by the upstream authors.
+    conditions:
+      - Omitted third and higher virial terms must be negligible.
+      - Supplied constant coefficients must be appropriate to the temperature range of interest.
+    evidence: [implementation]
+  - kind: scientific_applicability
+    status: unknown
+    description: >-
+      Quantitative density, temperature, composition and error bounds are unknown
+      without a specified coefficient source and estimates of omitted terms.
+    conditions: []
+    evidence: [implementation]
+  - kind: numerical_evaluation
+    status: documented
+    description: >-
+      Caller preconditions for scalar states, not a guarantee of finite
+      floating-point results or scientific validity throughout this set.
+    conditions:
+      - T > 0; rho > 0 for state_trho, or P > 0 for state_tp.
+      - x_i >= 0 and sum_i x_i = 1; x has one entry per matrix component.
+      - The pair matrix is nonempty, square and symmetric; Z = 1 + rho B_mix > 0.
+      - For state_tp, D = 1 + 4 B_mix P/(R T) > 0 and phase must be vapor.
+      - T and rho or P are scalars; use external vmap for batches.
+    evidence: [implementation]
+claims:
+  - id: virial_relations
+    kind: theoretical
+    status: supported
+    statement: >-
+      Z = 1 + rho B_mix, P = rho R T Z, mu_res_i/(R T) = 2 rho sum_j B_ij x_j,
+      ln(phi_i) = mu_res_i/(R T) - ln(Z), and g_res/(R T) = 2 rho B_mix - ln(Z).
+    scope: Identities of the constant symmetric matrix model on its documented numerical domain.
+    evidence: [equations]
+  - id: sampled_relations
+    kind: numerical_verification
+    status: supported
+    statement: Analytic residual-state comparisons and TP density round-trip tests passed.
+    scope: >-
+      T = 700 K, rho = 50 mol m^-3, x = [0.4, 0.6],
+      B = [[0.0001, 0.00002], [0.00002, 0.00008]] m^3 mol^-1.
+      These are synthetic test parameters, not a calibrated species model.
+    evidence: [analytic_tests]
+  - id: sampled_limit_and_root
+    kind: numerical_verification
+    status: supported
+    statement: Tests passed for the zero-coefficient ideal limit and a mechanically stable negative-B vapor root.
+    scope: >-
+      Zero 2x2 B at T = 500 K, P = 120000 Pa, x = [0.25, 0.75];
+      B = [[-0.0001]] m^3 mol^-1 at T = 500 K, P/(R T) = 1000 mol m^-3, x = [1].
+    evidence: [limit_and_root_tests]
+  - id: real_fluid_accuracy
+    kind: physical_validation
+    status: unknown
+    statement: Accuracy against experiments or observations is unknown in this audit.
+    scope: No physical validation of a specified coefficient set was established by these tests.
+    evidence: []
+evidence:
+  - id: implementation
+    kind: implementation
+    summary: Source and public contract define the matrix, domains, truncation and vapor root policy.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/src/exoeos/second_virial.py#L27-L113
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md#L134-L149
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md#L236-L279
+    scope: Generic constant-coefficient model; no calibrated coefficient dataset or physical error bounds.
+  - id: equations
+    kind: theory
+    summary: The upstream specification gives the analytic second-virial state and low-density TP root.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md#L243-L279
+    scope: Mathematical consequences of the specified truncation and symmetric pair coefficients.
+  - id: analytic_tests
+    kind: numerical_test
+    result: passed
+    summary: >-
+      test_second_virial_matches_analytic_helmholtz_state and
+      test_state_tp_round_trips_a_density_state passed in the recorded audit run.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/second_virial_test.py#L15-L98
+      - docs/en/evidence_audit.md#test-execution
+    scope: >-
+      Only sampled_relations parameters and assertions, using JAX allclose default
+      tolerances. The audit run used Python 3.12.7, JAX 0.6.2, CPU, x64 and pytest 8.3.3;
+      it reported 50 passed across three selected upstream test files.
+  - id: limit_and_root_tests
+    kind: numerical_test
+    result: passed
+    summary: >-
+      test_zero_virial_coefficient_recovers_the_ideal_gas_limit and
+      test_state_tp_selects_the_stable_vapor_root_for_negative_B passed.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/second_virial_test.py#L101-L130
+      - docs/en/evidence_audit.md#test-execution
+    scope: >-
+      Only sampled_limit_and_root parameters; JAX allclose default tolerances and
+      the explicit mechanical-stability assertion 1 + 2 B rho > 0. Same recorded audit run.
+limitations:
+  - statement: >-
+      Numerical positivity, normalization, coefficient symmetry and discriminant
+      conditions are caller contracts; static shape and phase checks do not enforce them.
+    evidence: [implementation]
+  - statement: >-
+      Positive discriminant and compressibility do not bound the error from omitted
+      virial terms. A liquid root and temperature-dependent coefficients are not implemented.
+    evidence: [implementation, equations]
+  - statement: >-
+      A literature reference specifically attached to this generic implementation is
+      unknown in the audited source and contract. The test matrix has no stated calibration.
+    evidence: [implementation, analytic_tests]

@@ -1,0 +1,125 @@
+# Example-specific manual audit data, not a new MCEG contract schema.
+case_version: "0.1"
+id: h2_solubility_1700K_7500bar
+assessment_method: manual
+description: >-
+  Replay the pure-H2 path of the existing solubility comparison. This evaluates
+  a solubility law and does not solve coupled gas-magma equilibrium.
+inputs:
+  temperature_K: 1700.0
+  total_pressure_bar: 7500.0
+  gas_mole_fractions: {H2: 1.0}
+  phase_selector: vapor
+  melt_composition: unknown
+components:
+  eos: contracts/zhang_duan_h2.yaml
+  solubility: contracts/h2_solubility.yaml
+connection:
+  adapter: exogibbs.interop.exoeos.make_pure_lnphi_func
+  steps:
+    - The adapter converts total pressure from bar to Pa for the pure-H2 EOS.
+    - f_H2_bar = exp(lnphi_H2) * total_pressure_bar, with x_H2 = 1.
+    - melt_pressure_GPa = total_pressure_bar / 10000, independently of fugacity.
+    - X_H2 = h2_hirschmann2012(f_H2_bar, melt_pressure_GPa).
+  temperature_scope: >-
+    Temperature enters the EOS. The solubility function has no temperature or
+    melt-composition argument; its scientific scope still depends on both.
+assessments:
+  - id: eos_temperature
+    subject: eos
+    scope: Temperature projection of reported pure-H2 PVT comparison data.
+    classification: extrapolation
+    value: 1700.0
+    reported_range: {lower: 250.0, upper: 423.0, unit: K}
+    reason: >-
+      The case exceeds the Table 5 experimental-data temperature envelope.
+      This does not assert a fundamental EOS limit or a fugacity error bound.
+    evidence: [contracts/zhang_duan_h2.yaml#reported_domain]
+  - id: eos_pressure
+    subject: eos
+    scope: Pressure projection of reported pure-H2 PVT comparison data.
+    classification: extrapolation
+    value: 750.0
+    reported_range: {lower: 2.0, upper: 700.0, unit: MPa}
+    reason: The case exceeds the reported pure-H2 pressure envelope.
+    evidence: [contracts/zhang_duan_h2.yaml#reported_domain]
+  - id: solubility_metadata_temperature
+    subject: solubility
+    scope: Temperature interval recorded by upstream metadata.
+    classification: within_reported_range
+    value: 1700.0
+    reported_range: {lower: 1673.0, upper: 1773.0, unit: K}
+    reason: >-
+      Inclusion does not establish joint physical applicability. The upper bound
+      differs from Seo's basaltic interval; the original run table is still uninspected.
+    evidence: [contracts/h2_solubility.yaml#metadata_temperature]
+  - id: solubility_formulation_temperature
+    subject: solubility
+    scope: Basaltic-melt temperature interval reported in the secondary source Seo before Eq. 6.
+    classification: within_reported_range
+    value: 1700.0
+    reported_range: {lower: 1673.0, upper: 1723.0, unit: K}
+    reason: >-
+      The case also lies inside this narrower source-specific interval.
+      The two source intervals are retained separately, without changing upstream metadata.
+      Comparison with the original experimental table is not complete.
+    evidence:
+      - contracts/h2_solubility.yaml#formulation_temperature
+      - contracts/h2_solubility.yaml#temperature_crosscheck
+  - id: solubility_total_pressure
+    subject: solubility
+    scope: Total-pressure interval, not a hydrogen-fugacity interval.
+    classification: within_reported_range
+    value: 0.75
+    reported_range: {lower: 0.7, upper: 3.0, unit: GPa}
+    reason: >-
+      Metadata and Seo include this total pressure. The original abstract also
+      directly confirms the study-wide 0.7 to 3 GPa envelope, without resolving
+      the material-specific runs or the joint calibration domain.
+    evidence:
+      - contracts/h2_solubility.yaml#metadata_pressure
+      - contracts/h2_solubility.yaml#experimental_pressure
+      - contracts/h2_solubility.yaml#formulation
+  - id: solubility_fugacity
+    subject: solubility
+    scope: Experimental support for the hydrogen fugacity supplied in this run.
+    classification: unknown
+    reason: >-
+      The experimental fugacity coverage was not established in this audit.
+      The original abstract describes controlled fugacity but provides no numeric
+      fugacity interval. Total pressure cannot replace that missing evidence.
+    evidence: [contracts/h2_solubility.yaml#experimental_materials]
+  - id: melt_composition
+    subject: solubility
+    scope: Match between the example's melt and the formulation's basaltic melt.
+    classification: unknown
+    reason: >-
+      The example specifies no actual melt composition. The callable does not
+      check composition; the basaltic formulation is still used as an explicit assumption.
+    evidence:
+      - contracts/h2_solubility.yaml#formulation
+      - contracts/h2_solubility.yaml#experimental_materials
+  - id: calibration_accuracy
+    subject: solubility
+    scope: Accuracy of the retained older calibration for this pure-H2 case.
+    classification: unknown
+    reason: >-
+      The 2025 recalibration challenges the older concentration scale. It does
+      not establish a uniform correction for this run; no factor-of-ten correction is applied.
+      The new coefficient was calibrated in haplogranitic glass, and the earlier
+      silica-glass calibration ancestry remains incompletely inspected.
+    evidence:
+      - contracts/h2_solubility.yaml#calibration_update
+      - contracts/h2_solubility.yaml#infrared_recalibration
+      - contracts/h2_solubility.yaml#historical_calibration
+  - id: combined_accuracy
+    subject: connection
+    scope: Experimental accuracy and uncertainty of the final dissolved H2 mole fraction.
+    classification: unknown
+    reason: >-
+      No measurement comparison for this complete connection at these inputs
+      was established. Successful execution and in-range projections do not supply one.
+    evidence:
+      - contracts/zhang_duan_h2.yaml#reported_domain
+      - contracts/h2_solubility.yaml#experimental_fit
+      - contracts/h2_solubility.yaml#infrared_recalibration

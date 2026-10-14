@@ -1,0 +1,113 @@
+{
+  "record_format": "h2_solubility_execution_v0.1",
+  "case_id": "h2_solubility_1700K_7500bar",
+  "executed_at_utc": "2026-10-14T23:34:39.777256+00:00",
+  "command": [
+    "/home/kawahara/miniconda3/bin/python",
+    "examples/h2_solubility/run.py",
+    "--output",
+    "examples/h2_solubility/result.json"
+  ],
+  "case_path": "examples/h2_solubility/case.yaml",
+  "case_sha256": "166299fcc82608ffdd55e5e1770a56e4c9ec8e94c9ac0da7b4f3cc5783123ccd",
+  "runner_sha256": "4f56b0a827e2a8dd6f090e17eb84c1b154970718bf4f3ab4842da3c465366ff5",
+  "contract_sha256": {
+    "contracts/zhang_duan_h2.yaml": "514ff6ae813f059ef37e93ea46f9818eceb8a4dac555bdc891e5c2b91683ebd6",
+    "contracts/h2_solubility.yaml": "0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda"
+  },
+  "environment": {
+    "python": "3.12.7",
+    "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+    "versions": {
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.1.0",
+      "pydantic": "2.13.5",
+      "PyYAML": "6.0.2"
+    },
+    "backend": "cpu",
+    "dtype": "float64",
+    "jax_enable_x64": true
+  },
+  "upstream": {
+    "exoeos": {
+      "repository": "https://github.com/HajimeKawahara/exoeos",
+      "revision": "d7681db4393fd85904846b083013230d81d45d4e",
+      "tracked_worktree_clean": true,
+      "selected_file_sha256": {
+        "src/exoeos/zhang_duan.py": "bacbb5d7d1295258fa3d888067bb8060450a01a4bbfa8a40eb499483a3bee986",
+        "src/exoeos/helmholtz.py": "75d7ab3a68781c73e8d8197c05151f0a8adb076595bcfad296a544f00860318e",
+        "src/exoeos/constants.py": "69e57fe70ad4ea775f2d97722548276c87d3a91c76eb6be8f1be43ac30f83fa4",
+        "src/exoeos/_arrays.py": "020679ce40515c27ce0bf31f5b71b1f737737d4a5ebc0301198a9e2bcbedf507"
+      }
+    },
+    "exogibbs": {
+      "repository": "https://github.com/HajimeKawahara/exogibbs",
+      "revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+      "tracked_worktree_clean": true,
+      "selected_file_sha256": {
+        "src/exogibbs/interop/exoeos.py": "ce56e38bb058d086d67c7ebc2a6bed3f36b6e33490b68d8245fd424ead2c88d4",
+        "src/exogibbs/solubility/volatile.py": "8b5982cfb5dcf53ab662d5c5dd77ee76e58190263990bdb20212e296088956da",
+        "src/exogibbs/utils/units.py": "5cb53d0c444c90de9d8f697641d83f28275a6e661bd0197e44a6ca66a9fd1efd",
+        "examples/comparisons/compare_solubility_laws.py": "496b3884319675b4a907bfc661f4e0c8a8136d302425a413961ab6241b667114"
+      }
+    }
+  },
+  "inputs": {
+    "temperature_K": 1700.0,
+    "total_pressure_bar": 7500.0,
+    "gas_mole_fractions": {
+      "H2": 1.0
+    },
+    "phase_selector": "vapor",
+    "melt_composition": "unknown"
+  },
+  "outputs": {
+    "pressure_Pa": 750000000.0,
+    "melt_pressure_GPa": 0.75,
+    "lnphi_H2": 0.8136428217801572,
+    "phi_H2": 2.2561116480162458,
+    "fugacity_H2_bar": 16920.837360121845,
+    "compressibility_factor": 1.8115814616512167,
+    "molar_density_mol_m3": 29290.061877052318,
+    "dissolved_H2_mole_fraction": 0.10681051751547334,
+    "ideal_fugacity_control_mole_fraction": 0.04734274458863315,
+    "nonideal_to_ideal_ratio": 2.2561116480162458
+  },
+  "numerical_checks": [
+    {
+      "id": "adapter_matches_direct_eos_lnphi",
+      "actual": 0.8136428217801572,
+      "expected": 0.8136428217801572,
+      "rtol": 1e-12,
+      "atol": 1e-14,
+      "passed": true
+    },
+    {
+      "id": "eos_pressure_round_trip_Pa",
+      "actual": 749999999.9999998,
+      "expected": 750000000.0,
+      "rtol": 1e-10,
+      "atol": 1e-14,
+      "passed": true
+    },
+    {
+      "id": "law_uses_fugacity_bar_and_actual_pressure_GPa",
+      "actual": 0.10681051751547334,
+      "expected": 0.10681051751547334,
+      "rtol": 1e-12,
+      "atol": 1e-14,
+      "passed": true
+    },
+    {
+      "id": "ideal_control_uses_same_actual_pressure",
+      "actual": 0.04734274458863315,
+      "expected": 0.04734274458863315,
+      "rtol": 1e-12,
+      "atol": 1e-14,
+      "passed": true
+    }
+  ],
+  "manual_assessments": "Read case.yaml; these are not computed by this runner.",
+  "physical_validation": "unknown"
+}

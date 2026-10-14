@@ -1,0 +1,176 @@
+schema_version: "0.1"
+model:
+  id: exoeos.peng_robinson
+  name: Peng-Robinson residual EOS (PR76)
+  description: >-
+    Homogeneous fluid residual Helmholtz model with classical one-fluid mixing
+    and explicit vapor or liquid cubic-root selection.
+  implementation:
+    repository: https://github.com/HajimeKawahara/exoeos
+    revision: d7681db4393fd85904846b083013230d81d45d4e
+    entry_points:
+      - exoeos.PengRobinsonEOS.alphar
+      - exoeos.PengRobinsonEOS.molar_density
+      - exoeos.PengRobinsonEOS.second_virial_coefficients
+      - exoeos.state_trho
+      - exoeos.state_tp
+assumptions:
+  - statement: >-
+      All components use the original PR76 alpha correlation, including high
+      acentric factors; the PR78 branch is not used. Omega_a is
+      0.45723552892138218938 and Omega_b is 0.077796073903888455972.
+    evidence: [pr-implementation, pr-formulas]
+  - statement: >-
+      Attraction mixes as sum(x_i*x_j*a_ij), with
+      a_ij=(1-k_ij)*sqrt(a_i*a_j); covolume mixes as sum(x_i*b_i).
+      Omitted binary interaction parameters are zero, not fitted values.
+    evidence: [pr-implementation, pr-formulas]
+  - statement: >-
+      Component ordering, normalized nonnegative mole fractions, symmetric
+      interaction parameters, and numerical validity are caller responsibilities.
+      The implementation checks static shapes and the phase selector.
+    evidence: [pr-implementation, pr-interface]
+domains:
+  - kind: scientific_applicability
+    status: unknown
+    description: >-
+      No quantitative accuracy domain for particular fluids, mixtures, or
+      observables is established by the inspected implementation tests.
+      A successful calculation or code comparison does not establish one.
+    conditions: []
+    evidence: [pr-fixed-reference, pr-parameter-sources]
+  - kind: numerical_evaluation
+    status: documented
+    description: >-
+      Documented caller conditions for residual-state evaluation, not a
+      guarantee that every branch or floating-point evaluation is finite.
+    conditions:
+      - "T > 0 K; total molar density rho > 0 mol m^-3."
+      - "For state_tp, P > 0 Pa, consistent with P = rho R T Z and Z > 0."
+      - "x_i >= 0 and sum(x_i) = 1, with matching component order."
+      - "Molar volume V_m > b_mix; the residual-state interface requires Z > 0."
+      - "T and rho or P are scalars; x is a vector; batches use external vmap."
+      - "The static phase selector is vapor or liquid; physical roots satisfy Z > B."
+      - "Differentiation of the selected density root requires a simple root."
+    evidence: [pr-interface, pr-formulas]
+claims:
+  - id: pr-pressure-identity
+    statement: Residual Helmholtz derivatives yield the stated PR pressure equation.
+    kind: theoretical
+    status: supported
+    scope: >-
+      Mathematical identity within the specified PR76 model and its smooth
+      numerical domain; this is not an empirical accuracy claim.
+    evidence: [pr-formulas]
+  - id: pr-virial-expansion
+    statement: "B_ij(T) = (b_i+b_j)/2 - a_ij(T)/(R*T) is its second-virial coefficient."
+    kind: theoretical
+    status: supported
+    scope: Low-density expansion of this PR model, not measured virial data.
+    evidence: [pr-formulas]
+  - id: pr-analytic-verification
+    statement: Selected analytical PR expressions and the low-density comparison pass existing tests.
+    kind: numerical_verification
+    status: supported
+    scope: Only the finite states and tolerances specified in pr-analytic-tests.
+    evidence: [pr-analytic-tests]
+  - id: pr-frozen-code-comparison
+    statement: The fixed C-H-O mixture state agrees with stored teqp reference values.
+    kind: numerical_verification
+    status: supported
+    scope: >-
+      One frozen-composition state, matched PR76 parameters and vapor-root
+      convention. The test was rerun; teqp and its notebook were not rerun.
+    evidence: [pr-fixed-reference]
+  - id: pr-physical-accuracy
+    statement: Quantitative agreement with experiments or observations is unknown in this audit.
+    kind: physical_validation
+    status: unknown
+    scope: >-
+      No experimental or observational validation was identified in the inspected
+      PR tests and reference tutorial; this is not a claim about all literature.
+    evidence: [pr-fixed-reference, pr-parameter-sources]
+evidence:
+  - id: pr-implementation
+    kind: implementation
+    summary: PR76 parameters, mixing, Helmholtz kernel, and cubic density inversion.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/src/exoeos/peng_robinson.py
+    scope: Inspected source, including caller contracts and shape-only checks.
+  - id: pr-interface
+    kind: implementation
+    summary: Residual-state units, numerical domain, and PR root/derivative restrictions.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md
+    scope: Residual Helmholtz interface and Peng-Robinson sections; numerical conditions only.
+  - id: pr-formulas
+    kind: theory
+    summary: >-
+      Documented residual Helmholtz and pressure expressions, PR76 correlation,
+      classical mixing, and the analytical second-virial expansion.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/tutorials/peng_robinson_eos.rst
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/src/exoeos/peng_robinson.py#L289
+    scope: Formulas of the implemented model, not proof of real-fluid accuracy.
+  - id: pr-analytic-tests
+    kind: numerical_test
+    summary: Existing explicit-pressure, PR76-alpha, and low-density tests passed.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/peng_robinson_test.py
+      - docs/en/evidence_audit.md#test-execution
+    scope: >-
+      test_mixture_helmholtz_state_matches_explicit_pr_pressure: T=270 K,
+      rho=3500 mol m^-3, x=(0.35,0.65), default jnp.allclose tolerances.
+      test_alpha_uses_pr76_high_acentric_factor_branch: omega=0.75,
+      T=350 K, rho=2500 mol m^-3, default jnp.allclose tolerances.
+      test_second_virial_coefficients_match_peng_robinson_low_density_limit:
+      T=700 K, rho=0.001 mol m^-3, x=(0.35,0.65); Z rtol=1e-12,
+      atol=1e-14; gres_RT rtol=1e-7, atol=1e-14. Run used Python 3.12.7,
+      JAX 0.6.2, CPU, x64 enabled, pytest 8.3.3; see execution record.
+    result: passed
+  - id: pr-fixed-reference
+    kind: numerical_test
+    summary: Existing test_cho_fixed_state_matches_frozen_teqp_reference passed.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/peng_robinson_test.py#L151
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/tutorials/peng_robinson_fixed_state_reference.ipynb
+      - docs/en/evidence_audit.md#test-execution
+    scope: >-
+      T=300 K, P=4e6 Pa, species=(CO,H2O,CO2,H2), x=(0.4,0.4,0.1,0.1),
+      kij=0, vapor root. Frozen teqp 0.23.2 reference at revision
+      5f62a6f515d517e39c3fb035c11a03524ffa3ad6; rho, P, Z, lnphi, gres_RT
+      compared with rtol=2e-10 and atol=2e-12. Stored rho is
+      2073.221567707672 mol m^-3 and Z is 0.7734973557808338.
+      Only the existing unit test was rerun, using the same environment as
+      pr-analytic-tests; the independent library and notebook were not rerun.
+      The upstream interpretation explicitly excludes mixture physical validation.
+    result: passed
+  - id: pr-parameter-sources
+    kind: implementation
+    summary: Bundled critical-property records retain individual CoolProp source URLs.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/src/exoeos/critical_properties.py
+    scope: Parameter provenance only; mixture calibration and high-temperature validity are unknown.
+  - id: pr-literature
+    kind: literature
+    summary: Peng and Robinson (1976) and Bell and Deiters (2021), cited by the PR tutorial.
+    sources:
+      - https://pubs.acs.org/doi/pdf/10.1021/i160057a011
+      - https://www.nist.gov/publications/super-ancillary-equations-cubic-equations-state
+    scope: >-
+      Original PR paper bibliographic metadata only was checked; its full text
+      was not inspected. NIST confirms the 2021 paper supplies exact EOS
+      constants. Neither citation establishes a validation range for this implementation.
+limitations:
+  - statement: >-
+      Unmodified PR can be inaccurate for liquid densities and strongly polar,
+      hydrogen-bonding, or associating fluids. Quantitative boundaries are unknown here.
+    evidence: [pr-formulas]
+  - statement: Root selection does not establish global phase stability or perform a flash calculation.
+    evidence: [pr-formulas]
+  - statement: Critical and spinodal multiple roots do not support the documented density-root derivatives.
+    evidence: [pr-interface]
+  - statement: Very-low-pressure liquid pressure reconstruction is ill-conditioned in float32; upstream recommends float64.
+    evidence: [pr-interface]
+  - statement: Absolute caloric quantities require an ideal-gas reference contribution beyond this residual model.
+    evidence: [pr-formulas]

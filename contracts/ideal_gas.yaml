@@ -1,0 +1,118 @@
+schema_version: "0.1"
+model:
+  id: exoeos.ideal_eos
+  name: Ideal gas residual EOS
+  description: >-
+    Zero residual Helmholtz model exposed through the shared residual-state API.
+    This is IdealEOS, not the separate constant-heat-capacity IdealGas closure.
+  implementation:
+    repository: https://github.com/HajimeKawahara/exoeos
+    revision: d7681db4393fd85904846b083013230d81d45d4e
+    entry_points:
+      - exoeos.IdealEOS.alphar
+      - exoeos.IdealEOS.molar_density
+      - exoeos.state_trho
+      - exoeos.state_tp
+assumptions:
+  - statement: >-
+      The residual Helmholtz energy is identically zero, and pressure follows
+      P = rho R T, where rho is molar density.
+    evidence: [implementation, equations]
+  - statement: >-
+      Composition is a nonempty vector of normalized, nonnegative mole fractions;
+      temperature is in K, pressure in Pa, and molar density in mol m^-3.
+    evidence: [implementation]
+domains:
+  - kind: numerical_evaluation
+    status: documented
+    description: >-
+      Documented caller preconditions for the residual-state API, not a guarantee
+      of finite floating-point results or physical accuracy throughout this set.
+    conditions:
+      - T > 0; rho > 0 for state_trho, or P > 0 for state_tp.
+      - x_i >= 0 and sum_i x_i = 1; x is a nonempty one-dimensional vector.
+      - T and rho or P are scalars; use external vmap for batches.
+      - The TP phase selector must be vapor.
+    evidence: [implementation]
+  - kind: scientific_applicability
+    status: unknown
+    description: >-
+      Quantitative species-dependent temperature, pressure, and error bounds for
+      physical accuracy were not established by the audited sources or tests.
+    conditions: []
+    evidence: [implementation, analytic_tests]
+claims:
+  - id: ideal_relations
+    kind: theoretical
+    status: supported
+    statement: >-
+      Within this model, Z = 1, P = rho R T, ln(phi_i) = 0, and g_res/(R T) = 0.
+    scope: >-
+      Consequences of zero residual Helmholtz energy on the documented numerical
+      domain; these are model identities, not accuracy statements about real gases.
+    evidence: [equations]
+  - id: sampled_relations
+    kind: numerical_verification
+    status: supported
+    statement: >-
+      Existing tests passed for zero residual properties, ideal pressure and density,
+      and the pressure derivative of TP density at the specified sample states.
+    scope: >-
+      Synthetic two-component tests: T = 600 K, x = [0.25, 0.75], rho = 40 mol m^-3
+      for state_trho and P = 200000 Pa for state_tp; the TP test also batches
+      P = [100000, 200000] Pa. Comparisons use JAX allclose default tolerances.
+    evidence: [analytic_tests]
+  - id: real_gas_accuracy
+    kind: physical_validation
+    status: unknown
+    statement: Accuracy against experiments or observations is unknown in this audit.
+    scope: No experimental or observational validation was established for this contract.
+    evidence: []
+evidence:
+  - id: implementation
+    kind: implementation
+    summary: >-
+      The source implements zero residual energy and ideal TP inversion; its public
+      contract specifies units, scalar shapes, composition, and numerical domains.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/src/exoeos/ideal.py#L19-L80
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md#L47-L153
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/README.md#L695-L701
+    scope: >-
+      Generic IdealEOS and its shared residual-state API, without a species-specific
+      parameter set or a total caloric closure.
+  - id: equations
+    kind: theory
+    summary: >-
+      The documented residual Helmholtz derivative identities, evaluated with
+      alphar = 0, give ideal pressure, unit compressibility and zero fugacity departure.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md#L58-L113
+    scope: Mathematical identities of this specified model; no empirical validation.
+  - id: analytic_tests
+    kind: numerical_test
+    result: passed
+    summary: >-
+      test_ideal_eos_has_zero_residual_helmholtz_state and
+      test_ideal_eos_supports_temperature_pressure_states passed in the recorded audit run.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/helmholtz_test.py#L36-L86
+      - docs/en/evidence_audit.md#test-execution
+    scope: >-
+      Only the sample states and assertions described in sampled_relations. The
+      audit run used Python 3.12.7, JAX 0.6.2, CPU, x64, and pytest 8.3.3;
+      it reported 50 passed across three selected upstream test files.
+limitations:
+  - statement: >-
+      Static shapes and the phase selector are checked, but numerical positivity and
+      composition normalization remain caller responsibilities. Exact vacuum lies
+      outside the shared residual-state contract.
+    evidence: [implementation]
+  - statement: >-
+      A residual EOS does not specify total caloric properties. IdealEOS must not
+      inherit the constant-cp or reference-enthalpy assumptions of IdealGas.
+    evidence: [implementation]
+  - statement: >-
+      A literature reference specifically attached to IdealEOS is unknown in the
+      audited implementation and contract; documentation supplies the equations.
+    evidence: [implementation, equations]

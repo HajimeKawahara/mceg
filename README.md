@@ -136,9 +136,15 @@ use the frozen v0.1 format to test a second connection and provider-side workflo
   detect missing references, and retain historical evidence during a synthetic
   implementation change. [Saved report](examples/provider_workflow/result.json).
 
-These are example scripts, not additions to the core API or schema. The provider
-checkouts remain unchanged. Existence checks leave external citations and
+These are example scripts, not additions to the core API or schema. The placement
+and revision trials operate on temporary copies. Existence checks leave external citations and
 fragments unchecked; implementation changes require manual claim review.
+
+The [provider-owned H2 pilot](docs/en/provider_pilot.md)
+([Japanese](docs/ja/provider_pilot.md)) reads contracts directly from separate
+ExoEOS and ExoGibbs checkouts. It replays the original case and distinguishes
+the audited implementation revision from the later contract-publication commit
+by checking selected source hashes against both the receipt and Git objects.
 
 ## Schema and open questions
 

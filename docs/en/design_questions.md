@@ -252,7 +252,10 @@ They expose operational gaps rather than a need for immediate schema expansion:
   The mixture ledger remains secondary evidence in this trial. Cross-contract
   evidence identity and deduplication remain unresolved.
 
-A limited provider-side pilot can now use the existing schema with a documented
-root, an immutable audit record and a manual update procedure. General graph
-storage, automatic scientific decisions and a new schema version are not required
-to test that workflow.
+The [provider-owned H2 pilot](provider_pilot.md) now uses the existing schema with
+an explicit repository root, saved audit records and a manual update procedure.
+Its replay succeeds after contract-publication commits change both HEADs while
+selected audited files remain unchanged. ExoGibbs also had a real intervening
+adapter update; source review and fresh scoped tests preceded adoption.
+General graph storage, automatic scientific decisions and a new schema version
+were not needed to test this workflow.

@@ -123,6 +123,23 @@ full-text access gap, a possible material-specific explanation of the temperatur
 difference, and the inherited infrared-calibration problem. Scientific accuracy
 remains unknown; no empirical coefficient or computed concentration was corrected.
 
+## Provider adoption trials
+
+The [three trials](docs/en/provider_trials.md) ([Japanese](docs/ja/provider_trials.md))
+use the frozen v0.1 format to test a second connection and provider-side workflows:
+
+- [Mixture case](examples/virial_mixture/case.yaml): actual ExoEOS/ExoGibbs
+  callbacks at two temperatures with `extrapolate` and `hold_2000`, two scoped
+  contracts, manual assessments, and a saved execution with 35 numerical checks.
+- [Placement and revision trial](examples/provider_workflow/run.py): copy five
+  baseline contracts and their local evidence into temporary provider layouts,
+  detect missing references, and retain historical evidence during a synthetic
+  implementation change. [Saved report](examples/provider_workflow/result.json).
+
+These are example scripts, not additions to the core API or schema. The provider
+checkouts remain unchanged. Existence checks leave external citations and
+fragments unchecked; implementation changes require manual claim review.
+
 ## Schema and open questions
 
 The [schema guide](docs/en/schema.md) describes the small YAML format.
@@ -137,6 +154,6 @@ independence, and the difference between a test definition and a reproducible ru
 See [design questions in English](docs/en/design_questions.md) or
 [Japanese](docs/ja/design_questions.md).
 
-A possible next case is the example-level mixture provider with explicit
-virial-coefficient extrapolation policies. It remains outside the implemented
-H2 solubility example.
+The mixture trial additionally exposes policy-dependent model identity, full-gas
+composition conventions, source relocation, and evidence freshness. These remain
+explicit review concerns rather than automatic scientific judgments.

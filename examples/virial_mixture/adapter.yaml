@@ -1,0 +1,75 @@
+schema_version: "0.1"
+model:
+  id: exogibbs.m2_gas_residual_connection
+  name: Full-catalog gas residual callback
+  description: Example-level connection to the ExoEOS major-gas provider; not the public pure-species adapter.
+  implementation:
+    repository: https://github.com/HajimeKawahara/exogibbs
+    revision: 6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea
+    entry_points:
+      - examples/metal_silicate/m2_gas_eos.py:build_gas_eos
+      - examples/metal_silicate/m2_gas_eos.py:with_gas_residual
+assumptions:
+  - statement: >-
+      The provider and ideal callback use the same complete species order and
+      amounts. The provider supplies extensive residual G/(RT) and dimensionless ln(phi).
+    evidence: [implementation]
+  - statement: >-
+      The callback accepts K and bar, converts pressure to Pa, and adds the
+      provider's residual to an independently specified ideal standard-state scalar.
+    evidence: [implementation]
+domains:
+  - kind: numerical_evaluation
+    status: documented
+    description: Connection requirements, not a scientific applicability range.
+    conditions:
+      - Import the explicitly selected ExoEOS checkout; preserve species ordering.
+      - Nonempty gas states meet the provider's temperature, pressure and composition preconditions.
+      - The ideal callback exposes both a phase state and energy_value_and_grad_rt.
+    evidence: [implementation]
+  - kind: scientific_applicability
+    status: unknown
+    description: Compatible interfaces alone do not validate coefficients, standard potentials or the combined mixture.
+    conditions: []
+    evidence: [implementation, connection_run]
+claims:
+  - id: sampled_scalar_consistency
+    kind: numerical_verification
+    status: supported
+    statement: Chemical potentials agree with the amount derivative of the coupled scalar at the four saved states.
+    scope: case.yaml artificial zero standards, fixed amounts, two temperatures and two policies at 270 bar.
+    evidence: [connection_run]
+  - id: physical_accuracy
+    kind: physical_validation
+    status: unknown
+    statement: The combined physical accuracy is unknown.
+    scope: This trial does not infer equilibrium, phase stability, abundances or physical error bars.
+    evidence: []
+evidence:
+  - id: implementation
+    kind: implementation
+    summary: Factory binding, bar-to-Pa conversion, scalar addition and independent AD path were inspected.
+    sources:
+      - https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/examples/metal_silicate/m2_gas_eos.py
+      - https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/examples/metal_silicate/full_potential.py
+    scope: Primitive gas callback only; the separate parcel iteration and global verifier are outside this run.
+  - id: connection_run
+    kind: numerical_test
+    result: passed
+    summary: Actual provider-to-callback replay saved its analytic and derivative checks.
+    sources:
+      - examples/virial_mixture/run.py
+      - examples/virial_mixture/result.json
+    scope: The four fixed states and declared tolerances only, using CPU and binary64.
+  - id: upstream_tests
+    kind: numerical_test
+    result: not_run
+    summary: Existing integration tests were inspected; this record supplies definitions, not an execution result.
+    sources:
+      - https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/tests/unittests/examples/m2_gas_eos_test.py
+    scope: Definitions include synthetic parcels, independent scalar derivatives and failed-iteration rejection.
+limitations:
+  - statement: A fixed-composition callback evaluation is not the full M2 atmosphere, parcel solve or pressure closure.
+    evidence: [implementation, connection_run]
+  - statement: The shared execution receipt supports both contracts but is a single run, not independent evidence twice.
+    evidence: [connection_run]

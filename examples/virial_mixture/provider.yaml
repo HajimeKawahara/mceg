@@ -1,0 +1,123 @@
+schema_version: "0.1"
+model:
+  id: exoeos.m2_major_gas_second_virial
+  name: Conditional full-catalog major-gas second virial provider
+  description: >-
+    Temperature-dependent pair recipe around SecondVirialEOS. The case selects
+    a five-species catalog and two policies; neither defines a calibrated atmosphere.
+  implementation:
+    repository: https://github.com/HajimeKawahara/exoeos
+    revision: d7681db4393fd85904846b083013230d81d45d4e
+    entry_points:
+      - examples/m2_material/major_gas_eos.py:make_major_gas_eos
+      - examples/m2_material/major_gas_eos.py:MajorGasSecondVirial
+assumptions:
+  - statement: >-
+      Only the H2, He1 and H2O1 block has assigned pair coefficients. All other
+      pairs are explicitly zero. The composition denominator includes all species.
+    evidence: [implementation, equations]
+  - statement: >-
+      H2-He is an explicitly supplied constant sensitivity input. Above 2000 K,
+      extrapolate continues the water cross correlations; hold_2000 fixes only
+      H2-H2O and He-H2O at their 2000 K values. Neither policy is an error bound.
+    evidence: [implementation, source_ledger]
+domains:
+  - kind: numerical_evaluation
+    status: documented
+    description: Eager-call preconditions; tracing retains caller responsibilities.
+    conditions:
+      - 1000 <= T <= 3000 K, positive pressure in Pa and a strictly stable density root.
+      - Unique ordered catalog includes H2, He1 and H2O1; nonnegative full-catalog fractions sum to one.
+      - Nonnegative amounts have positive total; all three factory options are explicit.
+    evidence: [implementation]
+  - kind: scientific_applicability
+    status: documented
+    description: Temperature coverage reported by the inspected upstream ledger, not a mixture validation domain.
+    conditions:
+      - H2-H2O correlation recommended from 200 to 2000 K; He-H2O from 100 to 2000 K.
+      - The implemented theoretical He-He table subset spans 1000 to 3000 K.
+      - Pure-water measurements are reported over 310-1170 K; higher-temperature behavior is potential-guided.
+    evidence: [source_ledger]
+  - kind: scientific_applicability
+    status: unknown
+    description: >-
+      Joint temperature-pressure-composition accuracy, omitted-pair and higher-virial
+      errors, and empirical bounds for the supplied H2-He input remain unknown.
+    conditions: []
+    evidence: [implementation, source_ledger]
+claims:
+  - id: full_basis_identity
+    kind: theoretical
+    status: supported
+    statement: >-
+      At fixed T/P, d(G_res/RT)/dn_i = ln(phi_i). A zero coefficient row
+      gives ln(phi_i) = -ln(Z), not zero in a nonideal mixture.
+    scope: Symmetric second density virial on the full catalog with a stable root.
+    evidence: [equations]
+  - id: sampled_connection
+    kind: numerical_verification
+    status: supported
+    statement: The recorded four-state replay passed analytic, callback and amount-gradient checks.
+    scope: >-
+      Only case.yaml inputs: two temperatures, 270 bar, five fixed species and
+      amounts, constant H2-He = 10 cm3/mol, and two water-cross policies.
+    evidence: [connection_run]
+  - id: physical_accuracy
+    kind: physical_validation
+    status: unknown
+    statement: Experimental accuracy of this configured mixture is unknown.
+    scope: Neither policy differences nor numerical tolerances bound the physical error.
+    evidence: [source_ledger]
+evidence:
+  - id: implementation
+    kind: implementation
+    summary: Factory, full-catalog coefficient recipe, numerical checks and explicit limitations were inspected.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/examples/m2_material/major_gas_eos.py
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/examples/m2_material/major_gas_eos.md
+    scope: Example provider at the pinned revision, distinct from the generic constant-matrix EOS.
+  - id: equations
+    kind: theory
+    summary: >-
+      Bmix = x.T B x, Z = 1 + rho Bmix, G_res/(NRT) = 2 rho Bmix - ln(Z),
+      and ln(phi_i) = 2 rho (B x)_i - ln(Z). The full amount gradient uses N = sum(n).
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/examples/m2_material/major_gas_eos.md
+    scope: Fixed temperature and pressure; does not establish thermal smoothness at the hold_2000 corner.
+  - id: source_ledger
+    kind: literature
+    summary: Upstream transcription ledger records pair-specific sources, temperature ranges and qualifications.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/examples/m2_material/gas_virial_sources.json
+    scope: >-
+      This MCEG trial inspected the ledger, not the original papers or PDFs.
+      Reported ranges and upstream inspection claims are retained as secondary evidence.
+    provenance:
+      role: secondary
+      location: gas_virial_sources.json, pair-specific entries and unresolved_pairs.
+      inspection: inspected
+      note: >-
+        Primary-source DOIs and PDF hashes remain in the ledger. Its inspection
+        does not complete a new primary-source audit; no primary node is asserted here.
+  - id: connection_run
+    kind: numerical_test
+    result: passed
+    summary: Optional run.py executed the four fixed states and saved its checks and source hashes.
+    sources:
+      - examples/virial_mixture/run.py
+      - examples/virial_mixture/result.json
+    scope: CPU binary64 execution only; no equilibrium solve or measurement comparison.
+  - id: upstream_tests
+    kind: numerical_test
+    result: not_run
+    summary: Existing provider tests were inspected; this evidence record does not claim their execution.
+    sources:
+      - https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/tests/unittests/m2_major_gas_eos_test.py
+    scope: Definitions cover derivatives, trace dilution, species order, policies, JAX and rejected inputs.
+limitations:
+  - statement: A small trace fraction, finite state or curvature diagnostic does not bound physical errors.
+    evidence: [implementation]
+  - statement: hold_2000 has a temperature-derivative corner; fixing a coefficient does not move the gas into its source domain.
+    evidence: [implementation, source_ledger]
+  - statement: No original-paper audit, empirical mixture validation or planetary closure was performed in this trial.
+    evidence: [source_ledger, connection_run]

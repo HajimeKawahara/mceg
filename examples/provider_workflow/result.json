@@ -1,0 +1,285 @@
+{
+  "record_format": "provider_workflow_trial_v0.1",
+  "executed_at_utc": "2026-10-15T10:57:34.752983+00:00",
+  "runner_sha256": "14f45122c289cb713cf199bd8f055576dca0d35f5086bf536249202870f23401",
+  "candidate_template_sha256": "2eebb50777a4d2d4cd058ca2f552af705d7b1a64234274ce5fc36a9a09e646f5",
+  "naive_copy": {
+    "schema_valid": true,
+    "local_files_complete": false,
+    "local_file_sha256": {},
+    "missing": [
+      {
+        "evidence": "numerical_tests",
+        "locator": "docs/en/h2_solubility.md#verification"
+      }
+    ],
+    "external_not_checked": [
+      "https://arxiv.org/html/2408.17056v1#S2.SS3",
+      "https://doi.org/10.1007/s00410-025-02272-y",
+      "https://doi.org/10.1016/j.epsl.2012.06.031",
+      "https://doi.org/10.3847/1538-4357/ad7461",
+      "https://doi.org/10.48550/arXiv.2605.08752",
+      "https://experts.umn.edu/en/publications/solubility-of-molecular-hydrogen-in-silicate-melts-and-consequenc/",
+      "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L237-L254",
+      "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L68-L88",
+      "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L80-L87",
+      "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/tests/unittests/solubility/meltyq_test.py#L28-L91",
+      "https://link.springer.com/article/10.1007/s00410-025-02272-y",
+      "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig5",
+      "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig8"
+    ],
+    "fragments_checked": false,
+    "opaque_not_checked": [
+      "Shelby JE (1994). Protonic species in vitreous silica. Journal of Non-Crystalline Solids 179:138-147."
+    ],
+    "entry_point_symbols_checked": false
+  },
+  "relocated_contracts": {
+    "exogibbs/mceg/contracts/h2_solubility.yaml": {
+      "original_contract_sha256": "0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+      "exported_contract_sha256": "6e376b0759e98a2594c56a07e23f1aedc94467d331478ef465ed44628e5f1a9f",
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exogibbs/solubility/volatile.py": "8b5982cfb5dcf53ab662d5c5dd77ee76e58190263990bdb20212e296088956da",
+        "tests/unittests/solubility/meltyq_test.py": "cf8e65aa3624081f8a0c15edb0a192bd98b7eed75733dc53ee1ba790e535094a",
+        "mceg/evidence/docs/en/h2_solubility.md": "92288ab86dcefe5b07743f4474f001ba2b21cc74ec5177d20bdedf3ee40157db"
+      },
+      "missing": [],
+      "external_not_checked": [
+        "https://arxiv.org/html/2408.17056v1#S2.SS3",
+        "https://doi.org/10.1007/s00410-025-02272-y",
+        "https://doi.org/10.1016/j.epsl.2012.06.031",
+        "https://doi.org/10.3847/1538-4357/ad7461",
+        "https://doi.org/10.48550/arXiv.2605.08752",
+        "https://experts.umn.edu/en/publications/solubility-of-molecular-hydrogen-in-silicate-melts-and-consequenc/",
+        "https://link.springer.com/article/10.1007/s00410-025-02272-y",
+        "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig5",
+        "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig8"
+      ],
+      "fragments_checked": false,
+      "opaque_not_checked": [
+        "Shelby JE (1994). Protonic species in vitreous silica. Journal of Non-Crystalline Solids 179:138-147."
+      ],
+      "entry_point_symbols_checked": false
+    },
+    "exoeos/mceg/contracts/ideal_gas.yaml": {
+      "original_contract_sha256": "5cd42e822de6134344670fd6d13dab0bdca5baa990c2430b4506b40301f39f99",
+      "exported_contract_sha256": "f362aa4b4ff75005bd773530e3e1b423f6944b57cb71d025004d7969f09536c3",
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exoeos/ideal.py": "556d07bb0ffe4d2b3d00a0ea451be128185e1f789382c5ac54f0ad7363c90b6b",
+        "documents/thermodynamic_state_contract.md": "6cde3050a8b2b1242e879d9bd4ea3e2bee1d607ceaaa2d203d4f83f5e6d15d67",
+        "tests/unittests/helmholtz_test.py": "1c8fa3b8b0f65a6df04f3b8e8fdd40252059727669b6a5109bb908e69ce6b846",
+        "mceg/evidence/docs/en/evidence_audit.md": "f0966849c08fc56567ff776a1f35747ffcceea21f6a1c8ae8f03639ab389fa2f"
+      },
+      "missing": [],
+      "external_not_checked": [],
+      "fragments_checked": false,
+      "opaque_not_checked": [
+        "README.md#L695-L701"
+      ],
+      "entry_point_symbols_checked": false
+    },
+    "exoeos/mceg/contracts/peng_robinson.yaml": {
+      "original_contract_sha256": "7c5f41f921ecfd0cd54d910692162052834d79831a6b3d37776e28bbbeae9a23",
+      "exported_contract_sha256": "095519c05f4f0c3a6fe619a2c95a8bd976ad1923e940058b3e89615312222d0e",
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exoeos/peng_robinson.py": "d41306a6ae5c8ea8360e79d9ef28b75ddd1a73ba31446b55984f6dcbc56316f3",
+        "documents/thermodynamic_state_contract.md": "6cde3050a8b2b1242e879d9bd4ea3e2bee1d607ceaaa2d203d4f83f5e6d15d67",
+        "documents/tutorials/peng_robinson_eos.rst": "8909a49d74c3b06bb1da444343f6c1f5e1f917baca48765adb3824f19cc8cdb3",
+        "tests/unittests/peng_robinson_test.py": "4fa48daddd42066eb93b39e18bced4fcfe7c9c1573bbe67a37526c3e9cc04cc4",
+        "mceg/evidence/docs/en/evidence_audit.md": "f0966849c08fc56567ff776a1f35747ffcceea21f6a1c8ae8f03639ab389fa2f",
+        "documents/tutorials/peng_robinson_fixed_state_reference.ipynb": "60496f1618e302cf9b20ce62f0ac7c4e54a5623ea27f35791a6210287ec19e65",
+        "src/exoeos/critical_properties.py": "d3e3d5285577d1e3f040a672d3b8164fc75719b87967616c121f636eced83de8"
+      },
+      "missing": [],
+      "external_not_checked": [
+        "https://pubs.acs.org/doi/pdf/10.1021/i160057a011",
+        "https://www.nist.gov/publications/super-ancillary-equations-cubic-equations-state"
+      ],
+      "fragments_checked": false,
+      "opaque_not_checked": [],
+      "entry_point_symbols_checked": false
+    },
+    "exoeos/mceg/contracts/second_virial.yaml": {
+      "original_contract_sha256": "3fae3f24a44a484a78c2765f1061ddcb621c32017bb74849241ca5ac166ecc7d",
+      "exported_contract_sha256": "945c1e23e1a107fba2984d20c37dfc081ca15ab0c64bc83e9378d7d8cc0a84dc",
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exoeos/second_virial.py": "bb9ae0910321a1e7a82af8b3df05e81274f47bfd9e8f6ba1658db0325d9bd5f3",
+        "documents/thermodynamic_state_contract.md": "6cde3050a8b2b1242e879d9bd4ea3e2bee1d607ceaaa2d203d4f83f5e6d15d67",
+        "tests/unittests/second_virial_test.py": "7626e389e5a3b9d2afa211106a87acc846c1db96ea58d35145d841faf685840f",
+        "mceg/evidence/docs/en/evidence_audit.md": "f0966849c08fc56567ff776a1f35747ffcceea21f6a1c8ae8f03639ab389fa2f"
+      },
+      "missing": [],
+      "external_not_checked": [],
+      "fragments_checked": false,
+      "opaque_not_checked": [],
+      "entry_point_symbols_checked": false
+    },
+    "exoeos/mceg/contracts/zhang_duan_h2.yaml": {
+      "original_contract_sha256": "514ff6ae813f059ef37e93ea46f9818eceb8a4dac555bdc891e5c2b91683ebd6",
+      "exported_contract_sha256": "0161339c1facd38075fa18d0cd87b3ee42f6f4bcd5dea50141ea0a48a902b423",
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exoeos/zhang_duan.py": "bacbb5d7d1295258fa3d888067bb8060450a01a4bbfa8a40eb499483a3bee986",
+        "documents/thermodynamic_state_contract.md": "6cde3050a8b2b1242e879d9bd4ea3e2bee1d607ceaaa2d203d4f83f5e6d15d67",
+        "documents/tutorials/zhang_duan_eos.rst": "d3f8f7f615e8b0e371916d7dde32c3f21e3fe5252cbdf54ca8c6c94b907e615c",
+        "tests/unittests/zhang_duan_test.py": "40153705cf2f2bc4ad258fc1eef9c70eac02e8c20354ec6c310dbf716de84844",
+        "mceg/evidence/docs/en/h2_solubility.md": "92288ab86dcefe5b07743f4474f001ba2b21cc74ec5177d20bdedf3ee40157db"
+      },
+      "missing": [],
+      "external_not_checked": [
+        "https://doi.org/10.1016/j.gca.2009.01.021"
+      ],
+      "fragments_checked": false,
+      "opaque_not_checked": [],
+      "entry_point_symbols_checked": false
+    }
+  },
+  "revision_trial": {
+    "synthetic": true,
+    "change": {
+      "path": "src/exogibbs/solubility/volatile.py",
+      "before": "result = fugacity * jnp.exp(-11.403 - 0.76 * melt_pressure)",
+      "after": "result = fugacity * jnp.exp(-11.303 - 0.76 * melt_pressure)"
+    },
+    "parent_revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+    "candidate_revision": "synthetic-sha256:d9b7aae3e4072016c3c3181ffc612f15ada64077c3447878486a997c0703297d",
+    "source_sha256": {
+      "before": "8b5982cfb5dcf53ab662d5c5dd77ee76e58190263990bdb20212e296088956da",
+      "after": "d9b7aae3e4072016c3c3181ffc612f15ada64077c3447878486a997c0703297d"
+    },
+    "changed_evidence_files": [
+      "src/exogibbs/solubility/volatile.py"
+    ],
+    "parent_contract_sha256": "6e376b0759e98a2594c56a07e23f1aedc94467d331478ef465ed44628e5f1a9f",
+    "parent_preserved": true,
+    "candidate_contract_sha256": "e05bbb9ee686b9f9d7868d8bd0519c0db0adb2facad50ac11374df177eb048d6",
+    "negative_control": {
+      "revision_only_edit_schema_valid": true,
+      "stale_numerical_claim_still_supported": true
+    },
+    "manual_review": [
+      {
+        "claim": "fixed_pressure_linearity",
+        "before": "supported",
+        "after": "supported",
+        "reason": "Manually reviewed algebra; this does not validate the arbitrary coefficient."
+      },
+      {
+        "claim": "formula_evaluation",
+        "before": "supported",
+        "after": "unknown",
+        "reason": "The parent's passing run must not be assigned to this different implementation."
+      },
+      {
+        "claim": "physical_accuracy",
+        "before": "unknown",
+        "after": "unknown",
+        "reason": "No experiment, calibration, equilibrium calculation or observational comparison is supplied."
+      }
+    ],
+    "evidence_results": {
+      "current_tests": "not_run",
+      "historical_tests": "passed"
+    },
+    "candidate_sources": {
+      "schema_valid": true,
+      "local_files_complete": true,
+      "local_file_sha256": {
+        "src/exogibbs/solubility/volatile.py": "d9b7aae3e4072016c3c3181ffc612f15ada64077c3447878486a997c0703297d",
+        "mceg/evidence/docs/en/h2_primary_audit.md": "e0d822821c44f1906b6ab37c4606636aeff7eed7e9af120a20d8498b48762b5b",
+        "tests/unittests/solubility/meltyq_test.py": "cf8e65aa3624081f8a0c15edb0a192bd98b7eed75733dc53ee1ba790e535094a",
+        "mceg/evidence/docs/en/h2_solubility.md": "92288ab86dcefe5b07743f4474f001ba2b21cc74ec5177d20bdedf3ee40157db"
+      },
+      "missing": [],
+      "external_not_checked": [
+        "https://arxiv.org/html/2408.17056v1#S2.SS3"
+      ],
+      "fragments_checked": false,
+      "opaque_not_checked": [],
+      "entry_point_symbols_checked": false
+    },
+    "candidate_trace": {
+      "evidence": "implementation",
+      "recorded_audit_complete": false,
+      "meaning": "Declared source tracing only; not a scientific validity judgment.",
+      "primary_sources": [],
+      "nodes": [
+        {
+          "id": "implementation",
+          "kind": "implementation",
+          "summary": "Temporary source differs from the audited parent by exactly one constant in the function body.",
+          "sources": [
+            "src/exogibbs/solubility/volatile.py#L237-L254"
+          ],
+          "scope": "The synthetic diff only; the provider's own checkout remains unchanged.",
+          "provenance": {
+            "role": "implementation",
+            "location": "Synthetic volatile.py, h2_hirschmann2012 expression.",
+            "inspection": "inspected",
+            "note": "The declared replacement is checked byte for byte by the workflow runner.",
+            "derived_from": [
+              {
+                "evidence": "formulation",
+                "comparison": "discrepancy",
+                "note": "The candidate uses -11.303 where the previously inspected Seo Eq. 6 uses -11.403. This deliberate discrepancy is not an error found in Seo."
+              }
+            ]
+          }
+        },
+        {
+          "id": "formulation",
+          "kind": "literature",
+          "summary": "The parent audit records the Seo Eq. 6 coefficient as -11.403.",
+          "sources": [
+            "https://arxiv.org/html/2408.17056v1#S2.SS3",
+            "mceg/evidence/docs/en/h2_primary_audit.md"
+          ],
+          "scope": "Previously inspected formula transcription only; no new literature inspection in this exercise.",
+          "provenance": {
+            "role": "secondary",
+            "location": "Seo (2024), Eq. 6, as recorded by the frozen parent audit.",
+            "inspection": "inspected",
+            "note": "The original experimental fit remains outside this comparison's scope.",
+            "derived_from": []
+          }
+        }
+      ],
+      "links": [
+        {
+          "from": "implementation",
+          "to": "formulation",
+          "comparison": "discrepancy",
+          "note": "The candidate uses -11.303 where the previously inspected Seo Eq. 6 uses -11.403. This deliberate discrepancy is not an error found in Seo."
+        }
+      ],
+      "issues": [
+        {
+          "evidence": "implementation",
+          "upstream": "formulation",
+          "issue": "comparison_discrepancy"
+        },
+        {
+          "evidence": "formulation",
+          "issue": "primary_source_not_identified"
+        }
+      ]
+    },
+    "candidate_executed": false
+  },
+  "limitations": [
+    "Partial source snapshots only, not installable provider distributions.",
+    "File existence and hashes do not check fragments, Python symbols or scientific truth.",
+    "Remote URLs and links inside copied Markdown files are not traversed.",
+    "Only the baseline's known file prefixes are resolved; free-text citations remain unchecked.",
+    "The revision exercise applies a manual review; it does not infer affected claims."
+  ]
+}

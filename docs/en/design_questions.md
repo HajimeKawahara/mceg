@@ -15,7 +15,7 @@ absolute enthalpy, or entropy. These capabilities must not be conflated.
 - Separate numerical verification from validation against experiments or observations.
 - Attach evidence and its scope to claims; do not invent bounds, results, or citations.
 - State missing knowledge as `unknown`, with an explanation of what is missing.
-- Prefer the smallest useful structure. Defer databases, inference engines, and provider execution.
+- Prefer the smallest useful structure. Defer databases, inference engines, and provider execution in the core.
 - Treat v0.1 as an experiment that can change when real descriptions expose shortcomings.
 
 ## What is straightforward, and what is difficult?
@@ -107,13 +107,15 @@ for missing species. Its mock-provider tests verify interface behavior, not
 physical accuracy. The gallery uses zero standard chemical potentials, so
 its demonstration pressures are not an applicability range for abundances.
 
-[The M2 mixture provider integration][mixture] is a richer follow-on. It uses
+[The M2 mixture provider integration][mixture] supplies the second connection. It uses
 Second Virial pair coefficients with explicit extrapolation or `hold_2000`
 policies and zero coefficients for unmodelled pairs. Zero-pair trace species
 still receive the full-mixture correction, rather than an independent ideal
 species correction. Its iteration tolerance is not a measured uncertainty.
 Thus the pure-component public adapter's restriction must not be generalized
-to all ExoGibbs examples. A mixture contract remains outside this PoC.
+to all ExoGibbs examples. The [provider trials](provider_trials.md) now describe
+this connection with two contracts and a fixed-composition replay; the complete
+parcel solver and planetary calculation remain outside the trial.
 
 Further configured calculations should record parameter provenance and evidence
 gaps before motivating a general rule engine. [The residual API
@@ -210,3 +212,50 @@ changing a physical claim. Four limitations became concrete:
 No confirmed transcription error or corrected empirical coefficient resulted
 from this attempt. An unresolved source difference and an incomplete audit are
 useful outcomes in their own right and must survive into the machine-readable data.
+
+## Lessons from the provider adoption trials
+
+The [three trials](provider_trials.md) use the frozen v0.1 schema unchanged.
+They expose operational gaps rather than a need for immediate schema expansion:
+
+- **Configured-model identity includes policy.** The same class and revision
+  yield different coefficients under `extrapolate` and `hold_2000`. Species order,
+  parameters, standard potentials and full-mixture normalization also matter.
+  v0.1 can describe them in scoped prose and case files but has no typed identity
+  for a configured model or compatibility rule between two instances.
+- **A numerical policy does not extend evidence coverage.** Holding a 2000 K
+  coefficient while evaluating gas at 2173.15 K is still use beyond the source's
+  reported temperature coverage. The small difference from analytic continuation
+  is not an uncertainty bound. Unknown pair interactions set to zero remain
+  assumptions; the resulting trace-species correction is still `-ln(Z)`.
+- **A source string has several possible meanings.** Actual contracts mix
+  revision-pinned URLs, repository-relative paths, fragments and free-text
+  bibliography. Copying YAML alone can break references while validation passes.
+  The trial's explicit repository root and limited file-prefix resolver suffice
+  for this layout; a general typed locator and immutable artifact convention
+  remain undecided. Existing files are not proof of inspected content.
+- **Freshness is separate from a historical result.** A revision-only edit can
+  retain stale `supported` claims and still pass the core validator. The synthetic
+  trial preserves the old `passed`, records current tests as `not_run`, and marks
+  current numerical support `unknown`. Algebraic support survives only after
+  manual review, and source-formula agreement changes to a scoped discrepancy.
+  No automatic dependency or affected-claim analysis is implemented.
+- **Implementation and contract revisions are different.** A contract may describe
+  code from commit A while being published in commit B. Requiring its own future
+  commit hash creates a circular requirement. A whole-repository HEAD change can
+  also be a documentation-only edit; file changes and scientific impact are not
+  equivalent. v0.1 leaves that review to authors rather than inventing a universal
+  staleness status or automatically transferring old evidence.
+- **Evidence ownership is not independence.** Two contracts can point to the same
+  execution receipt. Moving a provider's ledger or copying its primary-source
+  inspection notes does not constitute a new independent run or source inspection.
+  The mixture ledger remains secondary evidence in this trial. Cross-contract
+  evidence identity and deduplication remain unresolved.
+
+The [provider-owned H2 pilot](provider_pilot.md) now uses the existing schema with
+an explicit repository root, saved audit records and a manual update procedure.
+Its replay succeeds after contract-publication commits change both HEADs while
+selected audited files remain unchanged. ExoGibbs also had a real intervening
+adapter update; source review and fresh scoped tests preceded adoption.
+General graph storage, automatic scientific decisions and a new schema version
+were not needed to test this workflow.

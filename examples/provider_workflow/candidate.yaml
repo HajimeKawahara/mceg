@@ -1,0 +1,102 @@
+# Synthetic update exercise only. run.py replaces the draft revision with a
+# content digest and writes this contract beside a modified temporary source.
+schema_version: "0.1"
+model:
+  id: mceg.demo.modified_h2_law
+  name: Synthetic H2 coefficient change for a revision exercise
+  description: >-
+    A temporary copy changes -11.403 to -11.303 solely to exercise review.
+    This is not an upstream release, a corrected calibration or a proposed law.
+  implementation:
+    repository: urn:mceg:synthetic:exogibbs
+    revision: synthetic-draft-not-executed
+    entry_points: [exogibbs.solubility.h2_hirschmann2012]
+assumptions:
+  - statement: X_H2 = f_H2_bar * exp(-11.303 - 0.76 * P_melt_GPa) in the synthetic source copy.
+    evidence: [implementation, equations]
+domains:
+  - kind: numerical_evaluation
+    status: documented
+    description: Argument handling is unchanged in the inspected temporary diff.
+    conditions:
+      - Finite nonnegative fugacity in bar and actual melt pressure in GPa; array inputs broadcast.
+    evidence: [implementation]
+  - kind: scientific_applicability
+    status: unknown
+    description: No calibration or experimental applicability is established for the altered coefficient.
+    conditions: []
+    evidence: [implementation, formulation]
+claims:
+  - id: fixed_pressure_linearity
+    kind: theoretical
+    status: supported
+    statement: The synthetic formula remains linear in fugacity at fixed pressure and vanishes at zero fugacity.
+    scope: Manually reviewed algebra; this does not validate the arbitrary coefficient.
+    evidence: [equations]
+  - id: formula_evaluation
+    kind: numerical_verification
+    status: unknown
+    statement: Numerical reference checks for this candidate have not been run.
+    scope: The parent's passing run must not be assigned to this different implementation.
+    evidence: [current_tests]
+  - id: physical_accuracy
+    kind: physical_validation
+    status: unknown
+    statement: Physical accuracy of the synthetic law is unknown.
+    scope: No experiment, calibration, equilibrium calculation or observational comparison is supplied.
+    evidence: []
+evidence:
+  - id: implementation
+    kind: implementation
+    summary: Temporary source differs from the audited parent by exactly one constant in the function body.
+    sources: [src/exogibbs/solubility/volatile.py#L237-L254]
+    scope: The synthetic diff only; the provider's own checkout remains unchanged.
+    provenance:
+      role: implementation
+      location: Synthetic volatile.py, h2_hirschmann2012 expression.
+      inspection: inspected
+      note: The declared replacement is checked byte for byte by the workflow runner.
+      derived_from:
+        - evidence: formulation
+          comparison: discrepancy
+          note: >-
+            The candidate uses -11.303 where the previously inspected Seo Eq. 6
+            uses -11.403. This deliberate discrepancy is not an error found in Seo.
+  - id: equations
+    kind: theory
+    summary: Multiplication of fugacity by a pressure-only exponential preserves fixed-pressure linearity.
+    sources: [src/exogibbs/solubility/volatile.py#L237-L254]
+    scope: Algebra of the synthetic expression; independent of the numerical value of its constant.
+  - id: formulation
+    kind: literature
+    summary: The parent audit records the Seo Eq. 6 coefficient as -11.403.
+    sources:
+      - https://arxiv.org/html/2408.17056v1#S2.SS3
+      - mceg/evidence/docs/en/h2_primary_audit.md
+    scope: Previously inspected formula transcription only; no new literature inspection in this exercise.
+    provenance:
+      role: secondary
+      location: Seo (2024), Eq. 6, as recorded by the frozen parent audit.
+      inspection: inspected
+      note: The original experimental fit remains outside this comparison's scope.
+  - id: current_tests
+    kind: numerical_test
+    result: not_run
+    summary: Existing test definitions are available, but no candidate execution result is asserted.
+    sources: [tests/unittests/solubility/meltyq_test.py]
+    scope: Candidate only; changed coefficients require a reasoned reference review before updating tests.
+  - id: historical_tests
+    kind: numerical_test
+    result: passed
+    summary: The parent's recorded eight-test run remains historical evidence at its original revision.
+    sources: [mceg/evidence/docs/en/h2_solubility.md#verification]
+    scope: >-
+      ExoGibbs 6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea only.
+      This record is not linked as support for the candidate's numerical claim.
+limitations:
+  - statement: Original calibration intervals are not transferred to an arbitrary modified law.
+    evidence: [implementation, formulation]
+  - statement: The historical pass is retained; candidate tests are not_run rather than failed or passed.
+    evidence: [historical_tests, current_tests]
+  - statement: No scientific correction or update to either provider is proposed by this synthetic exercise.
+    evidence: [implementation]

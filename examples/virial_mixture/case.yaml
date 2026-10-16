@@ -1,0 +1,89 @@
+# Example-specific manual assessments; not an extension to the frozen schema.
+case_version: "0.1"
+id: full_basis_virial_mixture
+assessment_method: manual
+description: >-
+  Fixed-composition ExoEOS-to-ExoGibbs gas callbacks, using a synthetic
+  five-species mixture from the upstream tests. No equilibrium is solved.
+inputs:
+  temperatures_K: [1500.0, 2173.15]
+  pressure_bar: 270.0
+  species: [H2, He1, H2O1, O2, Mg1]
+  amounts_mol: [0.75, 0.17, 0.06, 0.012, 0.008]
+  standard_potentials_rt: [0.0, 0.0, 0.0, 0.0, 0.0]
+  standard_pressure_bar: 1.0
+  h2_he_cm3_mol: 10.0
+  water_cross_policies: [extrapolate, hold_2000]
+  trace_pair_policy: zero
+components:
+  eos: examples/virial_mixture/provider.yaml
+  adapter: examples/virial_mixture/adapter.yaml
+connection:
+  factory: m2_gas_eos.build_gas_eos
+  callback: m2_gas_eos.with_gas_residual
+  steps:
+    - Preserve the full species order and normalize by all gas moles.
+    - Convert callback pressure from bar to Pa for the EOS.
+    - Add extensive residual G/(RT) and ln(phi) to the ideal gas callback.
+  standard_state: >-
+    Zero standard potentials are an artificial test convention. These outputs
+    cannot be used as chemical abundances or a planetary equilibrium result.
+assessments:
+  - id: implemented_temperature
+    classification: within_reported_range
+    scope: Numerical evaluation interval only, for both temperatures and policies.
+    reason: Both temperatures lie in the provider's 1000-3000 K interval.
+    evidence: [examples/virial_mixture/provider.yaml#implementation]
+  - id: water_cross_1500K
+    classification: within_reported_range
+    scope: Source-ledger temperature intervals for H2-H2O and He-H2O only.
+    reason: >-
+      1500 K lies in the recorded 200-2000 K and 100-2000 K intervals.
+      Interval membership does not validate this mixture at 270 bar.
+    evidence: [examples/virial_mixture/provider.yaml#source_ledger]
+  - id: water_cross_2173K_extrapolate
+    classification: extrapolation
+    scope: Both water cross coefficients evaluated at 2173.15 K.
+    reason: The analytic correlations continue beyond the recorded 2000 K maximum.
+    evidence: [examples/virial_mixture/provider.yaml#source_ledger]
+  - id: water_cross_2173K_hold
+    classification: extrapolation
+    scope: Applying the two 2000 K cross coefficients at a physical temperature of 2173.15 K.
+    reason: >-
+      Holding the coefficients changes the continuation rule, not the temperature
+      of the gas. Extrapolation here includes constant continuation beyond support.
+    evidence: [examples/virial_mixture/provider.yaml#implementation, examples/virial_mixture/provider.yaml#source_ledger]
+  - id: helium_table
+    classification: within_reported_range
+    scope: Temperature coverage of the implemented He-He theoretical table subset.
+    reason: Both temperatures lie between 1000 and 3000 K; interpolation error remains unbounded here.
+    evidence: [examples/virial_mixture/provider.yaml#source_ledger]
+  - id: pure_pair_accuracy
+    classification: unknown
+    scope: Physical accuracy of pure H2 and H2O coefficients at these states.
+    reason: >-
+      The ledger reports unquantified high-temperature H2 error and potential-guided
+      water continuation above 1170 K measurements. No new measurement comparison was made.
+    evidence: [examples/virial_mixture/provider.yaml#source_ledger]
+  - id: hydrogen_helium_pair
+    classification: unknown
+    scope: Physical accuracy of the constant H2-He input of 10 cm3/mol.
+    reason: The value is a sensitivity choice; no empirical bound or measured coefficient is asserted.
+    evidence: [examples/virial_mixture/provider.yaml#implementation]
+  - id: zero_pairs
+    classification: unknown
+    scope: Physical consequences of setting every O2 or Mg1 pair to zero.
+    reason: >-
+      Zero is an explicit model assumption, not evidence that the interactions vanish.
+      These species still have ln(phi) = -ln(Z); a small fraction gives no error bound.
+    evidence: [examples/virial_mixture/provider.yaml#equations]
+  - id: higher_virials
+    classification: unknown
+    scope: Truncation error at 270 bar in either temperature or policy case.
+    reason: Finite density and a positive root do not bound omitted higher virials.
+    evidence: [examples/virial_mixture/provider.yaml#implementation]
+  - id: combined_accuracy
+    classification: unknown
+    scope: Experimental accuracy of the coupled chemical potentials and Gibbs energy.
+    reason: Successful callback and derivative checks do not supply experimental validation.
+    evidence: [examples/virial_mixture/adapter.yaml#connection_run]

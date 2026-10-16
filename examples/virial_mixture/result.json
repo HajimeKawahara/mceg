@@ -1,0 +1,589 @@
+{
+  "record_format": "virial_mixture_execution_v0.1",
+  "case_id": "full_basis_virial_mixture",
+  "executed_at_utc": "2026-10-15T10:52:03.034368+00:00",
+  "case_sha256": "1adcdd35ae217bf5cab7b6ada165490fd6ab3955eaf7fe1344357da3d2a1add3",
+  "runner_sha256": "4b4f910b6f03984dd2c9fa58426718fb72e6e4d5b9be0fcffb13ffd4dbdb5e53",
+  "contract_sha256": {
+    "examples/virial_mixture/provider.yaml": "07c4c62a5eaee87df0008a19c414c98a0d9ec186595c1779d0eae69e1ffe168b",
+    "examples/virial_mixture/adapter.yaml": "9bc21b4a200a20fb4b0ac0002c9229554ccf92155b0eeddfc1897029e3bb84c7"
+  },
+  "environment": {
+    "python": "3.12.7",
+    "backend": "cpu",
+    "dtype": "float64",
+    "jax_enable_x64": true,
+    "versions": {
+      "jax": "0.6.2",
+      "jaxlib": "0.6.2",
+      "numpy": "2.1.0",
+      "scipy": "1.14.1",
+      "pydantic": "2.13.5",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "upstream": {
+    "exoeos": {
+      "revision": "d7681db4393fd85904846b083013230d81d45d4e",
+      "tracked_worktree_clean": true,
+      "selected_file_sha256": {
+        "examples/m2_material/major_gas_eos.py": "e7cb36cb8d7869ec8180af0ad4093bdf8ba43046c3d036b20238402ed80a5016",
+        "examples/m2_material/gas_virial.py": "81c7a5b6f182f6c49d3f4fd8dfedbec53427add52071196b0fd650fe96d35388",
+        "examples/m2_material/gas_virial_sources.json": "aa88f50111621db9ab1906b21070e068b4884d96fb263e8102de48e3699cce51",
+        "src/exoeos/second_virial.py": "bb9ae0910321a1e7a82af8b3df05e81274f47bfd9e8f6ba1658db0325d9bd5f3",
+        "src/exoeos/helmholtz.py": "75d7ab3a68781c73e8d8197c05151f0a8adb076595bcfad296a544f00860318e",
+        "src/exoeos/state.py": "76968b4d4c64a0a585a2554ed824f92346ad0e5a67289a4b6d0623b20905ee54",
+        "src/exoeos/constants.py": "69e57fe70ad4ea775f2d97722548276c87d3a91c76eb6be8f1be43ac30f83fa4",
+        "src/exoeos/_arrays.py": "020679ce40515c27ce0bf31f5b71b1f737737d4a5ebc0301198a9e2bcbedf507"
+      }
+    },
+    "exogibbs": {
+      "revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+      "tracked_worktree_clean": true,
+      "selected_file_sha256": {
+        "examples/metal_silicate/m2_gas_eos.py": "a062d720ad4955ea8318a234a526b9c7bc96e0d32e3d494761f2c1eb1c748062",
+        "examples/metal_silicate/full_potential.py": "0d312a1a5ac0fdae0479d0e85e09bc35a88f59952a36895b703ac35513b8bc19",
+        "examples/metal_silicate/local.py": "0c8195f8680e374ae2bc91c081ff8abc7661d17319f426f0766fc5b3a13ce535"
+      }
+    }
+  },
+  "inputs": {
+    "temperatures_K": [
+      1500.0,
+      2173.15
+    ],
+    "pressure_bar": 270.0,
+    "species": [
+      "H2",
+      "He1",
+      "H2O1",
+      "O2",
+      "Mg1"
+    ],
+    "amounts_mol": [
+      0.75,
+      0.17,
+      0.06,
+      0.012,
+      0.008
+    ],
+    "standard_potentials_rt": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "standard_pressure_bar": 1.0,
+    "h2_he_cm3_mol": 10.0,
+    "water_cross_policies": [
+      "extrapolate",
+      "hold_2000"
+    ],
+    "trace_pair_policy": "zero"
+  },
+  "states": [
+    {
+      "id": "1500K_extrapolate",
+      "temperature_K": 1500.0,
+      "policy": "extrapolate",
+      "pressure_Pa": 27000000.0,
+      "coefficients_m3_mol": [
+        [
+          1.4967537883553479e-05,
+          9.999999999999999e-06,
+          1.4999058766647486e-05,
+          0.0,
+          0.0
+        ],
+        [
+          9.999999999999999e-06,
+          8.620860401785714e-06,
+          1.6030809634394488e-05,
+          0.0,
+          0.0
+        ],
+        [
+          1.4999058766647486e-05,
+          1.6030809634394488e-05,
+          -8.363266100179722e-07,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "Bmix_m3_mol": 1.2892315954854297e-05,
+      "Z": 1.0271722732022373,
+      "rho_mol_m3": 2107.6332054991394,
+      "lnphi": [
+        0.03146891339736599,
+        0.015036953054424415,
+        0.03188519278027904,
+        -0.02680966099018483,
+        -0.02680966099018483
+      ],
+      "mu_rt": [
+        5.34220879994396,
+        3.8415020701209244,
+        2.816896435018618,
+        1.1487636688140532,
+        0.7432985607058887
+      ],
+      "gibbs_rt": 4.8484572904910594,
+      "residual_gibbs_rt": 0.027534885414289695,
+      "temperature_assumptions": {
+        "implemented_temperature_range_K": [
+          1000.0,
+          3000.0
+        ],
+        "water_cross_recommended_maximum_K": 2000.0,
+        "water_cross_high_temperature_assumption_active": false,
+        "h2_he_temperature_policy": "Explicit constant sensitivity scenario; not empirical bounds",
+        "hold_2000_temperature_derivative_corner_K": null
+      }
+    },
+    {
+      "id": "1500K_hold_2000",
+      "temperature_K": 1500.0,
+      "policy": "hold_2000",
+      "pressure_Pa": 27000000.0,
+      "coefficients_m3_mol": [
+        [
+          1.4967537883553479e-05,
+          9.999999999999999e-06,
+          1.4999058766647486e-05,
+          0.0,
+          0.0
+        ],
+        [
+          9.999999999999999e-06,
+          8.620860401785714e-06,
+          1.6030809634394488e-05,
+          0.0,
+          0.0
+        ],
+        [
+          1.4999058766647486e-05,
+          1.6030809634394488e-05,
+          -8.363266100179722e-07,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "Bmix_m3_mol": 1.2892315954854297e-05,
+      "Z": 1.0271722732022373,
+      "rho_mol_m3": 2107.6332054991394,
+      "lnphi": [
+        0.03146891339736599,
+        0.015036953054424415,
+        0.03188519278027904,
+        -0.02680966099018483,
+        -0.02680966099018483
+      ],
+      "mu_rt": [
+        5.34220879994396,
+        3.8415020701209244,
+        2.816896435018618,
+        1.1487636688140532,
+        0.7432985607058887
+      ],
+      "gibbs_rt": 4.8484572904910594,
+      "residual_gibbs_rt": 0.027534885414289695,
+      "temperature_assumptions": {
+        "implemented_temperature_range_K": [
+          1000.0,
+          3000.0
+        ],
+        "water_cross_recommended_maximum_K": 2000.0,
+        "water_cross_high_temperature_assumption_active": false,
+        "h2_he_temperature_policy": "Explicit constant sensitivity scenario; not empirical bounds",
+        "hold_2000_temperature_derivative_corner_K": 2000.0
+      }
+    },
+    {
+      "id": "2173.15K_extrapolate",
+      "temperature_K": 2173.15,
+      "policy": "extrapolate",
+      "pressure_Pa": 27000000.0,
+      "coefficients_m3_mol": [
+        [
+          1.3822665125019422e-05,
+          9.999999999999999e-06,
+          1.5101915835094848e-05,
+          0.0,
+          0.0
+        ],
+        [
+          9.999999999999999e-06,
+          7.76490551282982e-06,
+          1.4912020442021864e-05,
+          0.0,
+          0.0
+        ],
+        [
+          1.5101915835094848e-05,
+          1.4912020442021864e-05,
+          8.410740342101473e-06,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "Bmix_m3_mol": 1.2243311209551555e-05,
+      "Z": 1.0179722651819771,
+      "rho_mol_m3": 1467.9252102940982,
+      "lnphi": [
+        0.020274448249367562,
+        0.010708394694562015,
+        0.024364120115367136,
+        -0.017812673338704968,
+        -0.017812673338704968
+      ],
+      "mu_rt": [
+        5.331014334795962,
+        3.837173511761062,
+        2.809375362353706,
+        1.1577606564655332,
+        0.7522955483573686
+      ],
+      "gibbs_rt": 4.839054262102019,
+      "residual_gibbs_rt": 0.018131857025249058,
+      "temperature_assumptions": {
+        "implemented_temperature_range_K": [
+          1000.0,
+          3000.0
+        ],
+        "water_cross_recommended_maximum_K": 2000.0,
+        "water_cross_high_temperature_assumption_active": true,
+        "h2_he_temperature_policy": "Explicit constant sensitivity scenario; not empirical bounds",
+        "hold_2000_temperature_derivative_corner_K": null
+      }
+    },
+    {
+      "id": "2173.15K_hold_2000",
+      "temperature_K": 2173.15,
+      "policy": "hold_2000",
+      "pressure_Pa": 27000000.0,
+      "coefficients_m3_mol": [
+        [
+          1.3822665125019422e-05,
+          9.999999999999999e-06,
+          1.5131686349903801e-05,
+          0.0,
+          0.0
+        ],
+        [
+          9.999999999999999e-06,
+          7.76490551282982e-06,
+          1.517192645290673e-05,
+          0.0,
+          0.0
+        ],
+        [
+          1.5131686349903801e-05,
+          1.517192645290673e-05,
+          8.410740342101473e-06,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "Bmix_m3_mol": 1.2251292638506411e-05,
+      "Z": 1.0179837779352885,
+      "rho_mol_m3": 1467.908608987484,
+      "lnphi": [
+        0.020267952123388198,
+        0.010742544899714834,
+        0.024547600494966158,
+        -0.01782398277080251,
+        -0.01782398277080251
+      ],
+      "mu_rt": [
+        5.331007838669983,
+        3.8372076619662145,
+        2.809558842733305,
+        1.1577493470334357,
+        0.752284238925271
+      ],
+      "gibbs_rt": 4.839065978176545,
+      "residual_gibbs_rt": 0.01814357309977464,
+      "temperature_assumptions": {
+        "implemented_temperature_range_K": [
+          1000.0,
+          3000.0
+        ],
+        "water_cross_recommended_maximum_K": 2000.0,
+        "water_cross_high_temperature_assumption_active": true,
+        "h2_he_temperature_policy": "Explicit constant sensitivity scenario; not empirical bounds",
+        "hold_2000_temperature_derivative_corner_K": 2000.0
+      }
+    }
+  ],
+  "numerical_checks": [
+    {
+      "id": "1500K_extrapolate:density",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.108633205499139e-09,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:pressure_Pa",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.7000001e-05,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:lnphi",
+      "max_absolute_error": 6.938893903907228e-18,
+      "absolute_tolerance": 1.031885192780279e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:chemical_potentials",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.34220879994396e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:gibbs",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.848457290491059e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:scalar_value",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.848457290491059e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:amount_gradient",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.34220879994396e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_extrapolate:zero_pair_correction",
+      "max_absolute_error": 6.938893903907228e-18,
+      "absolute_tolerance": 1.026809660990185e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:density",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.108633205499139e-09,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:pressure_Pa",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.7000001e-05,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:lnphi",
+      "max_absolute_error": 6.938893903907228e-18,
+      "absolute_tolerance": 1.031885192780279e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:chemical_potentials",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.34220879994396e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:gibbs",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.848457290491059e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:scalar_value",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.848457290491059e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:amount_gradient",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.34220879994396e-12,
+      "passed": true
+    },
+    {
+      "id": "1500K_hold_2000:zero_pair_correction",
+      "max_absolute_error": 6.938893903907228e-18,
+      "absolute_tolerance": 1.026809660990185e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:density",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 1.4689252102940983e-09,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:pressure_Pa",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.7000001e-05,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:lnphi",
+      "max_absolute_error": 8.673617379884035e-17,
+      "absolute_tolerance": 1.024364120115367e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:chemical_potentials",
+      "max_absolute_error": 8.881784197001252e-16,
+      "absolute_tolerance": 6.331014334795961e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:gibbs",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.8390542621020186e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:scalar_value",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.8390542621020186e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:amount_gradient",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.331014334795962e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_extrapolate:zero_pair_correction",
+      "max_absolute_error": 8.673617379884035e-17,
+      "absolute_tolerance": 1.017812673338705e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:density",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 1.468908608987484e-09,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:pressure_Pa",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 2.7000001e-05,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:lnphi",
+      "max_absolute_error": 4.85722573273506e-17,
+      "absolute_tolerance": 1.0245476004949662e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:chemical_potentials",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.331007838669983e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:gibbs",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.8390659781765446e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:scalar_value",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 5.8390659781765446e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:amount_gradient",
+      "max_absolute_error": 4.440892098500626e-16,
+      "absolute_tolerance": 6.331007838669983e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:zero_pair_correction",
+      "max_absolute_error": 4.85722573273506e-17,
+      "absolute_tolerance": 1.0178239827708025e-12,
+      "passed": true
+    },
+    {
+      "id": "2173.15K_hold_2000:held_water_cross",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "id": "1500K:policies_agree",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "id": "2173K:other_pairs_unchanged",
+      "max_absolute_error": 0.0,
+      "absolute_tolerance": 0.0,
+      "passed": true
+    }
+  ],
+  "manual_assessments": "Read case.yaml; these are not computed by this runner.",
+  "physical_validation": "unknown"
+}

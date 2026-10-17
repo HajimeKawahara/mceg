@@ -28,8 +28,8 @@ compute applicability, detect extrapolation, or certify package compatibility.
 - Record missing knowledge explicitly as `unknown`. Unknown does not mean false,
   physically invalid, or universally applicable.
 - Keep model definitions, test conditions, and physical calibration distinct.
-- Start small: no graph database, reasoning engine, automatic code inspection,
-  or condition evaluator. Upstream execution is confined to an optional example.
+- Start small: no graph database, reasoning engine, or automatic code inspection.
+  Range comparison and upstream execution are confined to optional examples.
 
 ## Install and use
 
@@ -117,6 +117,21 @@ The two model contracts use the experimental v0.1 schema. Core validation and te
 still require neither upstream package nor JAX. The guide describes replaying
 the calculation with those optional dependencies.
 
+The separate [range assessment](examples/h2_solubility/assess.py) compares supplied
+temperature and actual melt pressure with three
+[source-specific intervals](examples/h2_solubility/conditions.yaml). At 1750 K,
+the metadata interval includes the temperature while Seo's interval excludes it.
+The [saved assessment](examples/h2_solubility/assessment.json) preserves both
+outcomes and leaves physical validation unknown. Run it without provider packages:
+
+```bash
+PYTHONPATH=src python examples/h2_solubility/assess.py --temperature-k 1750 --melt-pressure 7500 --pressure-unit bar --output /tmp/h2-assessment.json
+```
+
+Omitting either quantity returns `unknown` for its comparisons. This example
+does not change v0.1 Claim statuses. See the
+[assessment design and migration proposal](docs/en/design_questions.md#claim-evidence-and-assessment-separation).
+
 The [primary-source audit](docs/en/h2_primary_audit.md)
 ([Japanese](docs/ja/h2_primary_audit.md)) records what was confirmed, the original
 full-text access gap, a possible material-specific explanation of the temperature
@@ -152,7 +167,8 @@ The [schema guide](docs/en/schema.md) describes the small YAML format.
 [Pydantic models](src/mceg/schema.py) are its executable definition. Claims link
 to evidence by local IDs; optional provenance links connect scoped evidence
 to its recorded original sources within the same contract.
-All model-specific equations and conditions remain descriptive text.
+Core contract equations and conditions remain descriptive text. The H2 range
+example has its own small condition format, outside the frozen contract schema.
 
 The main unresolved questions are parameter and species identity, units and
 reference states, nonrectangular applicability domains, uncertainty, evidence

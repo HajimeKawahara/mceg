@@ -91,6 +91,69 @@ classifications or the computed result.
 the older infrared concentration calibration. That finding does not supply a
 uniform correction for this case; the result is **not divided by ten**.
 
+## Partial automatic range assessment
+
+[`assess.py`](../../examples/h2_solubility/assess.py) evaluates three marginal
+intervals in [`conditions.yaml`](../../examples/h2_solubility/conditions.yaml),
+separately from the fixed EOS calculation and its manual assessments. These are
+example-only formats, not additions to the v0.1 contract or public API. Neither
+provider nor JAX is needed. No new experimental evidence is asserted.
+
+The conditions retain each source's scope: implementation temperature metadata,
+Seo's basaltic temperature interval, and the original abstract's study-wide
+pressure envelope. Source selection is manual; numerical interval comparison
+is automatic. The differing temperature bounds are not merged, intersected,
+or interpreted as a demonstrated error in either source.
+
+```bash
+PYTHONPATH=src python examples/h2_solubility/assess.py --temperature-k 1750 --melt-pressure 7500 --pressure-unit bar --output /tmp/h2-assessment.json
+```
+
+| Context | Metadata temperature | Seo temperature | Study-wide pressure |
+| --- | --- | --- | --- |
+| 1700 K, 7500 bar | Within | Within | Within |
+| 1750 K, 7500 bar | Within | Outside | Within |
+| 1800 K, 7500 bar | Outside | Outside | Within |
+| 1700 K, 5000 bar | Within | Within | Outside |
+| Temperature omitted, 7500 bar | Unknown | Unknown | Within |
+
+The [saved assessment](../../examples/h2_solubility/assessment.json) is the actual
+output of the 1750 K command. It contains no EOS or concentration result at that
+temperature. Its three `range_membership` assessments include condition IDs,
+evidence references, scopes, converted values, classifications and reasons.
+The report binds the context, conditions, evaluator and contract with SHA-256,
+and records the implementation revision described by that contract. This is
+assessment against the pinned audit, not a check of installed provider code.
+
+Temperatures use K. Pressures accept Pa, bar, MPa or GPa; the command defaults to
+bar. `--melt-pressure` means actual total melt pressure. For the original interface
+case it is assumed equal to the total gas pressure; supply that physical quantity
+explicitly. H2 fugacity is a distinct quantity even when expressed in bar.
+The Python `run(inputs)` entry point can record `hydrogen_fugacity`, but never
+uses it to fill a missing `melt_total_pressure`.
+
+Each missing quantity yields `classification: unknown` with `reason: missing_input`.
+Nonfinite values, nonpositive absolute temperatures, negative pressures, boolean
+or string values, unsupported units, and misspelled fields are input errors.
+They do not receive scientific classifications. Uncertainty-bearing inputs and
+Celsius conversion are outside this small example and are rejected.
+
+Bounds use closed intervals over the recorded decimal endpoints. Decimal unit
+scaling preserves boundary inclusion; it adds no experimental precision or
+uncertainty tolerance. `outside_reported_range` means outside that source's
+recorded projection, not physically impossible. `within_reported_range` does
+not establish composition agreement, joint coverage, or a physical error bound.
+The output explicitly leaves these questions unevaluated and physical validation
+unknown. In particular, a basaltic temperature comparison can be within range
+while the melt's composition is unspecified.
+
+The conditions pin the source contract's hash. If it changes, review the selected
+evidence, values and scopes before updating the conditions and replaying this
+assessment. Merely replacing the hash is not a source review. Tests also compare
+the original 1700 K case with the recorded manual projections, and reproduce the
+saved assessment including all hashes. The original `case.yaml`, numerical
+`run.py`, and numerical receipts retain their existing meaning.
+
 ## Verification
 
 All five model contracts pass the core validator. MCEG tests cover
@@ -130,7 +193,8 @@ runtime dependencies. Source tracing is an optional addition to the core schema.
 2. Assess a current concentration calibration and an EOS supported at the
    target H2 state, including uncertainty in fugacity and dissolved concentration.
 3. Specify an actual melt and compare the complete calculation with measurements.
-4. Use these needs to design source-scoped, unit-aware conditions and explicit
-   connections. A general evaluator or aggregate applicability score is premature.
+4. Use the partial range assessment to refine source-scoped conditions and the
+   [Claim/Evidence/Assessment separation](design_questions.md#claim-evidence-and-assessment-separation).
+   A general evaluator or aggregate applicability score is premature.
 
 The [design questions](design_questions.md) discuss the remaining schema gaps.

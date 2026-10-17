@@ -1,0 +1,98 @@
+{
+  "format": "h2_range_assessment_v1",
+  "context": {
+    "temperature": {
+      "value": 1750.0,
+      "unit": "K"
+    },
+    "melt_total_pressure": {
+      "value": 7500.0,
+      "unit": "bar"
+    }
+  },
+  "context_sha256": "3cac5eea4bfd3b23a3ef1c52b2e8c5b1d0e9886791bc41f9e717dab78e871560",
+  "conditions_sha256": "aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+  "evaluator_sha256": "d33e31564993ff4156b729a489eabfba75b3cf02fad5d5a6e93bec6d4c2715a3",
+  "contract": {
+    "path": "contracts/h2_solubility.yaml",
+    "sha256": "0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+    "model": "exogibbs.h2_hirschmann2012",
+    "implementation": {
+      "repository": "https://github.com/HajimeKawahara/exogibbs",
+      "revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+      "entry_points": [
+        "exogibbs.solubility.h2_hirschmann2012"
+      ]
+    }
+  },
+  "assessments": [
+    {
+      "condition": "temperature_metadata",
+      "kind": "range_membership",
+      "method": "closed_interval_v1",
+      "quantity": "temperature",
+      "interval": {
+        "lower": 1673.0,
+        "upper": 1773.0,
+        "unit": "K",
+        "closure": "closed"
+      },
+      "coverage": "marginal",
+      "scope": "Implementation metadata; experimental materials are not separated.",
+      "evidence": [
+        "contracts/h2_solubility.yaml#metadata_temperature"
+      ],
+      "evaluated_value": "1750.0",
+      "classification": "within_reported_range",
+      "reason": "within_bounds"
+    },
+    {
+      "condition": "temperature_seo",
+      "kind": "range_membership",
+      "method": "closed_interval_v1",
+      "quantity": "temperature",
+      "interval": {
+        "lower": 1673.0,
+        "upper": 1723.0,
+        "unit": "K",
+        "closure": "closed"
+      },
+      "coverage": "marginal",
+      "scope": "Basaltic silicate interval reported by Seo before Eq. 6. Original material-specific runs and the current melt's match are unchecked.",
+      "evidence": [
+        "contracts/h2_solubility.yaml#formulation_temperature"
+      ],
+      "evaluated_value": "1750.0",
+      "classification": "outside_reported_range",
+      "reason": "above_upper_bound"
+    },
+    {
+      "condition": "pressure_hirschmann_abstract",
+      "kind": "range_membership",
+      "method": "closed_interval_v1",
+      "quantity": "melt_total_pressure",
+      "interval": {
+        "lower": 0.7,
+        "upper": 3.0,
+        "unit": "GPa",
+        "closure": "closed"
+      },
+      "coverage": "marginal",
+      "scope": "Study-wide total-pressure envelope in the original abstract, including separate basalt and andesite series; not a material-specific joint domain.",
+      "evidence": [
+        "contracts/h2_solubility.yaml#experimental_pressure"
+      ],
+      "evaluated_value": "0.75",
+      "classification": "within_reported_range",
+      "reason": "within_bounds"
+    }
+  ],
+  "physical_validation": "unknown",
+  "not_evaluated": {
+    "material_scope_match": "No melt composition is supplied or matched to the sources.",
+    "hydrogen_fugacity_coverage": "No experimental fugacity interval is established; total pressure cannot replace it.",
+    "joint_domain_coverage": "Separate marginal intervals do not establish joint calibration coverage.",
+    "calibration_accuracy": "The retained concentration calibration has not been validated for this context.",
+    "eos_and_combined_accuracy": "No EOS execution, measurement comparison or uncertainty bound is supplied by this assessment."
+  }
+}

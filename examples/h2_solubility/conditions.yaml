@@ -1,0 +1,27 @@
+# Example-only conditions; not a v0.1 contract or a complete calibration domain.
+format: h2_range_conditions_v1
+contract: contracts/h2_solubility.yaml
+contract_sha256: 0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda
+conditions:
+  - id: temperature_metadata
+    quantity: temperature
+    interval: {lower: 1673, upper: 1773, unit: K, closure: closed}
+    coverage: marginal
+    scope: Implementation metadata; experimental materials are not separated.
+    evidence: [metadata_temperature]
+  - id: temperature_seo
+    quantity: temperature
+    interval: {lower: 1673, upper: 1723, unit: K, closure: closed}
+    coverage: marginal
+    scope: >-
+      Basaltic silicate interval reported by Seo before Eq. 6.
+      Original material-specific runs and the current melt's match are unchecked.
+    evidence: [formulation_temperature]
+  - id: pressure_hirschmann_abstract
+    quantity: melt_total_pressure
+    interval: {lower: 0.7, upper: 3.0, unit: GPa, closure: closed}
+    coverage: marginal
+    scope: >-
+      Study-wide total-pressure envelope in the original abstract, including
+      separate basalt and andesite series; not a material-specific joint domain.
+    evidence: [experimental_pressure]

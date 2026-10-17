@@ -52,6 +52,11 @@ to produce a matching receipt; do not update hashes to imply a new execution.
 
 Structured applicability conditions, typed evidence relationships, unit-aware
 comparison, automatic extrapolation assessment, cross-contract reasoning, and
-graph databases remain outside v0.1. The [design questions](design_questions.md)
-and [partial primary-source audit](h2_primary_audit.md) record the reasons and
-remaining evidence gaps. The [changelog](../../CHANGELOG.md) records package changes.
+graph databases remain outside the v0.1 core. A separate
+[H2 range assessment](h2_solubility.md#partial-automatic-range-assessment) now
+experiments with source-specific intervals and supplied calculation conditions.
+Its formats and evaluator are example-only. The
+[Claim/Evidence/Assessment proposal](design_questions.md#claim-evidence-and-assessment-separation)
+describes a possible later migration without changing existing Claim statuses.
+The [partial primary-source audit](h2_primary_audit.md) records remaining evidence
+gaps. The [changelog](../../CHANGELOG.md) records package changes.

@@ -53,6 +53,80 @@ Numerical evidence records `passed`, `failed`, `not_run`, or `unknown`.
 result. `unknown` is not a synonym for false, safe, or inapplicable. The current
 claim statuses cannot express conflicting evidence or partial support precisely.
 
+## Claim, Evidence, and Assessment separation
+
+The [H2 range experiment](h2_solubility.md#partial-automatic-range-assessment)
+tests a small step toward separating assertions from their assessment. This is
+a design proposal for a later schema version; v0.1 fields and meanings remain
+frozen. The example adds source-specific conditions and calculated assessments
+outside the contract, without reclassifying any Claim.
+
+| Concept | Responsibility | H2 example |
+| --- | --- | --- |
+| Claim | State the proposition, subject, assumptions and scope | Implementation reproduces specified formula values within the declared numerical tolerance |
+| Evidence | Record the inspected source or observation, including execution outcome and scope | A saved test execution against a particular implementation revision |
+| Assessment | Record a judgment with its target, evidence, method, context and rationale | That execution supports the numerical Claim for the tested revision and points |
+
+An Evidence `result: passed` is a historical execution outcome. Whether that run
+supports a Claim about a different implementation or context is a separate
+Assessment. Updating an assessment must not rewrite the earlier outcome.
+Claim statements should describe propositions rather than contain their current
+evaluation, such as "passed" or "accuracy is unknown".
+
+Two assessment kinds have different targets and result vocabularies:
+
+- `evidence_support` targets a Claim and relates supporting evidence to that
+  Claim's scope. The proposed initial outcomes are `supported` and `unknown`.
+  Source relevance and coverage still require review; merely finding a passed
+  test or an experimental citation cannot establish support. `unknown` is not
+  a rejection or a declaration of contradictory evidence.
+- `range_membership` targets a recorded Condition and uses a supplied Context.
+  The example computes `within_reported_range`, `outside_reported_range`, or
+  `unknown` for missing input. Invalid or unsupported inputs raise errors.
+  It never promotes an `evidence_support` assessment.
+
+Conditions hold quantities, units, endpoints, boundary rules, marginal coverage,
+source references and scope. They remain distinct from the claim that a model
+is physically accurate over a joint domain. At 1750 K the metadata and Seo
+conditions give different outcomes; both are retained. Their difference alone
+does not establish contradictory experimental evidence, since their material
+scopes may differ. Composition matching remains unevaluated even when the
+temperature lies inside a basalt-specific reported interval.
+
+The prototype records context, rule and evaluator identities, the contract hash,
+its implementation revision, and individual reasons. It requires a condition
+review if the contract changes. These identities make a result reproducible;
+they do not prove that the chosen interval was transcribed or scoped correctly.
+There is no aggregate applicability flag or automatic preferred-source policy.
+
+### Proposed migration into a later schema
+
+1. Keep the v0.1 contract and its hash as the original record. A future v0.2
+   reader must dispatch on the version explicitly; v0.1 readers continue to
+   reject new fields. This example does not implement that reader.
+2. Move each Claim's `status` and evaluative `evidence` links into a separate
+   `evidence_support` Assessment targeting the Claim's identified version and
+   scope. Mark it as an imported v0.1 declaration, with its original contract
+   and implementation identity, rather than a new assessment at current inputs.
+3. Keep Evidence IDs, scopes, provenance and historical execution outcomes.
+   Retain inspection and source-comparison records with their existing meaning;
+   this experiment does not redesign that provenance model.
+4. Review Claim text that already embeds an outcome. For H2, the formula-test
+   statement and the `physical_accuracy` statement need this review. Changing
+   a proposition requires an explicit revision; do not silently turn an
+   "unknown accuracy" statement into a quantitative accuracy claim. Missing
+   measurement criteria and tolerances remain missing until supplied.
+5. Keep range assessments linked to Conditions and Contexts, separately from
+   Claim support. Preserve multiple assessments and their methods. Any displayed
+   summary status must identify the selected assessment; it must not become a
+   second independently editable status on Claim.
+
+A core migration will need fixtures demonstrating preservation of historical
+declarations, coexistence of assessments for different revisions, and continued
+v0.1 compatibility. Conflict resolution, quantitative confidence, uncertain
+inputs, joint regions and general unit algebra are deferred until concrete
+models require them. The current prototype covers only the H2 interval checks.
+
 ## Open questions exposed by the examples
 
 1. **What identifies a model?** A class, coefficient set, component ordering,

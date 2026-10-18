@@ -81,3 +81,8 @@ reviewed numerical claim; it does not define a general inference policy.
 The imported Claim text still contains its old evaluative wording. Rewriting
 it as an outcome-independent proposition needs an explicit Claim revision;
 extracting its status must not silently change what was asserted.
+
+The [lifecycle follow-up](assessment_lifecycle.md) now exercises migration,
+fresh execution, and a single reviewed source-adoption dependency. Its numerical
+runs supplement the historical receipt; this original reuse experiment remains
+available with its original context and meaning.

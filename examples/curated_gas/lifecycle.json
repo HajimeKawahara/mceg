@@ -1,0 +1,370 @@
+{
+  "format": "curated_lifecycle_trial_v1",
+  "generator_sha256": "dd2d02586a358a24102f795f1349df3227dd703ce77d96b3b0f58c1d7555bf96",
+  "evaluator_sha256": "2739b80183d94e1d6e9092c864e874965e71718519056ddf000a3dd48e07c640",
+  "review_sha256": "d459b4b1a4b02663c4fda7c2d493323cffd70b298426e8fba3dfd7fccfa64179",
+  "migration": [
+    {
+      "contract_sha256": "0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+      "model": "exogibbs.h2_hirschmann2012",
+      "claims_preserved": 3,
+      "evidence_preserved": 18,
+      "round_trip_equal": true,
+      "claim_text_rewritten": false
+    },
+    {
+      "contract_sha256": "f2a6ee98208e2bfc86e8a2f4cbbb374884412c07928d0d4a76ed370ed33e6be0",
+      "model": "exogibbs.curated_gas.v1",
+      "claims_preserved": 5,
+      "evidence_preserved": 7,
+      "round_trip_equal": true,
+      "claim_text_rewritten": false
+    }
+  ],
+  "historical_evidence": {
+    "contract_sha256": "f2a6ee98208e2bfc86e8a2f4cbbb374884412c07928d0d4a76ed370ed33e6be0",
+    "receipt_sha256": "99eee0918f551106ef80f84a1ca0b010d9c18e70f1bba712b73529ced7d69b89",
+    "result": "passed"
+  },
+  "environment_transition": {
+    "baseline": {
+      "assessment_id": "fe5cd16ffdd1a926c5d9e73114403fa5e841e68371be99c8984389a481951214",
+      "claim_revision": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+      "status": "supported",
+      "reasons": [
+        "reviewed_execution_covers_enumerated_conditions"
+      ],
+      "evidence_id": "execution:2e0d294b7a5a8c4a42ebf775ed0a9161b774479357f7cfa0f9e86720599dbd1b",
+      "evidence_result": "passed",
+      "checks": {
+        "exogibbs": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "element_relative_residual": 2.8110001355767304e-06,
+            "charge_relative_residual": 6.616890434855002e-14,
+            "mass_action_max_abs_ln": 1.3784529073745944e-12
+          },
+          "failures": []
+        },
+        "fastchem": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "max_abs_dex_all_species": 1.2208013672055854e-05,
+            "element_relative_residual": 5.5811487404526776e-11,
+            "charge_relative_residual": 2.7469467887748046e-11,
+            "mass_action_max_abs_ln": 5.735785180149833e-10
+          },
+          "failures": []
+        }
+      },
+      "environment": {
+        "python": "3.12.7",
+        "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+        "machine": "x86_64",
+        "backend": "cpu",
+        "dtype": "float64",
+        "packages": {
+          "jax": "0.6.2",
+          "jaxlib": "0.6.2",
+          "numpy": "2.1.0",
+          "scipy": "1.14.1",
+          "ml_dtypes": "0.5.0",
+          "opt_einsum": "3.4.0"
+        }
+      },
+      "dependency_review": {
+        "path": [
+          "examples/comparisons/data/major_molecule_adoption.json",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "equilibrium_verification"
+        ],
+        "adoption": {
+          "recorded_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92",
+          "observed_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92"
+        },
+        "packaged_data": {
+          "recorded_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "observed_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38"
+        },
+        "source_alignment": "consistent",
+        "numerical_target": "unchanged",
+        "interpretation": "A changed adoption record requires source review. Numerical evidence still concerns the old packaged data; changed coefficients require separate numerical evidence. Hash agreement does not validate the adoption decision."
+      }
+    },
+    "new_environment_before_rerun": {
+      "assessment_id": "dc6866efdb038e46c748aa73532b18af5b7104a9d832d3c430350e4aa47dfd01",
+      "claim_revision": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+      "status": "unknown",
+      "reasons": [
+        "environment_not_covered_by_execution"
+      ],
+      "evidence_id": "execution:2e0d294b7a5a8c4a42ebf775ed0a9161b774479357f7cfa0f9e86720599dbd1b",
+      "evidence_result": "passed",
+      "checks": {
+        "exogibbs": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "element_relative_residual": 2.8110001355767304e-06,
+            "charge_relative_residual": 6.616890434855002e-14,
+            "mass_action_max_abs_ln": 1.3784529073745944e-12
+          },
+          "failures": []
+        },
+        "fastchem": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "max_abs_dex_all_species": 1.2208013672055854e-05,
+            "element_relative_residual": 5.5811487404526776e-11,
+            "charge_relative_residual": 2.7469467887748046e-11,
+            "mass_action_max_abs_ln": 5.735785180149833e-10
+          },
+          "failures": []
+        }
+      },
+      "environment": {
+        "python": "3.12.7",
+        "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+        "machine": "x86_64",
+        "backend": "cpu",
+        "dtype": "float64",
+        "packages": {
+          "jax": "0.10.2",
+          "jaxlib": "0.10.2",
+          "numpy": "2.1.0",
+          "scipy": "1.14.1",
+          "ml_dtypes": "0.5.0",
+          "opt_einsum": "3.4.0"
+        }
+      },
+      "dependency_review": {
+        "path": [
+          "examples/comparisons/data/major_molecule_adoption.json",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "equilibrium_verification"
+        ],
+        "adoption": {
+          "recorded_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92",
+          "observed_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92"
+        },
+        "packaged_data": {
+          "recorded_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "observed_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38"
+        },
+        "source_alignment": "consistent",
+        "numerical_target": "unchanged",
+        "interpretation": "A changed adoption record requires source review. Numerical evidence still concerns the old packaged data; changed coefficients require separate numerical evidence. Hash agreement does not validate the adoption decision."
+      }
+    },
+    "new_environment_after_rerun": {
+      "assessment_id": "aa7e3ff3a55e7d88246bff7ff3732f10a64bb782c223d6dcca04e2d13040deb1",
+      "claim_revision": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+      "status": "supported",
+      "reasons": [
+        "reviewed_execution_covers_enumerated_conditions"
+      ],
+      "evidence_id": "execution:ced6ee67b67974107836149a202eadf48cc5b63389ae76e56c49a6629b1fd1bb",
+      "evidence_result": "passed",
+      "checks": {
+        "exogibbs": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "element_relative_residual": 2.8110001381448097e-06,
+            "charge_relative_residual": 6.28573919188349e-14,
+            "mass_action_max_abs_ln": 1.4210854715202004e-12
+          },
+          "failures": []
+        },
+        "fastchem": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "max_abs_dex_all_species": 1.2208013672055854e-05,
+            "element_relative_residual": 5.5811487404526776e-11,
+            "charge_relative_residual": 2.7469467887748046e-11,
+            "mass_action_max_abs_ln": 5.735785180149833e-10
+          },
+          "failures": []
+        }
+      },
+      "environment": {
+        "python": "3.12.7",
+        "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+        "machine": "x86_64",
+        "backend": "cpu",
+        "dtype": "float64",
+        "packages": {
+          "jax": "0.10.2",
+          "jaxlib": "0.10.2",
+          "numpy": "2.1.0",
+          "scipy": "1.14.1",
+          "ml_dtypes": "0.5.0",
+          "opt_einsum": "3.4.0"
+        }
+      },
+      "dependency_review": {
+        "path": [
+          "examples/comparisons/data/major_molecule_adoption.json",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "equilibrium_verification"
+        ],
+        "adoption": {
+          "recorded_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92",
+          "observed_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92"
+        },
+        "packaged_data": {
+          "recorded_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "observed_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38"
+        },
+        "source_alignment": "consistent",
+        "numerical_target": "unchanged",
+        "interpretation": "A changed adoption record requires source review. Numerical evidence still concerns the old packaged data; changed coefficients require separate numerical evidence. Hash agreement does not validate the adoption decision."
+      }
+    }
+  },
+  "dependency_probe": {
+    "synthetic": true,
+    "mutations": [
+      "Set the copied H2O adoption status to retain_provisionally.",
+      "Add 1 K to the copied Al1+ NASA9 coefficient at index 7."
+    ],
+    "source_record_changed": {
+      "assessment_id": "aa7e3ff3a55e7d88246bff7ff3732f10a64bb782c223d6dcca04e2d13040deb1",
+      "claim_revision": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+      "status": "supported",
+      "reasons": [
+        "reviewed_execution_covers_enumerated_conditions"
+      ],
+      "evidence_id": "execution:ced6ee67b67974107836149a202eadf48cc5b63389ae76e56c49a6629b1fd1bb",
+      "evidence_result": "passed",
+      "checks": {
+        "exogibbs": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "element_relative_residual": 2.8110001381448097e-06,
+            "charge_relative_residual": 6.28573919188349e-14,
+            "mass_action_max_abs_ln": 1.4210854715202004e-12
+          },
+          "failures": []
+        },
+        "fastchem": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "max_abs_dex_all_species": 1.2208013672055854e-05,
+            "element_relative_residual": 5.5811487404526776e-11,
+            "charge_relative_residual": 2.7469467887748046e-11,
+            "mass_action_max_abs_ln": 5.735785180149833e-10
+          },
+          "failures": []
+        }
+      },
+      "environment": {
+        "python": "3.12.7",
+        "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+        "machine": "x86_64",
+        "backend": "cpu",
+        "dtype": "float64",
+        "packages": {
+          "jax": "0.10.2",
+          "jaxlib": "0.10.2",
+          "numpy": "2.1.0",
+          "scipy": "1.14.1",
+          "ml_dtypes": "0.5.0",
+          "opt_einsum": "3.4.0"
+        }
+      },
+      "dependency_review": {
+        "path": [
+          "examples/comparisons/data/major_molecule_adoption.json",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "equilibrium_verification"
+        ],
+        "adoption": {
+          "recorded_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92",
+          "observed_sha256": "ea8ceb04848c921d1236a333b1e067fbc35103d12f664f5f786514e919df73cb"
+        },
+        "packaged_data": {
+          "recorded_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "observed_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38"
+        },
+        "source_alignment": "review_required",
+        "numerical_target": "unchanged",
+        "interpretation": "A changed adoption record requires source review. Numerical evidence still concerns the old packaged data; changed coefficients require separate numerical evidence. Hash agreement does not validate the adoption decision."
+      }
+    },
+    "packaged_data_changed": {
+      "assessment_id": "4ebb384b7ad8c10f1a073b6a62cd35c8e4d558e1169358f5d30d472238273170",
+      "claim_revision": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+      "status": "unknown",
+      "reasons": [
+        "current_inputs_changed_or_missing"
+      ],
+      "evidence_id": "execution:ced6ee67b67974107836149a202eadf48cc5b63389ae76e56c49a6629b1fd1bb",
+      "evidence_result": "passed",
+      "checks": {
+        "exogibbs": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "element_relative_residual": 2.8110001381448097e-06,
+            "charge_relative_residual": 6.28573919188349e-14,
+            "mass_action_max_abs_ln": 1.4210854715202004e-12
+          },
+          "failures": []
+        },
+        "fastchem": {
+          "complete": true,
+          "samples": 70,
+          "maxima": {
+            "max_abs_dex_all_species": 1.2208013672055854e-05,
+            "element_relative_residual": 5.5811487404526776e-11,
+            "charge_relative_residual": 2.7469467887748046e-11,
+            "mass_action_max_abs_ln": 5.735785180149833e-10
+          },
+          "failures": []
+        }
+      },
+      "environment": {
+        "python": "3.12.7",
+        "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+        "machine": "x86_64",
+        "backend": "cpu",
+        "dtype": "float64",
+        "packages": {
+          "jax": "0.10.2",
+          "jaxlib": "0.10.2",
+          "numpy": "2.1.0",
+          "scipy": "1.14.1",
+          "ml_dtypes": "0.5.0",
+          "opt_einsum": "3.4.0"
+        }
+      },
+      "dependency_review": {
+        "path": [
+          "examples/comparisons/data/major_molecule_adoption.json",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "equilibrium_verification"
+        ],
+        "adoption": {
+          "recorded_sha256": "2836795c24a7990d9e8b01b896102b405167119d2f72ff0e54dcc8b551abac92",
+          "observed_sha256": "ea8ceb04848c921d1236a333b1e067fbc35103d12f664f5f786514e919df73cb"
+        },
+        "packaged_data": {
+          "recorded_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "observed_sha256": "5189eb031580d20c39481ed4aed69e98ec7bd457fa959ed261307dacbfd3b40d"
+        },
+        "source_alignment": "review_required",
+        "numerical_target": "review_required",
+        "interpretation": "A changed adoption record requires source review. Numerical evidence still concerns the old packaged data; changed coefficients require separate numerical evidence. Hash agreement does not validate the adoption decision."
+      }
+    },
+    "interpretation": "Changes are confined to temporary copies; no altered model was executed or adopted. Old numerical outcomes remain passed. Source alignment and current numerical support are separate assessments."
+  },
+  "physical_validation": "unknown"
+}

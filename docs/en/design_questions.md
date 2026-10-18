@@ -125,7 +125,10 @@ A core migration will need fixtures demonstrating preservation of historical
 declarations, coexistence of assessments for different revisions, and continued
 v0.1 compatibility. Conflict resolution, quantitative confidence, uncertain
 inputs, joint regions and general unit algebra are deferred until concrete
-models require them. The current prototype covers only the H2 interval checks.
+models require them. The interval prototype covers only the H2 checks. The
+separate [lifecycle trial](assessment_lifecycle.md) now tests lossless declaration
+extraction on H2 and curated gas, an explicit curated Claim revision, and
+coexisting assessments for two freshly executed numerical environments.
 
 ## Open questions exposed by the examples
 

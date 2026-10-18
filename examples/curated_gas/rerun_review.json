@@ -1,0 +1,22 @@
+{
+  "format": "curated_rerun_review_v1",
+  "claim_revision_sha256": "ab036dba0907d106e7a44205880d6e2d72bfbe2f169e4c0622dfcc438ecd9e57",
+  "provider_revision": "dfb3a9e5ede8bad6e916506a51fa35afa392c764",
+  "reviewed_script_sha256": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+  "extra_input_sha256": {
+    "benchmarks/fastchem4/comparison.py": "063a0c67e5bbf6a31e4b191aba18469ff4774d444a21be62c96e4af7963b3371",
+    "benchmarks/fastchem4/fastchem_executable.py": "b4b1c8682a48c043c7ce7ba84c30dfc8c37d782096ec0e437da7602b8f670e99",
+    "src/exogibbs/data/FastChem4/element_abundances/asplund_2021.dat": "06d13aad90e576147bececd1210e27b4fd525ee17ddb1721a0ec9e8755d407ef",
+    "src/exogibbs/data/FastChem4/logK/logK.dat": "eda9b9d7e62ccf7398036ee84349bd0a721b779acdc9d191cbf9fe1dd01f619c"
+  },
+  "fastchem": {
+    "repository": "https://github.com/NewStrangeWorlds/FastChem",
+    "tag": "v4.0.3",
+    "revision": "ae67cbd559bc64a3233a1cee6030b8e6b50520de",
+    "tracked_source_clean": true,
+    "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "build_command": "g++ -std=c++17 -O3 -DNDEBUG -fopenmp model_src/model_main.cpp fastchem_src/*.cpp fastchem_src/elements/*.cpp fastchem_src/gas_phase/*.cpp fastchem_src/condensed_phase/*.cpp -o /tmp/mceg-fastchem-v403-bin",
+    "binary_sha256": "64cb8d525346cb3b68116d53de08f74855744db01b161b27fa753973f95680a2"
+  },
+  "rationale": "Review this unchanged provider checkout and rebuilt FastChem comparator for the enumerated numerical gates. New runs use the same packaged data and composition. Only JAX and jaxlib differ between the two captured environments. This is not a controlled one-variable comparison against the older provider archive, which also has a different Python version and binary hash."
+}

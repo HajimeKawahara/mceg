@@ -1,0 +1,56 @@
+{
+  "format": "curated_execution_v1",
+  "started_utc": "2026-10-18T12:58:36.714999+00:00",
+  "finished_utc": "2026-10-18T12:58:44.067272+00:00",
+  "command": [
+    "/tmp/mceg-jax-controlled/bin/python",
+    "/tmp/exogibbs-mceg-receipt-review/examples/comparisons/validate_curated_preset.py",
+    "--fastchem-executable",
+    "/tmp/mceg-fastchem-v403-bin",
+    "--output-dir",
+    "/tmp/mceg-curated-assessment/examples/curated_gas/runs/jax-0.10.2"
+  ],
+  "environment": {
+    "python": "3.12.7",
+    "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "backend": "cpu",
+    "dtype": "float64",
+    "packages": {
+      "jax": "0.10.2",
+      "jaxlib": "0.10.2",
+      "numpy": "2.1.0",
+      "scipy": "1.14.1",
+      "ml_dtypes": "0.5.0",
+      "opt_einsum": "3.4.0"
+    }
+  },
+  "environment_variables": {
+    "JAX_PLATFORMS": "cpu",
+    "JAX_ENABLE_X64": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "provider_revision": "dfb3a9e5ede8bad6e916506a51fa35afa392c764",
+  "selected_input_sha256": {
+    "benchmarks/fastchem4/comparison.py": "063a0c67e5bbf6a31e4b191aba18469ff4774d444a21be62c96e4af7963b3371",
+    "benchmarks/fastchem4/fastchem_executable.py": "b4b1c8682a48c043c7ce7ba84c30dfc8c37d782096ec0e437da7602b8f670e99",
+    "examples/comparisons/build_curated_preset.py": "830a9aa25f96aaced9cba859995375d4c7f6d2ef57b2e8bf1c60d17f58d8341a",
+    "examples/comparisons/data/curated_continuous_reference.json": "42e5e8da8eb60b74213f7a8a6ff4894d67b5216e513247eb03b9c796bbc4aa25",
+    "examples/comparisons/validate_curated_preset.py": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+    "src/exogibbs/data/FastChem4/element_abundances/asplund_2021.dat": "06d13aad90e576147bececd1210e27b4fd525ee17ddb1721a0ec9e8755d407ef",
+    "src/exogibbs/data/FastChem4/logK/logK.dat": "eda9b9d7e62ccf7398036ee84349bd0a721b779acdc9d191cbf9fe1dd01f619c",
+    "src/exogibbs/data/curated/gas_v1.json": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+    "src/exogibbs/equilibrium/gas/kernel/solver.py": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0",
+    "src/exogibbs/equilibrium/gas/solve.py": "609fec8eefaa9a9d92bea407617928d7e40b1851f1aeb1ae5a9176ad53610b95",
+    "src/exogibbs/equilibrium/gas/types.py": "ab11f07182ef7caa0e28251390fc6380a70996f00d5340b3f541fa082daf4543",
+    "src/exogibbs/presets/curated.py": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546"
+  },
+  "inputs_unchanged_during_execution": true,
+  "fastchem_binary_sha256": "64cb8d525346cb3b68116d53de08f74855744db01b161b27fa753973f95680a2",
+  "exit_code": 0,
+  "receipt_sha256": "aab44a54902d1941c2a1cf2700d9f5521638de7cde009c4d6fa866bea3c63e5c",
+  "log_sha256": "6f1e35689623bae0cd98f684e6526233db2642a8c174fd4fd4939c07f903c676",
+  "capture_sha256": "286ab52475f25e952deae6ece2e2908bc1b1ea851d32583c76c28d071585004c"
+}

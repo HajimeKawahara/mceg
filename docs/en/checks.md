@@ -11,12 +11,27 @@ mceg check -k curated
 mceg check -k curated --temperature 1750
 mceg check -k curated --jax 0.10.2
 mceg check -k curated -v
+mceg check -k curated --plain
 mceg check -k curated --json > /tmp/curated-check.json
 ```
 
 No Python snippet, JAX installation, or provider import is needed. These checks
 read contracts and saved evidence; they do not execute numerical tests or modify
 provider files. A `PASS` describes the named check's scope.
+
+## Terminal display
+
+By default, terminal output marks each result with green `✓ PASS`, red `✗ FAIL`,
+or yellow `? UNKNOWN`, highlights contract paths and totals, and wraps explanations
+to fit the terminal width. Status words remain visible alongside the markers.
+Terminals without Unicode support use `+` and `x` instead of the check and cross.
+
+`--plain` selects the original text layout with no colors or symbols, including
+the original check identifiers such as `source_audit`. Pipes and file redirection
+automatically use this plain layout. Set `NO_COLOR=1` to keep the terminal layout
+and markers without ANSI colors; `TERM=dumb` also disables colors. `--json`
+continues to emit only JSON, even on a terminal. `--plain` and `--json` are mutually
+exclusive.
 
 ## Discovery and selection
 
@@ -57,16 +72,17 @@ checks apply only to ExoGibbs's provider-owned
 `mceg/contracts/curated_gas.yaml` and its pinned review. Other models report
 `UNKNOWN` for evidence reuse; they have no automatic reuse rule yet.
 
-For the reviewed curated snapshot and default context, the result is:
+For the reviewed curated snapshot and default context, the terminal result
+(with explanations omitted here) is:
 
 ```text
-PASS    structure
-UNKNOWN source_audit
-PASS    selected_files
-PASS    temperature_range
-PASS    sample_coverage
-PASS    evidence_reuse
-UNKNOWN physical_validation
+✓ PASS    Structure
+? UNKNOWN Source audit
+✓ PASS    Selected files
+✓ PASS    Temperature range
+✓ PASS    Sample coverage
+✓ PASS    Evidence reuse
+? UNKNOWN Physical validation
 
 5 passed, 0 failed, 2 unknown
 ```

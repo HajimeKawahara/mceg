@@ -7,6 +7,10 @@
   The command checks recorded structure and source traces for all contracts and
   reuses the reviewed curated-gas evaluator for file integrity, requested context,
   temperature bounds, and archived sample coverage. It runs no numerical solver.
+- Use colored status markers, readable labels, highlighted totals, and wrapped
+  explanations on terminals. Add `--plain` for the original text layout, select
+  it automatically for pipes/redirection, and honor `NO_COLOR` and `TERM=dumb`.
+  ASCII-only output streams use `+`/`x` markers. JSON reports remain undecorated.
 - Package the shared curated evaluator, review pins, and archived default context
   so the command works from provider checkouts and wheel installations. Replay
   the saved assessment to record the extracted evaluator's hash; historical
@@ -18,6 +22,9 @@ discovered all six ExoGibbs contracts and reproduced the default, unsampled,
 out-of-range, and different-JAX outcomes. An isolated copy of the real curated
 archive detected a changed implementation while retaining its historical pass.
 No numerical solver was executed for these CLI checks.
+Terminal display checks confirmed color and monochrome modes, narrow-width
+wrapping, and ASCII marker fallback. Plain/redirected text and JSON were compared
+byte-for-byte with the preceding output formats; all 194 tests still pass.
 
 Earlier example trials:
 

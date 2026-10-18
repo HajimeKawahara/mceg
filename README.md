@@ -55,10 +55,14 @@ mceg check
 mceg check -k curated
 mceg check -k curated --temperature 1750
 mceg check -k curated -v
+mceg check -k curated --plain
 ```
 
 This discovers contracts and lists `PASS`, `FAIL`, and `UNKNOWN` checks with a
-summary. Curated gas also checks selected file hashes, temperature bounds,
+summary. Terminal output uses green `✓`, red `✗`, and yellow `?` markers, readable
+labels, and wrapped explanations. Use `--plain` for the original text format;
+pipes and redirected output select it automatically. `NO_COLOR=1` disables color.
+Curated gas also checks selected file hashes, temperature bounds,
 archived sample coverage, and reuse of one reviewed numerical declaration.
 Its default context is the bundled **archived example**, not the installed
 Python/JAX environment. The displayed context can be overridden with flags or

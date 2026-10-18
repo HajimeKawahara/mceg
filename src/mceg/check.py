@@ -4,7 +4,11 @@ import argparse
 from collections import Counter
 import json
 import math
+import os
 from pathlib import Path
+import shutil
+import sys
+import textwrap
 
 import yaml
 
@@ -106,38 +110,76 @@ def check_contract(path, context):
     return entry
 
 
-def display(report, verbose):
-    print("MCEG checks: recorded structure, source audits and scoped evidence reuse")
-    print(f"Collected {report['collected']} contracts; selected {len(report['contracts'])}")
+def display(report, verbose, plain=False):
+    terminal = not plain and sys.stdout.isatty()
+    color = terminal and not os.environ.get("NO_COLOR") and os.environ.get("TERM") != "dumb"
+    width = max(40, shutil.get_terminal_size().columns)
+    symbols = {"PASS": "✓", "FAIL": "✗", "UNKNOWN": "?"}
+    try:
+        "✓✗".encode(sys.stdout.encoding or "ascii")
+    except UnicodeEncodeError:
+        symbols.update(PASS="+", FAIL="x")
+    colors = {"PASS": "32", "FAIL": "31", "UNKNOWN": "33"}
+
+    def paint(text, code):
+        return f"\033[{code}m{text}\033[0m" if color else text
+
+    def write(text, code=None, indent="  "):
+        if terminal:
+            text = textwrap.fill(text, width=width, subsequent_indent=indent)
+        print(paint(text, code) if code else text)
+
+    write("MCEG checks: recorded structure, source audits and scoped evidence reuse", "1")
+    write(f"Collected {report['collected']} contracts; selected {len(report['contracts'])}")
     if any(c["model"] == "exogibbs.curated_gas.v1" for c in report["contracts"]):
         context = report["context"]
-        print(f"Curated context ({report['context_source']}): "
+        write(f"Curated context ({report['context_source']}): "
               f"T={context.get('temperature_K', '?')} K, P={context.get('pressure_bar', '?')} bar, "
               f"network={context.get('network', '?')}")
-        print(f"  composition={context.get('composition', '?')}; "
+        write(f"  composition={context.get('composition', '?')}; "
               f"Python={context.get('python', '?')}, JAX={context.get('jax', '?')}, "
               f"{context.get('backend', '?')}/{context.get('dtype', '?')}, "
               f"epsilon={context.get('epsilon_crit', '?')}")
-        print("  Context describes the requested target; the installed numerical environment is not inspected.")
+        write("  Context describes the requested target; the installed numerical environment is not inspected.")
     for contract in report["contracts"]:
         path = Path(contract["path"])
         try:
             label = str(path.relative_to(Path.cwd()))
         except ValueError:
             label = str(path)
-        print(f"\n{label}")
+        print()
+        write(label, "1;36")
         for check in contract["checks"]:
-            print(f"  {check['status']:<7} {check['name']:<22} {check['message']}")
+            if terminal:
+                status = check["status"]
+                badge = f"{symbols[status]} {status:<7}"
+                name = check["name"].replace("_", " ").capitalize()
+                prefix = f"  {badge} {name:<22} "
+                if width < 80:
+                    print(f"  {paint(badge, '1;' + colors[status])} {name}")
+                    write("      " + check["message"], indent="      ")
+                else:
+                    line = textwrap.fill(prefix + check["message"], width=width,
+                                         subsequent_indent=" " * len(prefix))
+                    print(line.replace(badge, paint(badge, '1;' + colors[status]), 1))
+            else:
+                print(f"  {check['status']:<7} {check['name']:<22} {check['message']}")
             if verbose or check["status"] == "FAIL":
                 for detail in check["details"]:
-                    print(f"          {detail}")
+                    write(f"          {detail}", indent="          ")
         if verbose and contract["declarations"]:
-            print("  Recorded v0.1 declarations (not reassessed by structure/source checks):")
+            write("  Recorded v0.1 declarations (not reassessed by structure/source checks):")
             for claim in contract["declarations"]:
-                print(f"    {claim['id']}: {claim['status']} [{claim['kind']}]")
+                write(f"    {claim['id']}: {claim['status']} [{claim['kind']}]")
     counts = report["summary"]
-    print(f"\n{counts['PASS']} passed, {counts['FAIL']} failed, {counts['UNKNOWN']} unknown")
-    print("UNKNOWN identifies missing support or review gaps. These checks do not run numerical solvers.")
+    print()
+    if terminal:
+        write("-" * min(width, 72), "2")
+        print(", ".join(paint(f"{counts[status]} {label}", "1;" + colors[status] if counts[status] else "2")
+                        for status, label in (("PASS", "passed"), ("FAIL", "failed"), ("UNKNOWN", "unknown"))))
+    else:
+        print(f"{counts['PASS']} passed, {counts['FAIL']} failed, {counts['UNKNOWN']} unknown")
+    write("UNKNOWN identifies missing support or review gaps. These checks do not run numerical solvers.")
 
 
 def positive(value):
@@ -152,7 +194,9 @@ def main(argv=None):
     parser.add_argument("paths", nargs="*", type=Path, help="Files or directories; default: current directory")
     parser.add_argument("-k", default="", metavar="NAME", help="Case-insensitive substring of contract paths")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show audit gaps and recorded Claim declarations")
-    parser.add_argument("--json", action="store_true", help="Write the full check report as JSON to stdout")
+    output = parser.add_mutually_exclusive_group()
+    output.add_argument("--plain", action="store_true", help="Use the original text format without color or symbols")
+    output.add_argument("--json", action="store_true", help="Write the full check report as JSON to stdout")
     parser.add_argument("--context", type=Path, help="Curated context JSON; otherwise use the bundled archived example")
     parser.add_argument("--temperature", type=positive, metavar="K", help="Override curated temperature in kelvin")
     parser.add_argument("--pressure", type=positive, metavar="BAR", help="Override curated pressure in bar")
@@ -180,7 +224,7 @@ def main(argv=None):
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:
-        display(report, args.verbose)
+        display(report, args.verbose, args.plain)
         if not selected:
             print("No contracts selected. Use a contract file or a directory containing YAML contracts.")
     return 5 if not selected else 1 if counts["FAIL"] else 0

@@ -163,6 +163,19 @@ by checking selected source hashes against both the receipt and Git objects.
 
 ## Schema and open questions
 
+The [curated-gas assessment experiment](docs/en/curated_assessment.md) reads
+ExoGibbs's provider-owned contract and 70-case numerical receipt without
+importing the provider. It separates continuous temperature bounds, discrete
+test coverage and reuse of one reviewed Claim declaration. Changed selected
+files or a different context leave support unknown while preserving historical
+outcomes. Its [saved assessment](examples/curated_gas/assessment.json) and
+synthetic regression fixtures inform v0.2; the core remains frozen at v0.1.
+
+The [assessment lifecycle trial](docs/en/assessment_lifecycle.md) adds actual
+70-case reruns under two JAX versions, lossless declaration-migration checks for
+H2 and curated gas, and a scoped source-adoption dependency probe. It preserves
+old results while adding assessments for the newly executed environments.
+
 The [schema guide](docs/en/schema.md) describes the small YAML format.
 [Pydantic models](src/mceg/schema.py) are its executable definition. Claims link
 to evidence by local IDs; optional provenance links connect scoped evidence

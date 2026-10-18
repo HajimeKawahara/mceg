@@ -1,0 +1,215 @@
+{
+  "format": "curated_receipt_assessment_v1",
+  "review": {
+    "format": "curated_receipt_review_v1",
+    "repository": "https://github.com/HajimeKawahara/exogibbs",
+    "audited_revision": "e21a5d0eafd19db350c84b9a75cdd29517e367e9",
+    "contract": {
+      "path": "mceg/contracts/curated_gas.yaml",
+      "sha256": "f2a6ee98208e2bfc86e8a2f4cbbb374884412c07928d0d4a76ed370ed33e6be0"
+    },
+    "receipt": {
+      "path": "results/curated_gas_validation/receipt.json",
+      "sha256": "99eee0918f551106ef80f84a1ca0b010d9c18e70f1bba712b73529ced7d69b89"
+    },
+    "composition": "asplund_2021_normalized_nuclear",
+    "numerical_temperature_K": [
+      1500.0,
+      4000.0
+    ],
+    "rationale": "Reuse the v0.1 equilibrium_verification declaration only for the two fixed networks at the 70 archived temperature-pressure samples, the normalized Asplund 2021 nuclear budget, recorded Python/JAX/backend/dtype/tolerance, and matching selected inputs and outputs. The independent solver uses the same constants. This review does not establish physical accuracy, validate all dependencies, or make source-adoption decisions."
+  },
+  "review_sha256": "3b27129fd528274b2e30ba3f1e76c00e02f7318590d312e45e57d5faed39f451",
+  "evaluator_sha256": "6ab3d170f933a57a2a0f53d9654d6bc5ec92e71382867c7e31be7929cf97fa79",
+  "context": {
+    "temperature_K": 1735.0,
+    "pressure_bar": 0.01,
+    "network": "ions",
+    "composition": "asplund_2021_normalized_nuclear",
+    "python": "3.12.3",
+    "jax": "0.11.2",
+    "backend": "cpu",
+    "dtype": "float64",
+    "epsilon_crit": 1e-13
+  },
+  "context_sha256": "49d4856fdb3d219f7db69c9f68275804b393e522482fd3ffd2cfd2d5b74c2b87",
+  "imported_declaration": {
+    "origin": "imported_v0.1_declaration",
+    "claim": {
+      "id": "equilibrium_verification",
+      "statement": "Both fixed networks pass numerical closure and independent FastChem comparisons at all 70 sampled conditions, including new temperatures.",
+      "kind": "numerical_verification",
+      "status": "supported",
+      "scope": "All-species abundance differences are below 1e-3 dex; explicit element, charge and mass-action gates apply. The independent solver receives the same constants and composition but never supplies initialization to ExoGibbs.",
+      "evidence": [
+        "verification",
+        "fastchem_build",
+        "tests"
+      ]
+    }
+  },
+  "evidence": {
+    "id": "verification",
+    "result": "passed",
+    "fastchem": "passed",
+    "fastchem_cases_passed": 70,
+    "scope": "CPU float64, identical numerical inputs and independent initialization. Artifact, implementation and input hashes are recorded."
+  },
+  "integrity": {
+    "selected_files_match": true,
+    "files": [
+      {
+        "kind": "input",
+        "path": "examples/comparisons/validate_curated_preset.py",
+        "expected_sha256": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+        "actual_sha256": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "examples/comparisons/build_curated_preset.py",
+        "expected_sha256": "830a9aa25f96aaced9cba859995375d4c7f6d2ef57b2e8bf1c60d17f58d8341a",
+        "actual_sha256": "830a9aa25f96aaced9cba859995375d4c7f6d2ef57b2e8bf1c60d17f58d8341a",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "src/exogibbs/data/curated/gas_v1.json",
+        "expected_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+        "actual_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "examples/comparisons/data/curated_continuous_reference.json",
+        "expected_sha256": "42e5e8da8eb60b74213f7a8a6ff4894d67b5216e513247eb03b9c796bbc4aa25",
+        "actual_sha256": "42e5e8da8eb60b74213f7a8a6ff4894d67b5216e513247eb03b9c796bbc4aa25",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "src/exogibbs/presets/curated.py",
+        "expected_sha256": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+        "actual_sha256": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "src/exogibbs/equilibrium/gas/kernel/solver.py",
+        "expected_sha256": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0",
+        "actual_sha256": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "src/exogibbs/equilibrium/gas/solve.py",
+        "expected_sha256": "609fec8eefaa9a9d92bea407617928d7e40b1851f1aeb1ae5a9176ad53610b95",
+        "actual_sha256": "609fec8eefaa9a9d92bea407617928d7e40b1851f1aeb1ae5a9176ad53610b95",
+        "matches": true
+      },
+      {
+        "kind": "input",
+        "path": "src/exogibbs/equilibrium/gas/types.py",
+        "expected_sha256": "ab11f07182ef7caa0e28251390fc6380a70996f00d5340b3f541fa082daf4543",
+        "actual_sha256": "ab11f07182ef7caa0e28251390fc6380a70996f00d5340b3f541fa082daf4543",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/thermal_checks.json",
+        "expected_sha256": "5167ceda7459cb0afb0e2ca2108939ac2d7b66bddd9ab7aedac9da7d1077fbad",
+        "actual_sha256": "5167ceda7459cb0afb0e2ca2108939ac2d7b66bddd9ab7aedac9da7d1077fbad",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/diagnostics.csv",
+        "expected_sha256": "9d862a5743a4fe7381ef27b7f8363d53e120ab0b9fb798ad74cc24a89751010c",
+        "actual_sha256": "9d862a5743a4fe7381ef27b7f8363d53e120ab0b9fb798ad74cc24a89751010c",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/default_charge.csv",
+        "expected_sha256": "ecf886cd6bdb25afdff209a38b87c42b1c3cdc93dd0ba2c9daaa3f1545e4c456",
+        "actual_sha256": "ecf886cd6bdb25afdff209a38b87c42b1c3cdc93dd0ba2c9daaa3f1545e4c456",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/ions.npz",
+        "expected_sha256": "fa0c1604db6e73d82768249cf18a96ffa2bca7d0f45792a3eea609c77d0c561d",
+        "actual_sha256": "fa0c1604db6e73d82768249cf18a96ffa2bca7d0f45792a3eea609c77d0c561d",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/neutral.npz",
+        "expected_sha256": "82c880a62afb0aaa9bc1860001ddd058f4c4df1b7eacdd54a607cd9b2b60d477",
+        "actual_sha256": "82c880a62afb0aaa9bc1860001ddd058f4c4df1b7eacdd54a607cd9b2b60d477",
+        "matches": true
+      },
+      {
+        "kind": "output",
+        "path": "results/curated_gas_validation/fastchem_parity.csv",
+        "expected_sha256": "a3f2bebca1686dc9479775163583ca490ebc73510d5c81407177dd6104896b55",
+        "actual_sha256": "a3f2bebca1686dc9479775163583ca490ebc73510d5c81407177dd6104896b55",
+        "matches": true
+      }
+    ]
+  },
+  "assessments": [
+    {
+      "kind": "range_membership",
+      "condition": "reviewed_numerical_temperature",
+      "interval": {
+        "lower": 1500.0,
+        "upper": 4000.0,
+        "unit": "K",
+        "closure": "closed"
+      },
+      "classification": "within_reported_range"
+    },
+    {
+      "kind": "sample_membership",
+      "evidence": "verification",
+      "classification": "at_recorded_sample",
+      "interpolation": "not_assessed"
+    },
+    {
+      "kind": "evidence_support",
+      "method": "reviewed_curated_receipt_reuse_v1",
+      "target": {
+        "claim": "equilibrium_verification",
+        "contract_sha256": "f2a6ee98208e2bfc86e8a2f4cbbb374884412c07928d0d4a76ed370ed33e6be0",
+        "implementation_sha256": {
+          "examples/comparisons/validate_curated_preset.py": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+          "examples/comparisons/build_curated_preset.py": "830a9aa25f96aaced9cba859995375d4c7f6d2ef57b2e8bf1c60d17f58d8341a",
+          "src/exogibbs/data/curated/gas_v1.json": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "examples/comparisons/data/curated_continuous_reference.json": "42e5e8da8eb60b74213f7a8a6ff4894d67b5216e513247eb03b9c796bbc4aa25",
+          "src/exogibbs/presets/curated.py": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+          "src/exogibbs/equilibrium/gas/kernel/solver.py": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0",
+          "src/exogibbs/equilibrium/gas/solve.py": "609fec8eefaa9a9d92bea407617928d7e40b1851f1aeb1ae5a9176ad53610b95",
+          "src/exogibbs/equilibrium/gas/types.py": "ab11f07182ef7caa0e28251390fc6380a70996f00d5340b3f541fa082daf4543"
+        }
+      },
+      "evidence": [
+        "verification"
+      ],
+      "status": "supported",
+      "reasons": [
+        "reviewed_declaration_reused"
+      ],
+      "missing_context": [],
+      "different_context": []
+    }
+  ],
+  "physical_validation": "unknown",
+  "not_evaluated": [
+    "new_numerical_execution",
+    "complete_transitive_dependencies",
+    "other_claims",
+    "source_adoption_choices",
+    "physical_accuracy"
+  ]
+}

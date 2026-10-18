@@ -1,0 +1,11 @@
+{
+  "temperature_K": 1735,
+  "pressure_bar": 0.01,
+  "network": "ions",
+  "composition": "asplund_2021_normalized_nuclear",
+  "python": "3.12.3",
+  "jax": "0.11.2",
+  "backend": "cpu",
+  "dtype": "float64",
+  "epsilon_crit": 1e-13
+}

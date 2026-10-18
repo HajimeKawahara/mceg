@@ -1,0 +1,68 @@
+{
+  "dataset": "curated-gas-v1",
+  "python": "3.12.7",
+  "jax": "0.6.2",
+  "dtype": "float64",
+  "backend": "cpu",
+  "epsilon_crit": 1e-13,
+  "temperature_K": [
+    1500.0,
+    1735.0,
+    2000.0,
+    2517.0,
+    3000.0,
+    3973.0,
+    4000.0
+  ],
+  "pressure_bar": [
+    1e-06,
+    0.0001,
+    0.01,
+    1.0,
+    100.0
+  ],
+  "cases_passed": 70,
+  "fastchem": "passed",
+  "default_charge_cases_passed": 20,
+  "fastchem_cases_passed": 70,
+  "fastchem_input_sha256": {
+    "ions": {
+      "1500K": "7681142d7866db6c55fcce9c2a3899df6335b82509e00deeb3e4afab97cff212",
+      "1735K": "1a80b5c7bef5abea42202b17f2f64d62b3040dd83ad8fa95337e31c39a492b65",
+      "2000K": "0f69576c7dc7869a31acd4f0b0af4639b8a31c1d841a56711975366109c8e9c7",
+      "2517K": "d296d94f7e5e08aeab2d358d87730b13780350bf96e23f9233f47b522241d3f8",
+      "3000K": "bb6a5050bbf9bd499b2f1bb2356ff837a6315c46eb21ba4ce48a39db8e932457",
+      "3973K": "1c2d8627de2a0ceb7ad474d658edfec4720363e657f5caefb614dbda5cca7d49",
+      "4000K": "9d61a105ad5cd8284fe02f5a4d198190c49c792ee3a6fbcd98c94af5112b665e"
+    },
+    "neutral": {
+      "1500K": "816acf160e9a4660fb972238f3a1b0d8ee0822dcccd4e6be72ea87f96280ec94",
+      "1735K": "18aa0989492cfff4738feabc8aa016eb5330c2f30ef84f4fcc806390c8a36efb",
+      "2000K": "754cda2e1254c2d6ee4866bd9848537d4d65b583ceabf724fe20bc0f024c9099",
+      "2517K": "0d8a35ea7f9ee297de5598d1193e16ba74cc116584088b069d54b49cb090d55f",
+      "3000K": "df5eaff5861674ca24262f4cf85301406b3f332114e0cb93a7d1e26d71662d61",
+      "3973K": "f8cf3dd669e15487b8872870e534d36457e75bcedf518a4b6ab48cf70b4a407f",
+      "4000K": "c02bb6afa23d2479189924d605be44d9ba2d9b8dd5b991771e17a33881dd4805"
+    }
+  },
+  "fastchem_binary_sha256": "64cb8d525346cb3b68116d53de08f74855744db01b161b27fa753973f95680a2",
+  "selected_file_sha256": {
+    "examples/comparisons/validate_curated_preset.py": "b5323dc6fd006046b7ab8c657aed9c94975d81e89807a3c5f8b5a52c064577b8",
+    "examples/comparisons/build_curated_preset.py": "830a9aa25f96aaced9cba859995375d4c7f6d2ef57b2e8bf1c60d17f58d8341a",
+    "src/exogibbs/data/curated/gas_v1.json": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+    "examples/comparisons/data/curated_continuous_reference.json": "42e5e8da8eb60b74213f7a8a6ff4894d67b5216e513247eb03b9c796bbc4aa25",
+    "src/exogibbs/presets/curated.py": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+    "src/exogibbs/equilibrium/gas/kernel/solver.py": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0",
+    "src/exogibbs/equilibrium/gas/solve.py": "609fec8eefaa9a9d92bea407617928d7e40b1851f1aeb1ae5a9176ad53610b95",
+    "src/exogibbs/equilibrium/gas/types.py": "ab11f07182ef7caa0e28251390fc6380a70996f00d5340b3f541fa082daf4543"
+  },
+  "output_sha256": {
+    "thermal_checks.json": "ce4545860a3f0a63e2c84f746abe8b67919ec42ab9af5d092c00c9ab295586f4",
+    "diagnostics.csv": "31c7ab3c4474ae26298dee5a6321831cd5b33571f10dbfaae2673699c777aa94",
+    "default_charge.csv": "82e63df2674962bc80dfeffe798d6e139f3b2285cf02a142851ac752560a4854",
+    "ions.npz": "ed5e4f62954d51a5b9b1cdde55f3ea7911315b30ae67ccdba33f37e5b8b387ff",
+    "neutral.npz": "33aed2b0558453022a92dda1be32cb4482c34cb506c389cc5d6a923c22348a2e",
+    "fastchem_parity.csv": "7a07be76fb69f4a1b10d19bafbbcf5a411e87ceaed42f64cb2e89a7a13755ee0"
+  },
+  "interpretation": "Continuous implementation and representation checks, not independent physical accuracy of the entire mixture."
+}

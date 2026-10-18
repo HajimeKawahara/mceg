@@ -125,9 +125,27 @@ A core migration will need fixtures demonstrating preservation of historical
 declarations, coexistence of assessments for different revisions, and continued
 v0.1 compatibility. Conflict resolution, quantitative confidence, uncertain
 inputs, joint regions and general unit algebra are deferred until concrete
-models require them. The current prototype covers only the H2 interval checks.
+models require them. The interval prototype covers only the H2 checks. The
+separate [lifecycle trial](assessment_lifecycle.md) now tests lossless declaration
+extraction on H2 and curated gas, an explicit curated Claim revision, and
+coexisting assessments for two freshly executed numerical environments.
 
 ## Open questions exposed by the examples
+
+The [curated-gas assessment experiment](curated_assessment.md) exercises these
+requirements on ExoGibbs's merged source-adoption and numerical-verification
+workflow. It preserves an imported v0.1 declaration and historical execution
+outcome while assessing reuse against observed input/output hashes and a supplied
+context. A changed implementation, untested grid point, different composition,
+or different numerical environment leaves current-context support unknown.
+Continuous evaluation bounds and discrete sampled coverage have separate
+assessments. Source-adoption preferences remain separate decisions. This is an
+example-specific reviewed policy, not a v0.2 reader or generic support inference.
+
+The two experiments now supply concrete migration requirements: preserve
+historical outcomes, identify the target implementation and context, keep
+range/sample membership separate from support, and require explicit review when
+the contract or recorded run changes. The core still accepts only v0.1.
 
 1. **What identifies a model?** A class, coefficient set, component ordering,
    mixing rule, root selector, and software revision can each change its

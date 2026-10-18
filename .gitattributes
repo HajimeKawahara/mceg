@@ -1,0 +1,3 @@
+# Preserve the provider's archived bytes, including CSV CRLF line endings.
+examples/curated_gas/runs/** -text
+examples/curated_gas/runs/*/*.csv whitespace=cr-at-eol

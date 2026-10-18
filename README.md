@@ -32,7 +32,7 @@ compute applicability, detect extrapolation, or certify package compatibility.
   Automatic evidence reuse is limited to explicitly reviewed cases. Upstream
   execution is confined to optional examples.
 
-## Install and use
+## Install
 
 Python 3.10+ is required. Runtime dependencies are Pydantic 2 and PyYAML 6.
 
@@ -45,29 +45,37 @@ python -m venv .venv
 
 The installed `mceg` command is equivalent to `python -m mceg`.
 
-For a pytest-style overview, activate the environment where MCEG is installed
-and run `mceg check` from a provider checkout or its `mceg/contracts` directory:
+## Quick usage
+
+Activate the MCEG environment and run `mceg check` from a provider checkout or
+its `mceg/contracts` directory. Contracts and available checks are discovered
+automatically, like a test runner:
 
 ```bash
 source /path/to/mceg/.venv/bin/activate
 cd /path/to/exogibbs
-mceg check
-mceg check -k curated
-mceg check -k curated --temperature 1750
-mceg check -k curated -v
-mceg check -k curated --plain
+
+mceg check                               # Check all discovered contracts
+mceg check -k curated                    # Select curated gas
+mceg check -k curated --temperature 1750  # Change the requested temperature (K)
+mceg check -k curated --plain             # Use the original text layout
+mceg check -k curated -v                  # Show audit gaps and recorded claims
+mceg check -k curated --json              # Emit the full JSON report
 ```
 
-This discovers contracts and lists `PASS`, `FAIL`, and `UNKNOWN` checks with a
-summary. Terminal output uses green `✓`, red `✗`, and yellow `?` markers, readable
-labels, and wrapped explanations. Use `--plain` for the original text format;
-pipes and redirected output select it automatically. `NO_COLOR=1` disables color.
-Curated gas also checks selected file hashes, temperature bounds,
-archived sample coverage, and reuse of one reviewed numerical declaration.
-Its default context is the bundled **archived example**, not the installed
-Python/JAX environment. The displayed context can be overridden with flags or
-`--context context.json`. No solver runs. Use `--json` for the full report.
-See the [check command guide](docs/en/checks.md) for scope and exit codes.
+Terminal output shows green `✓ PASS`, red `✗ FAIL`, yellow `? UNKNOWN`, and a
+summary. `UNKNOWN` marks missing support or review gaps, not a failed claim.
+Pipes and redirected output automatically use the plain layout; `NO_COLOR=1`
+disables color while keeping the terminal layout.
+
+Curated gas uses the bundled **archived example context** by default. At 1750 K,
+the temperature is in range but is not an archived sample, so evidence reuse is
+`UNKNOWN`. Use `--context context.json` to supply your own context. These checks
+inspect saved evidence without running a solver or detecting installed Python/JAX
+versions. See `mceg check --help` and the [check command guide](docs/en/checks.md)
+for all options, scope, and exit codes.
+
+## Validation and source tracing
 
 For the original structural validator, pass one or more YAML paths.
 Each file receives a `VALID ... (structure only)` or `INVALID`

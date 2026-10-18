@@ -33,6 +33,12 @@ validation outcome in the changelog, including a fix for previously incorrect
 acceptance or rejection. No new fields, enum values, or altered status meanings
 will be introduced under `schema_version: "0.1"`.
 
+The experimental [`mceg check`](checks.md) convenience command is additive. It
+retains the original validation and trace commands, exit codes, and report fields.
+Its check report is separate from those frozen interfaces and from the contract
+schema. Its scoped curated evaluator reuses the reviewed example policy; it does
+not change v0.1 Claim statuses or define a general scientific inference rule.
+
 Schema extensions go into `"0.2"` or a later version with an explicit migration
 description. The v0.1 validator rejects unknown fields, so even a new optional
 field would be rejected by an old reader when present. Compatibility must not

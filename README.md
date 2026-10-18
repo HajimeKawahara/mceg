@@ -29,9 +29,10 @@ compute applicability, detect extrapolation, or certify package compatibility.
   physically invalid, or universally applicable.
 - Keep model definitions, test conditions, and physical calibration distinct.
 - Start small: no graph database, reasoning engine, or automatic code inspection.
-  Range comparison and upstream execution are confined to optional examples.
+  Automatic evidence reuse is limited to explicitly reviewed cases. Upstream
+  execution is confined to optional examples.
 
-## Install and use
+## Install
 
 Python 3.10+ is required. Runtime dependencies are Pydantic 2 and PyYAML 6.
 
@@ -42,8 +43,42 @@ python -m venv .venv
 .venv/bin/python -m pytest
 ```
 
-The installed `mceg` command is equivalent to `python -m mceg`. Pass one or more
-YAML paths. Each file receives a `VALID ... (structure only)` or `INVALID`
+The installed `mceg` command is equivalent to `python -m mceg`.
+
+## Quick usage
+
+Activate the MCEG environment and run `mceg check` from a provider checkout or
+its `mceg/contracts` directory. Contracts and available checks are discovered
+automatically, like a test runner:
+
+```bash
+source /path/to/mceg/.venv/bin/activate
+cd /path/to/exogibbs
+
+mceg check                               # Check all discovered contracts
+mceg check -k curated                    # Select curated gas
+mceg check -k curated --temperature 1750  # Change the requested temperature (K)
+mceg check -k curated --plain             # Use the original text layout
+mceg check -k curated -v                  # Show audit gaps and recorded claims
+mceg check -k curated --json              # Emit the full JSON report
+```
+
+Terminal output shows green `✓ PASS`, red `✗ FAIL`, yellow `? UNKNOWN`, and a
+summary. `UNKNOWN` marks missing support or review gaps, not a failed claim.
+Pipes and redirected output automatically use the plain layout; `NO_COLOR=1`
+disables color while keeping the terminal layout.
+
+Curated gas uses the bundled **archived example context** by default. At 1750 K,
+the temperature is in range but is not an archived sample, so evidence reuse is
+`UNKNOWN`. Use `--context context.json` to supply your own context. These checks
+inspect saved evidence without running a solver or detecting installed Python/JAX
+versions. See `mceg check --help` and the [check command guide](docs/en/checks.md)
+for all options, scope, and exit codes.
+
+## Validation and source tracing
+
+For the original structural validator, pass one or more YAML paths.
+Each file receives a `VALID ... (structure only)` or `INVALID`
 message; the exit code is 0 if all pass, 1 if any fail, and 2 for CLI usage errors.
 Validation is offline and never imports or executes referenced implementations.
 
@@ -169,7 +204,8 @@ importing the provider. It separates continuous temperature bounds, discrete
 test coverage and reuse of one reviewed Claim declaration. Changed selected
 files or a different context leave support unknown while preserving historical
 outcomes. Its [saved assessment](examples/curated_gas/assessment.json) and
-synthetic regression fixtures inform v0.2; the core remains frozen at v0.1.
+synthetic regression fixtures inform v0.2. The `mceg check` command shares its
+evaluator; the contract schema remains frozen at v0.1.
 
 The [assessment lifecycle trial](docs/en/assessment_lifecycle.md) adds actual
 70-case reruns under two JAX versions, lossless declaration-migration checks for

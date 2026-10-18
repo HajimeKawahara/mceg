@@ -11,7 +11,14 @@ from .provenance import trace_provenance
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Validate MCEG v0.1 contract structure.")
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "check" and not Path("check").is_file():
+        from .check import main as check_main
+        return check_main(argv[1:])
+    parser = argparse.ArgumentParser(
+        description="Validate MCEG v0.1 contract structure.",
+        epilog="Discover checks in a checkout: mceg check [PATH] [-k NAME] [-v]",
+    )
     parser.add_argument("paths", nargs="+", type=Path, help="YAML contract files")
     parser.add_argument("--trace", metavar="EVIDENCE_ID", help="Report recorded source ancestry as JSON")
     args = parser.parse_args(argv)

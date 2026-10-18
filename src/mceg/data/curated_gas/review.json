@@ -1,0 +1,16 @@
+{
+  "format": "curated_receipt_review_v1",
+  "repository": "https://github.com/HajimeKawahara/exogibbs",
+  "audited_revision": "e21a5d0eafd19db350c84b9a75cdd29517e367e9",
+  "contract": {
+    "path": "mceg/contracts/curated_gas.yaml",
+    "sha256": "f2a6ee98208e2bfc86e8a2f4cbbb374884412c07928d0d4a76ed370ed33e6be0"
+  },
+  "receipt": {
+    "path": "results/curated_gas_validation/receipt.json",
+    "sha256": "99eee0918f551106ef80f84a1ca0b010d9c18e70f1bba712b73529ced7d69b89"
+  },
+  "composition": "asplund_2021_normalized_nuclear",
+  "numerical_temperature_K": [1500, 4000],
+  "rationale": "Reuse the v0.1 equilibrium_verification declaration only for the two fixed networks at the 70 archived temperature-pressure samples, the normalized Asplund 2021 nuclear budget, recorded Python/JAX/backend/dtype/tolerance, and matching selected inputs and outputs. The independent solver uses the same constants. This review does not establish physical accuracy, validate all dependencies, or make source-adoption decisions."
+}

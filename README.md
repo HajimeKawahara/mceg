@@ -5,13 +5,13 @@ evidence, and limitations in machine-readable YAML. The long-term aim is to
 identify incompatible model combinations, unsupported applications, and missing
 evidence across scientific packages.
 
-This repository is an **experimental v0.1 proof of concept**, frozen as the
-`v0.1.0` baseline. It is not a final standard. The [version policy](docs/en/versioning.md)
-([Japanese](docs/ja/versioning.md)) defines the freeze boundary and future changes.
-It contains five contracts, one worked connection example, and a small Pydantic
-validator. Validation checks
-structure and local evidence links. It does not decide scientific validity,
-compute applicability, detect extrapolation, or certify package compatibility.
+This repository contains the **experimental v0.2 release candidate** (`0.2.0rc1`).
+It reads both the frozen v0.1 contracts and the new v0.2 records, which separate
+scientific Claims from context-specific Assessments. It checks structure and
+source records, compares explicitly supplied conditions, and explains remaining
+work. These checks do not establish scientific validity or package compatibility.
+See the [version policy](docs/en/versioning.md) and [v0.2 guide](docs/en/v02.md).
+The `v0.1.0` baseline and its schema meanings remain unchanged.
 
 ## Design principles
 
@@ -74,6 +74,54 @@ the temperature is in range but is not an archived sample, so evidence reuse is
 inspect saved evidence without running a solver or detecting installed Python/JAX
 versions. See `mceg check --help` and the [check command guide](docs/en/checks.md)
 for all options, scope, and exit codes.
+
+### Follow an UNKNOWN result
+
+`check` adds one `Next steps:` command. Copy it to inspect the same selection and
+requested conditions, then select an Evidence, Claim, or Assessment ID:
+
+```bash
+mceg explain -k curated --temperature 1750
+mceg explain -k curated --evidence source_choices
+mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --evidence experimental_fit
+```
+
+`explain` shows the recorded gap, source locations and inspection notes, the next
+action, required material, and completion criteria. For the H2 original fit it
+shows the paper's DOI, the previously recorded access barrier, and the equations,
+concentration basis and transformations still requiring inspection. Institutional
+library access or an authorized author copy may be needed. Obtaining a paper does
+not automatically complete its inspection or support a Claim.
+
+Recorded curator instructions and generic suggestions are labeled separately.
+Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
+`--json` retains full records. No source is downloaded or evidence changed.
+
+### Try the v0.2 format
+
+From this repository, preserve an old contract in the common format, or evaluate
+the source-specific conditions already recorded in the H2 example:
+
+```bash
+mceg migrate contracts/h2_solubility.yaml --output /tmp/h2-migrated.yaml
+mceg assess examples/v02/h2_solubility.yaml \
+  --context examples/v02/h2_context.json --subject imported \
+  --output /tmp/h2-assessed.yaml
+mceg check /tmp/h2-assessed.yaml
+mceg explain /tmp/h2-assessed.yaml --assessment imported:physical_accuracy
+
+mceg assess --curated /path/to/exogibbs \
+  --context examples/curated_gas/context.json --output /tmp/curated-v02.yaml
+mceg explain /tmp/curated-v02.yaml
+```
+
+Outputs must be new files. Migration preserves old declarations without
+inventing structured conditions. Assessment adds separate records; the H2
+example deliberately reports conflicting temperature intervals at 1750 K and
+leaves physical accuracy unknown. The curated adapter exports the existing
+reviewed reuse policy without running a solver. See the [v0.2 guide](docs/en/v02.md)
+for Context inputs, identity rules, and the distinction between range membership
+and scientific support.
 
 ## Validation and source tracing
 
@@ -204,20 +252,21 @@ importing the provider. It separates continuous temperature bounds, discrete
 test coverage and reuse of one reviewed Claim declaration. Changed selected
 files or a different context leave support unknown while preserving historical
 outcomes. Its [saved assessment](examples/curated_gas/assessment.json) and
-synthetic regression fixtures inform v0.2. The `mceg check` command shares its
-evaluator; the contract schema remains frozen at v0.1.
+synthetic regression fixtures inform v0.2. The `mceg check` command and v0.2
+curated adapter share its evaluator; the original v0.1 contract is preserved.
 
 The [assessment lifecycle trial](docs/en/assessment_lifecycle.md) adds actual
 70-case reruns under two JAX versions, lossless declaration-migration checks for
 H2 and curated gas, and a scoped source-adoption dependency probe. It preserves
 old results while adding assessments for the newly executed environments.
 
-The [schema guide](docs/en/schema.md) describes the small YAML format.
-[Pydantic models](src/mceg/schema.py) are its executable definition. Claims link
-to evidence by local IDs; optional provenance links connect scoped evidence
-to its recorded original sources within the same contract.
-Core contract equations and conditions remain descriptive text. The H2 range
-example has its own small condition format, outside the frozen contract schema.
+The [v0.1 schema guide](docs/en/schema.md) and [v0.2 guide](docs/en/v02.md)
+describe the supported formats. Their executable definitions are
+[schema.py](src/mceg/schema.py) and [schema_v02.py](src/mceg/schema_v02.py).
+In v0.2, Assessments link Claim revisions, evaluated Subjects, Contexts and
+Evidence. Conditions record closed intervals or explicit joint samples;
+provenance links retain scoped original-source comparisons. Equations are
+descriptive text and are never executed by MCEG.
 
 The main unresolved questions are parameter and species identity, units and
 reference states, nonrectangular applicability domains, uncertainty, evidence

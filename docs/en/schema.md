@@ -5,6 +5,8 @@ The [model contracts](../../contracts) are complete examples.
 There are no ExoFamily-specific fields or required scientific vocabularies.
 The format and its documented semantics are frozen with package `0.1.0`;
 see the [version policy](versioning.md) for compatibility and evidence updates.
+For separate Claim/Assessment records, structured conditions and migration,
+see the [v0.2 guide](v02.md). This page continues to describe v0.1 only.
 
 ## Fields
 

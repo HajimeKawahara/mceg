@@ -12,12 +12,22 @@ from .provenance import trace_provenance
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
-    if argv and argv[0] == "check" and not Path("check").is_file():
-        from .check import main as check_main
-        return check_main(argv[1:])
+    if argv and not Path(argv[0]).is_file():
+        if argv[0] == "check":
+            from .check import main as command
+            return command(argv[1:])
+        if argv[0] == "migrate":
+            from .migration import main as command
+            return command(argv[1:])
+        if argv[0] == "assess":
+            from .assessment import main as command
+            return command(argv[1:])
+        if argv[0] == "explain":
+            from .explain import main as command
+            return command(argv[1:])
     parser = argparse.ArgumentParser(
-        description="Validate MCEG v0.1 contract structure.",
-        epilog="Discover checks in a checkout: mceg check [PATH] [-k NAME] [-v]",
+        description="Validate MCEG v0.1 or v0.2 contract structure.",
+        epilog="Commands: check (overview), explain (next steps), migrate (v0.1 to v0.2), assess (conditions).",
     )
     parser.add_argument("paths", nargs="+", type=Path, help="YAML contract files")
     parser.add_argument("--trace", metavar="EVIDENCE_ID", help="Report recorded source ancestry as JSON")

@@ -2,6 +2,50 @@
 
 ## Unreleased
 
+### v0.2 release candidate (`0.2.0rc1`)
+
+- Add a separate `schema_version: "0.2"` reader and common Claim, Evidence,
+  Subject, Context, Condition and Assessment records. Claim has no support
+  status; support belongs to a scoped Assessment targeting an explicit Claim
+  revision, with method identity and reasons. Historical numerical results
+  retain their meanings.
+- Add `mceg migrate` and validated-data restoration. Migration preserves old
+  declarations, source/content hashes, prose scopes and Evidence identities,
+  without inventing calculation conditions or rewriting Claim text. New records
+  can coexist with the imported history. Existing v0.1 validation and tracing
+  remain supported; old readers reject the new schema.
+- Add `mceg assess` for source-scoped closed ranges and explicit joint samples.
+  K and Pa/bar/MPa/GPa comparisons preserve quantity identity; total pressure
+  and fugacity are not interchangeable. Missing input stays unknown; invalid
+  values are errors. Membership does not infer scientific support.
+- Export the existing reviewed curated-gas policy through `mceg assess
+  --curated`, identifying selected files, archived artifacts, requested context,
+  and both evaluator/review hashes. The adapter executes no provider code and
+  preserves historical declarations and passes when current reuse is unknown.
+- Add on-demand `mceg explain` views for Evidence, Claims and Assessments.
+  Normal checks show a single command preserving the requested selection and
+  context. Deep views distinguish recorded follow-ups from derived suggestions,
+  show required material and completion criteria, and offer navigation to
+  upstream gaps. The H2 v0.2 example records original-paper access/inspection
+  tasks without treating document acquisition as completed review.
+- Parse JSON as JSON, preserving exponent-valued numbers such as `1e-13`, while
+  rejecting duplicate keys in both YAML and JSON. Values formerly misread by
+  YAML as text now retain their JSON numeric type and can be rejected where a
+  text field is required. Output commands write JSON for `.json` paths and YAML
+  otherwise, and refuse to overwrite existing artifacts.
+- Document migration, identity, assessment limits and terminal workflows in
+  the README and [v0.2 guide](docs/en/v02.md). Runtime dependencies are unchanged.
+
+Validation: 250 tests passed, covering all five baseline migrations, restoration
+after adding new evidence, provenance compatibility, malformed references and
+units, historical coexistence, exact samples, curated exports and actionable
+source gaps. The installed wheel was checked outside the source tree against
+the six real ExoGibbs contracts, four requested curated contexts, the H2 example,
+and a changed implementation in a temporary provider copy. Original provider
+files and scientific archives were not modified; no solver was executed.
+
+### Earlier CLI work in this candidate
+
 - Add `mceg check` with automatic contract discovery, path filtering, readable
   PASS/FAIL/UNKNOWN results, verbose audit gaps, and optional JSON output.
   The command checks recorded structure and source traces for all contracts and

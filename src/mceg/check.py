@@ -6,6 +6,7 @@ import json
 import math
 import os
 from pathlib import Path
+import shlex
 import shutil
 import sys
 import textwrap
@@ -15,6 +16,8 @@ import yaml
 from . import _curated
 from .provenance import trace_provenance
 from .validator import load_contract
+from .schema_v02 import ContractV02
+from .assessment import compare_condition
 
 
 def discover(paths):
@@ -94,14 +97,34 @@ def check_contract(path, context):
         entry["checks"] = [result("structure", "FAIL", "Invalid contract", [str(exc)])]
         return entry
     entry["model"] = contract.model.id
-    entry["declarations"] = [claim.model_dump() for claim in contract.claims]
-    entry["checks"].append(result("structure", "PASS", "v0.1 structure and local references are consistent"))
+    entry["schema_version"] = contract.schema_version
+    if contract.schema_version == "0.1":
+        entry["declarations"] = [claim.model_dump() for claim in contract.claims]
+    entry["checks"].append(result("structure", "PASS", f"v{contract.schema_version} structure and local references are consistent"))
     traces = [trace_provenance(contract, item.id) for item in contract.evidence]
     complete = sum(trace["recorded_audit_complete"] for trace in traces)
     issues = sorted({f"{issue['evidence']}: {issue['issue']}" for trace in traces for issue in trace["issues"]})
     entry["checks"].append(result("source_audit", "UNKNOWN" if issues else "PASS",
                                   f"{complete}/{len(traces)} evidence records have complete declared source traces", issues))
-    if contract.model.id == "exogibbs.curated_gas.v1":
+    if isinstance(contract, ContractV02):
+        entry["assessments"] = [a.model_dump() for a in contract.assessments]
+        contexts = {c.id: c for c in contract.contexts}
+        conditions = {(c.id, c.revision): c for c in contract.conditions}
+        for assessment in contract.assessments:
+            if assessment.kind == "evidence_support":
+                continue
+            classification, reasons = compare_condition(
+                conditions[assessment.condition, assessment.condition_revision], contexts[assessment.context])
+            status = {"within_reported_range": "PASS", "outside_reported_range": "FAIL",
+                      "at_recorded_sample": "PASS", "not_sampled": "UNKNOWN", "unknown": "UNKNOWN"}[classification]
+            if classification != assessment.classification:
+                status = "FAIL"
+                reasons.append("Recorded classification differs from the current Condition/Context; review the changed record.")
+            entry["checks"].append(result(assessment.condition, status,
+                f"context={assessment.context}; {classification}", [f"Assessment: {assessment.id}", *reasons]))
+        entry["checks"].append(result("evidence_reuse", "UNKNOWN",
+            "Stored support assessments are scoped records; inspect a specific assessment with mceg explain"))
+    elif contract.model.id == "exogibbs.curated_gas.v1":
         checks, assessment = curated_checks(path, context)
         entry["checks"].extend(checks)
         entry["assessment"] = assessment
@@ -131,7 +154,8 @@ def display(report, verbose, plain=False):
 
     write("MCEG checks: recorded structure, source audits and scoped evidence reuse", "1")
     write(f"Collected {report['collected']} contracts; selected {len(report['contracts'])}")
-    if any(c["model"] == "exogibbs.curated_gas.v1" for c in report["contracts"]):
+    if any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"
+           for c in report["contracts"]):
         context = report["context"]
         write(f"Curated context ({report['context_source']}): "
               f"T={context.get('temperature_K', '?')} K, P={context.get('pressure_bar', '?')} bar, "
@@ -171,6 +195,11 @@ def display(report, verbose, plain=False):
             write("  Recorded v0.1 declarations (not reassessed by structure/source checks):")
             for claim in contract["declarations"]:
                 write(f"    {claim['id']}: {claim['status']} [{claim['kind']}]")
+        if verbose and contract.get("assessments"):
+            write("  Recorded v0.2 assessments (each bound to its own subject and context):")
+            for assessment in contract["assessments"]:
+                outcome = assessment.get("status", assessment.get("classification"))
+                write(f"    {assessment['id']}: {outcome}; context={assessment['context']}")
     counts = report["summary"]
     print()
     if terminal:
@@ -180,6 +209,9 @@ def display(report, verbose, plain=False):
     else:
         print(f"{counts['PASS']} passed, {counts['FAIL']} failed, {counts['UNKNOWN']} unknown")
     write("UNKNOWN identifies missing support or review gaps. These checks do not run numerical solvers.")
+    if report.get("explain_command") and (counts["UNKNOWN"] or counts["FAIL"]):
+        # Keep the command copyable even when terminal prose wraps at a narrow width.
+        print(paint("Next steps: " + report["explain_command"], "36"))
 
 
 def positive(value):
@@ -187,6 +219,29 @@ def positive(value):
     if not math.isfinite(number) or number <= 0:
         raise argparse.ArgumentTypeError("Use a finite positive value")
     return number
+
+
+def add_context_arguments(parser):
+    parser.add_argument("--context", type=Path, help="Curated v0.1 context JSON; for v0.2 use mceg assess")
+    parser.add_argument("--temperature", type=positive, metavar="K", help="Override curated temperature in kelvin")
+    parser.add_argument("--pressure", type=positive, metavar="BAR", help="Override curated pressure in bar")
+    parser.add_argument("--network", choices=["ions", "neutral"], help="Override curated network")
+    parser.add_argument("--jax", help="Override the requested JAX version; does not inspect installed JAX")
+
+
+def requested_context(args):
+    context = json.loads((args.context or _curated.HERE / "context.json").read_text())
+    if not isinstance(context, dict):
+        raise ValueError("Context must be a JSON object")
+    overrides = {"temperature_K": args.temperature, "pressure_bar": args.pressure,
+                 "network": args.network, "jax": args.jax}
+    context.update({k: v for k, v in overrides.items() if v is not None})
+    return _curated.Context.model_validate(context).model_dump(exclude_none=True)
+
+
+def context_options(args):
+    return [value for key in ("context", "temperature", "pressure", "network", "jax")
+            if getattr(args, key) is not None for value in ("--" + key, str(getattr(args, key)))]
 
 
 def main(argv=None):
@@ -197,30 +252,27 @@ def main(argv=None):
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--plain", action="store_true", help="Use the original text format without color or symbols")
     output.add_argument("--json", action="store_true", help="Write the full check report as JSON to stdout")
-    parser.add_argument("--context", type=Path, help="Curated context JSON; otherwise use the bundled archived example")
-    parser.add_argument("--temperature", type=positive, metavar="K", help="Override curated temperature in kelvin")
-    parser.add_argument("--pressure", type=positive, metavar="BAR", help="Override curated pressure in bar")
-    parser.add_argument("--network", choices=["ions", "neutral"], help="Override curated network")
-    parser.add_argument("--jax", help="Override the requested JAX version; does not inspect installed JAX")
+    add_context_arguments(parser)
     args = parser.parse_args(argv)
     try:
-        context = json.loads((args.context or _curated.HERE / "context.json").read_text())
-        if not isinstance(context, dict):
-            raise ValueError("Context must be a JSON object")
-        overrides = {"temperature_K": args.temperature, "pressure_bar": args.pressure,
-                     "network": args.network, "jax": args.jax}
-        context.update({k: v for k, v in overrides.items() if v is not None})
-        context = _curated.Context.model_validate(context).model_dump(exclude_none=True)
+        context = requested_context(args)
         paths = discover(args.paths or [Path.cwd()])
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
     selected = [p for p in paths if args.k.casefold() in str(p).casefold()]
     contracts = [check_contract(p, context) for p in selected]
+    if context_options(args) and any(c.get("schema_version") == "0.2" for c in contracts):
+        parser.error("For v0.2 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
     counts = Counter(check["status"] for entry in contracts for check in entry["checks"])
+    curated_context = any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"
+                          for c in contracts)
     report = {"format": "mceg_check_report_v1", "collected": len(paths), "contracts": contracts,
-              "context": context,
-              "context_source": str(args.context) if args.context else "archived example defaults with CLI overrides",
-              "summary": {s: counts[s] for s in ("PASS", "FAIL", "UNKNOWN")}}
+              "context": context if curated_context else None,
+              "context_source": (str(args.context) if args.context else "archived example defaults with CLI overrides")
+                                if curated_context else None,
+              "summary": {s: counts[s] for s in ("PASS", "FAIL", "UNKNOWN")},
+              "explain_command": shlex.join(["mceg", "explain", *map(str, args.paths),
+                                             *(["-k", args.k] if args.k else []), *context_options(args)])}
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:

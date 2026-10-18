@@ -1,4 +1,11 @@
-# Experimental v0.1 baseline
+# Versions and compatibility
+
+The working package version is `0.2.0rc1`, a release candidate with explicit
+readers for schemas `"0.1"` and `"0.2"`. This does not move the baseline tag or
+publish a final release. The [v0.2 guide](v02.md) defines the common records,
+limited automatic comparisons and migration procedure.
+
+## Experimental v0.1 baseline
 
 MCEG freezes its first proof of concept on 2026-10-15. The package version and
 Git tag are `0.1.0` and `v0.1.0`; contracts use `schema_version: "0.1"`.
@@ -39,10 +46,18 @@ Its check report is separate from those frozen interfaces and from the contract
 schema. Its scoped curated evaluator reuses the reviewed example policy; it does
 not change v0.1 Claim statuses or define a general scientific inference rule.
 
-Schema extensions go into `"0.2"` or a later version with an explicit migration
-description. The v0.1 validator rejects unknown fields, so even a new optional
-field would be rejected by an old reader when present. Compatibility must not
-be inferred merely because a field is optional.
+Schema extensions now use `"0.2"`, with `mceg migrate` preserving old declarations
+as explicitly imported Assessments. `load_contract` dispatches on the exact
+version string; `Contract` remains the v0.1 class and `ContractV02` is separate.
+The v0.1 validator rejects new fields, so compatibility must not be inferred
+merely because a field is optional. Unsupported versions are rejected.
+
+Migration writes a new artifact, leaves the source untouched, and records its
+byte hash and validated-content hash. `restore_v01` verifies reconstruction of
+the original validated data. It does not reconstruct YAML comments or formatting.
+The original source-tracing outcomes and evidence meanings are preserved.
+YAML and JSON loaders reject duplicate keys; JSON is parsed as JSON so numeric
+exponents such as `1e-13` retain their numeric type.
 
 Scientific contracts and audit findings may be revised without a schema change.
 Keep earlier states in Git, identify the inspected sources and scope, and explain
@@ -56,13 +71,11 @@ to produce a matching receipt; do not update hashes to imply a new execution.
 
 ## Deferred work
 
-Structured applicability conditions, typed evidence relationships, unit-aware
-comparison, automatic extrapolation assessment, cross-contract reasoning, and
-graph databases remain outside the v0.1 core. A separate
-[H2 range assessment](h2_solubility.md#partial-automatic-range-assessment) now
-experiments with source-specific intervals and supplied calculation conditions.
-Its formats and evaluator are example-only. The
-[Claim/Evidence/Assessment proposal](design_questions.md#claim-evidence-and-assessment-separation)
-describes a possible later migration without changing existing Claim statuses.
+The v0.2 candidate adds source-scoped closed intervals, exact joint samples,
+K/pressure-unit comparison, and explicit Subject/Context-bound Assessments.
+It does not infer physical applicability, general extrapolation accuracy,
+source rankings or cross-contract support. The earlier H2 and lifecycle trial
+formats remain historical example artifacts, not accepted core contracts.
 The [partial primary-source audit](h2_primary_audit.md) records remaining evidence
-gaps. The [changelog](../../CHANGELOG.md) records package changes.
+gaps; `mceg explain` now exposes those gaps and next steps without changing them.
+The [changelog](../../CHANGELOG.md) records package changes.

@@ -3,8 +3,10 @@
 This example tests how a new execution can supply evidence for a changed
 environment while earlier Evidence and Assessments retain their identities.
 It also tests lossless extraction of v0.1 declarations and one source-adoption
-dependency. All formats remain example-specific. The package and core schema
-are still v0.1; this is not a released v0.2 reader or a general inference rule.
+dependency. Its saved formats remain example-specific and unchanged. The later
+[v0.2 candidate](v02.md) implements common records and an explicit reader and
+migration CLI based on these findings; this archived trial is not a general
+inference rule or an automatically selected numerical archive.
 
 ## Actual executions
 
@@ -112,10 +114,10 @@ accuracy criteria are not invented. Its marginal range assessments remain
 separate from evidence support and never promote the physical-accuracy Claim.
 
 The migration output uses `format: assessment_migration_draft_v1`, not
-`schema_version: "0.2"`. Existing v0.1 readers reject it. Before a core v0.2
-release, version dispatch and the final serialized structure still need to be
-specified; this trial supplies preservation and coexistence fixtures for that
-decision. No provider contract is silently migrated.
+`schema_version: "0.2"`. Core readers reject this historical draft format.
+The later `mceg migrate` command writes the [v0.2 contract format](v02.md), with
+version dispatch and preservation/coexistence tests. No provider contract is
+silently migrated, and the draft archives have not been rewritten.
 
 ## One dependency path, two affected judgments
 

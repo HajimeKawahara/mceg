@@ -29,7 +29,8 @@ compute applicability, detect extrapolation, or certify package compatibility.
   physically invalid, or universally applicable.
 - Keep model definitions, test conditions, and physical calibration distinct.
 - Start small: no graph database, reasoning engine, or automatic code inspection.
-  Range comparison and upstream execution are confined to optional examples.
+  Automatic evidence reuse is limited to explicitly reviewed cases. Upstream
+  execution is confined to optional examples.
 
 ## Install and use
 
@@ -42,8 +43,30 @@ python -m venv .venv
 .venv/bin/python -m pytest
 ```
 
-The installed `mceg` command is equivalent to `python -m mceg`. Pass one or more
-YAML paths. Each file receives a `VALID ... (structure only)` or `INVALID`
+The installed `mceg` command is equivalent to `python -m mceg`.
+
+For a pytest-style overview, activate the environment where MCEG is installed
+and run `mceg check` from a provider checkout or its `mceg/contracts` directory:
+
+```bash
+source /path/to/mceg/.venv/bin/activate
+cd /path/to/exogibbs
+mceg check
+mceg check -k curated
+mceg check -k curated --temperature 1750
+mceg check -k curated -v
+```
+
+This discovers contracts and lists `PASS`, `FAIL`, and `UNKNOWN` checks with a
+summary. Curated gas also checks selected file hashes, temperature bounds,
+archived sample coverage, and reuse of one reviewed numerical declaration.
+Its default context is the bundled **archived example**, not the installed
+Python/JAX environment. The displayed context can be overridden with flags or
+`--context context.json`. No solver runs. Use `--json` for the full report.
+See the [check command guide](docs/en/checks.md) for scope and exit codes.
+
+For the original structural validator, pass one or more YAML paths.
+Each file receives a `VALID ... (structure only)` or `INVALID`
 message; the exit code is 0 if all pass, 1 if any fail, and 2 for CLI usage errors.
 Validation is offline and never imports or executes referenced implementations.
 
@@ -169,7 +192,8 @@ importing the provider. It separates continuous temperature bounds, discrete
 test coverage and reuse of one reviewed Claim declaration. Changed selected
 files or a different context leave support unknown while preserving historical
 outcomes. Its [saved assessment](examples/curated_gas/assessment.json) and
-synthetic regression fixtures inform v0.2; the core remains frozen at v0.1.
+synthetic regression fixtures inform v0.2. The `mceg check` command shares its
+evaluator; the contract schema remains frozen at v0.1.
 
 The [assessment lifecycle trial](docs/en/assessment_lifecycle.md) adds actual
 70-case reruns under two JAX versions, lossless declaration-migration checks for

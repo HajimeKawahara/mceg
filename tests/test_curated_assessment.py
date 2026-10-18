@@ -6,7 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from mceg import load_contract
+from mceg import _curated, load_contract
+from mceg.__main__ import main
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -200,10 +201,81 @@ def test_saved_assessment_is_pinned_and_v01_remains_separate():
     report = json.loads((EXAMPLE / "assessment.json").read_text())
     assert report["review"] == json.loads((EXAMPLE / "review.json").read_text())
     assert report["review_sha256"] == ASSESS.sha256(EXAMPLE / "review.json")
-    assert report["evaluator_sha256"] == ASSESS.sha256(EXAMPLE / "assess.py")
+    assert report["evaluator_sha256"] == ASSESS.sha256(Path(_curated.__file__))
     assert report["context"] == json.loads((EXAMPLE / "context.json").read_text())
     assert all(f["expected_sha256"] == f["actual_sha256"] for f in report["integrity"]["files"])
     assert report["assessments"][2]["status"] == "supported"
     assert report["physical_validation"] == "unknown"
     with pytest.raises(ValueError):
         load_contract(EXAMPLE / "review.json")
+
+
+def test_installed_review_and_context_match_the_worked_example():
+    for name in ("review.json", "context.json"):
+        assert (_curated.HERE / name).read_bytes() == (EXAMPLE / name).read_bytes()
+
+
+@pytest.fixture
+def check_example(example, monkeypatch):
+    provider, context, review = example
+    original_run = _curated.run
+    monkeypatch.setattr(_curated, "run", lambda root, inputs: original_run(root, inputs, review))
+    monkeypatch.chdir(provider)
+    return example
+
+
+@pytest.mark.parametrize("options,exit_code,temperature,sample,support", [
+    ([], 0, "PASS", "PASS", "PASS"),
+    (["--temperature", "1750"], 0, "PASS", "UNKNOWN", "UNKNOWN"),
+    (["--temperature", "4001"], 1, "FAIL", "UNKNOWN", "UNKNOWN"),
+    (["--pressure", "0.001"], 0, "PASS", "UNKNOWN", "UNKNOWN"),
+    (["--network", "neutral"], 0, "PASS", "PASS", "PASS"),
+    (["--jax", "different-version"], 0, "PASS", "PASS", "UNKNOWN"),
+])
+def test_check_separates_ranges_samples_and_support(check_example, capsys, options, exit_code,
+                                                   temperature, sample, support):
+    assert main(["check", "--json", *options]) == exit_code
+    captured = capsys.readouterr()
+    assert not captured.err
+    entry = json.loads(captured.out)["contracts"][0]
+    statuses = {c["name"]: c["status"] for c in entry["checks"]}
+    assert statuses["temperature_range"] == temperature
+    assert statuses["sample_coverage"] == sample
+    assert statuses["evidence_reuse"] == support
+    assert statuses["physical_validation"] == "UNKNOWN"
+    assert entry["assessment"]["evidence"]["result"] == "passed"
+    assert entry["declarations"][0]["status"] == "supported"
+
+
+def test_check_shows_changed_file_and_keeps_historical_result(check_example, capsys):
+    provider, _, _ = check_example
+    (provider / ASSESS.IMPLEMENTATION).write_text("Changed synthetic implementation.\n")
+    assert main(["check", "-v"]) == 1
+    output = capsys.readouterr().out
+    assert ASSESS.IMPLEMENTATION in output
+    assert "Recorded files changed or are missing" in output
+    assert "Historical numerical result: passed" in output
+    assert "equilibrium_verification: supported" in output
+
+
+@pytest.mark.parametrize("key", ["contract", "receipt"])
+def test_check_explains_when_review_is_needed(check_example, capsys, key):
+    provider, _, review_path = check_example
+    review = json.loads(review_path.read_text())
+    path = provider / review[key]["path"]
+    path.write_bytes(path.read_bytes() + b"\n")
+    assert main(["check"]) == 0
+    output = capsys.readouterr().out
+    assert "Reviewed record changed; review scope before repinning" in output
+    assert review[key]["path"] in output
+    assert "Reviewed evidence supports this context" not in output
+
+
+def test_explicit_incomplete_context_does_not_inherit_example_defaults(check_example, capsys, tmp_path):
+    context = tmp_path / "context.json"
+    write_json(context, {"temperature_K": 1735})
+    assert main(["check", "--context", str(context)]) == 0
+    output = capsys.readouterr().out
+    assert "Missing context: pressure_bar" in output
+    assert "network=?" in output
+    assert "installed numerical environment is not inspected" in output

@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Add `mceg check` with automatic contract discovery, path filtering, readable
+  PASS/FAIL/UNKNOWN results, verbose audit gaps, and optional JSON output.
+  The command checks recorded structure and source traces for all contracts and
+  reuses the reviewed curated-gas evaluator for file integrity, requested context,
+  temperature bounds, and archived sample coverage. It runs no numerical solver.
+- Package the shared curated evaluator, review pins, and archived default context
+  so the command works from provider checkouts and wheel installations. Replay
+  the saved assessment to record the extracted evaluator's hash; historical
+  numerical evidence and assessment outcomes are unchanged. Existing validation
+  and tracing behavior, v0.1 schema, and runtime dependencies are unchanged.
+
+CLI validation: 194 MCEG tests passed. A wheel installed outside the source tree
+discovered all six ExoGibbs contracts and reproduced the default, unsampled,
+out-of-range, and different-JAX outcomes. An isolated copy of the real curated
+archive detected a changed implementation while retaining its historical pass.
+No numerical solver was executed for these CLI checks.
+
+Earlier example trials:
+
 - Add an example-only H2 range evaluator with separate metadata/Seo temperature
   intervals and the original abstract's study-wide pressure envelope. It records
   source-bound assessments, converts pressure units, preserves missing inputs as
@@ -20,14 +39,15 @@
   review that preserves historical passes without assigning them to new code.
 - Document the trials and their design findings in English and Japanese.
 
-Validation: 118 MCEG tests passed, including 44 H2 range-assessment checks; eight
+Earlier trial validation: 118 MCEG tests passed, including 44 H2 range-assessment checks; eight
 bundled contracts/templates passed structural validation. The saved 1750 K
 assessment reproduces the differing source outcomes, and the CLI also runs from
 outside the checkout. Earlier provider trials validated both provider-owned
 contracts and passed four H2 replay checks after metadata commits changed both
 provider HEADs; the placement/revision trial also completed outside the checkout.
-No frozen schema, public API, core implementation, dependency, baseline contract
-or scientific provider implementation changed. Scripts and receipts are example-only.
+Those trials changed no frozen schema, public API, core implementation, dependency,
+baseline contract or scientific provider implementation. Their scripts and receipts
+are example-only.
 
 ## 0.1.0 - 2026-10-15
 

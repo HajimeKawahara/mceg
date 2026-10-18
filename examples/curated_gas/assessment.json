@@ -20,7 +20,7 @@
     "rationale": "Reuse the v0.1 equilibrium_verification declaration only for the two fixed networks at the 70 archived temperature-pressure samples, the normalized Asplund 2021 nuclear budget, recorded Python/JAX/backend/dtype/tolerance, and matching selected inputs and outputs. The independent solver uses the same constants. This review does not establish physical accuracy, validate all dependencies, or make source-adoption decisions."
   },
   "review_sha256": "3b27129fd528274b2e30ba3f1e76c00e02f7318590d312e45e57d5faed39f451",
-  "evaluator_sha256": "6ab3d170f933a57a2a0f53d9654d6bc5ec92e71382867c7e31be7929cf97fa79",
+  "evaluator_sha256": "bf5cecfb704df8d7d06372ca89d01691e2d76cf1077d7ca737de6eb389774191",
   "context": {
     "temperature_K": 1735.0,
     "pressure_bar": 0.01,

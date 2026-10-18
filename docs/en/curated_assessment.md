@@ -3,8 +3,9 @@
 ExoGibbs [PR #284](https://github.com/HajimeKawahara/exogibbs/pull/284) adds
 source audits, adoption decisions, and a continuous gas preset. This experiment
 uses the merged `e21a5d0eafd19db350c84b9a75cdd29517e367e9` snapshot to exercise
-the proposed Claim/Evidence/Assessment separation. It adds no core schema or
-API, and v0.1 contracts keep their existing fields and meanings.
+the proposed Claim/Evidence/Assessment separation. Its evaluator is shared with
+the optional `mceg check` command; v0.1 contracts keep their existing fields and
+meanings.
 
 The provider owns its contract, implementation and numerical archives.
 [`review.json`](../../examples/curated_gas/review.json) pins the inspected
@@ -42,6 +43,11 @@ to the receipt's selected files; it is not a complete dependency audit.
 
 ## Replay without provider imports
 
+For terminal inspection, use the [check command](checks.md) from the ExoGibbs
+checkout: `mceg check -k curated`, or add `--temperature 1750` to compare a
+different requested temperature. The installed package bundles the reviewed pins
+and archived example context, so this does not require an MCEG source checkout.
+
 From an MCEG checkout with its normal dependencies installed:
 
 ```bash
@@ -58,6 +64,10 @@ unsupported fields and paths outside the checkout are errors.
 [`assessment.json`](../../examples/curated_gas/assessment.json) is an actual
 file-check replay against the merged provider snapshot, not a new numerical run.
 Tests use explicitly synthetic fixtures and require neither ExoGibbs nor JAX.
+The replay script and CLI use the same internal evaluator in
+[`mceg._curated`](../../src/mceg/_curated.py). The saved assessment was replayed
+after extraction to record that evaluator's hash; historical numerical evidence
+and all assessment outcomes are unchanged.
 
 ## Consequences for v0.2
 

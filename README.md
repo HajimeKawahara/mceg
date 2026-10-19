@@ -62,6 +62,7 @@ mceg check -k curated --plain             # Use the original text layout
 mceg check -k curated --lang ja           # Use Japanese UI messages
 mceg check -k curated -v                  # Show audit gaps and recorded claims
 mceg check -k curated --json              # Emit the full JSON report
+mceg -h                                 # Show commands and usage examples
 ```
 
 Terminal output shows green `✓ PASS`, red `✗ FAIL`, yellow `? UNKNOWN`, and a
@@ -84,6 +85,8 @@ requested conditions, then select an Evidence, Claim, or Assessment ID:
 ```bash
 mceg explain -k curated --temperature 1750
 mceg explain -k curated --evidence source_choices
+mceg explain -k curated --plain          # Keep the original text layout
+mceg explain -h                          # Show options and examples
 mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --evidence experimental_fit
 ```
 
@@ -95,6 +98,11 @@ library access or an authorized author copy may be needed. Obtaining a paper doe
 not automatically complete its inspection or support a Claim.
 
 Recorded curator instructions and generic suggestions are labeled separately.
+On a terminal, colored status markers and numbered tasks separate the next
+action, required material and completion criteria. Record fields use readable
+labels; file hashes, artifacts and sample lists are summarized by count.
+`--plain` preserves the original text layout, also used automatically in pipes.
+`NO_COLOR=1` keeps the terminal layout without colors.
 Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
 `--json` retains full records. No source is downloaded or evidence changed.
 

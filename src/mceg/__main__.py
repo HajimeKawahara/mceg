@@ -26,8 +26,23 @@ def main(argv: list[str] | None = None) -> int:
             from .explain import main as command
             return command(argv[1:])
     parser = argparse.ArgumentParser(
-        description="Validate MCEG v0.1 or v0.2 contract structure.",
-        epilog="Commands: check (overview), explain (next steps), migrate (v0.1 to v0.2), assess (conditions).",
+        prog="mceg",
+        usage="%(prog)s COMMAND [OPTIONS]\n       %(prog)s [--trace EVIDENCE_ID] FILE [FILE ...]",
+        description="Inspect scientific model contracts, evidence and review gaps.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Commands:\n"
+            "  check     Discover contracts and summarize available checks.\n"
+            "  explain   Inspect gaps, evidence and concrete next steps.\n"
+            "  migrate   Preserve a v0.1 contract in the v0.2 format.\n"
+            "  assess    Evaluate explicit conditions and save scoped assessments.\n\n"
+            "Examples:\n"
+            "  mceg check -k curated\n"
+            "  mceg explain -k curated --temperature 1750 --lang ja\n"
+            "  mceg explain -k curated --plain\n"
+            "  mceg contracts/h2_solubility.yaml\n\n"
+            "Use mceg COMMAND -h for that command's options and usage."
+        ),
     )
     parser.add_argument("paths", nargs="+", type=Path, help="YAML contract files")
     parser.add_argument("--trace", metavar="EVIDENCE_ID", help="Report recorded source ancestry as JSON")

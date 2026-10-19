@@ -33,6 +33,14 @@ and markers without ANSI colors; `TERM=dumb` also disables colors. `--json`
 continues to emit only JSON, even on a terminal. `--plain` and `--json` are mutually
 exclusive.
 
+`explain` uses the same terminal/plain selection and color controls. Its terminal
+view highlights unresolved checks, numbers the proposed tasks, and separates
+required material from completion criteria. Record fields have readable labels;
+file hashes, artifacts and joint-sample lists are summarized by count, while
+missing file paths remain visible. Copyable navigation commands stay on one
+physical line. Historical results retain their original tokens and do not
+become new PASS badges.
+
 `--lang ja` selects Japanese UI messages for both `check` and `explain`;
 `--lang en` is the default. It works with terminal markers and `--plain`.
 The next-step commands retain `--lang ja`, including when navigating to an
@@ -168,6 +176,8 @@ work instructions appear only when requested:
 ```bash
 mceg explain -k curated --temperature 1750
 mceg explain -k curated --evidence source_choices
+mceg explain -k curated --plain
+mceg explain -h
 mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --evidence experimental_fit
 mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --claim physical_accuracy
 ```
@@ -177,7 +187,9 @@ shows its source, scope, stored inspection/access notes, upstream gaps, and
 copyable navigation commands. `--claim ID` lists its revisions and associated
 Assessments; `--assessment ID` shows the precise v0.2 Subject, Context, method,
 evidence and reason for that judgment. `--json` includes the complete records;
-human output previews large joint-sample lists.
+`--plain` retains the original record layout and previews large joint-sample
+lists. `mceg -h` lists commands and examples; `mceg explain -h` lists its selectors,
+context options, language and output modes.
 
 Each proposed task includes what to do, any material required, and completion
 criteria. Authored v0.2 follow-ups are labeled **Recorded next step**; guidance

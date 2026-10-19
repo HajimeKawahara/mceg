@@ -2,9 +2,11 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 import shlex
 import shutil
+import sys
 import textwrap
 
 import yaml
@@ -226,19 +228,61 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
     return report
 
 
-def display(report, lang="en"):
-    width = max(60, shutil.get_terminal_size().columns)
+def display(report, lang="en", plain=False):
+    terminal = not plain and sys.stdout.isatty()
+    width = max(40 if terminal else 60, shutil.get_terminal_size().columns)
+    color = terminal and not os.environ.get("NO_COLOR") and os.environ.get("TERM") != "dumb"
+    symbols = {"PASS": "✓", "FAIL": "✗", "UNKNOWN": "?", "inspect": "→"}
+    try:
+        "✓✗→".encode(sys.stdout.encoding or "ascii")
+    except UnicodeEncodeError:
+        symbols.update(PASS="+", FAIL="x", inspect=">")
+    colors = {"PASS": "32", "FAIL": "31", "UNKNOWN": "33"}
 
     def t(message):
         return translate(message, lang)
 
-    def inspect(next_command, indent="    "):
-        print(indent + t("Inspect") + ": " + language_command(next_command, lang))
+    def paint(text, code):
+        return f"\033[{code}m{text}\033[0m" if color and code else text
 
-    def write(text, indent="    "):
-        print(wrap(indent + text, width, indent, lang))
+    def inspect(next_command, indent="    "):
+        label = (symbols["inspect"] + " " if terminal else "") + t("Inspect") + ": "
+        # Keep commands on one physical line so paths and options remain copyable.
+        print(indent + paint(label, "1;36") + language_command(next_command, lang))
+
+    def write(text, indent="    ", code=None):
+        print(paint(wrap(indent + text, width, indent, lang), code))
+
+    def terminal_record(value, indent="    ", labels=True):
+        for key, content in value.items():
+            if content is None or content == [] or content == {}:
+                continue
+            label = t(key.replace("_", " ").capitalize()) if labels else key
+            if key in {"selected_files", "artifacts", "samples"} and labels:
+                write(f"{label}: {len(content)}", indent, "2")
+                if key == "selected_files":
+                    for path, digest in content.items():
+                        if digest is None:
+                            write(t("Missing file") + ": " + path, indent + "  ", "33")
+                continue
+            if isinstance(content, dict):
+                write(label, indent, "1")
+                terminal_record(content, indent + "  ", key not in {"settings", "quantities"})
+            elif isinstance(content, list):
+                write(label, indent, "1")
+                for entry in content:
+                    if isinstance(entry, dict):
+                        terminal_record(entry, indent + "  ")
+                    else:
+                        write("- " + str(entry), indent + "  ")
+            else:
+                # Values are original scientific text, including status and result tokens.
+                write(f"{label}: {content}", indent)
 
     def record(value):
+        if terminal:
+            terminal_record(value)
+            return
         value = dict(value)
         if "samples" in value and len(value["samples"]) > 2:
             samples = value.pop("samples")
@@ -246,47 +290,95 @@ def display(report, lang="en"):
                          remaining_samples=t("Use --json to inspect all joint samples."))
         print(textwrap.indent(yaml.safe_dump(value, sort_keys=False, allow_unicode=True).rstrip(), "    "))
 
-    print(t("MCEG next steps: recorded gaps and suggested work; no evidence is changed."))
+    heading = t("MCEG next steps: recorded gaps and suggested work; no evidence is changed.")
+    if terminal:
+        write(heading, "", "1")
+    else:
+        print(heading)
     if lang == "ja":
-        print(t("Contract text, authored instructions and IDs are shown in their original language."))
+        note = t("Contract text, authored instructions and IDs are shown in their original language.")
+        if terminal:
+            write(note, "", "2")
+        else:
+            print(note)
     if any(c["view"] == "overview" and c["model"] == "exogibbs.curated_gas.v1" and c["schema_version"] == "0.1"
            for c in report["contracts"]):
-        print(t("Requested curated context (not an inspection of the installed environment):"))
-        print(yaml.safe_dump(report["context"], sort_keys=False).rstrip())
+        print(paint(t("Requested curated context (not an inspection of the installed environment):"), "1"))
+        if terminal:
+            terminal_record(report["context"], labels=False)
+        else:
+            print(yaml.safe_dump(report["context"], sort_keys=False).rstrip())
     for contract in report["contracts"]:
         path = Path(contract["path"])
-        print(f"\n{path} [{contract['model']}; v{contract['schema_version']}]")
+        print()
+        if terminal:
+            print(paint("-" * min(width, 72), "2"))
+        print(paint(f"{path} [{contract['model']}; v{contract['schema_version']}]", "1;36"))
         for item in contract["items"]:
             label = item.get("id", item.get("name"))
-            if "id" not in item and lang == "ja":
+            if "id" not in item and (lang == "ja" or terminal):
                 label = t(item["name"].replace("_", " ").capitalize())
-            print(f"\n  {label}")
+            status = item.get("status")
+            print()
+            if terminal and status:
+                write(f"{symbols[status]} {status}  {label}", "  ", "1;" + colors[status])
+            elif terminal:
+                write(t(contract["view"].capitalize()) + ": " + label, "  ", "1;36")
+            else:
+                print(f"  {label}")
             if "record" in item:
                 record(item["record"])
                 for key in ("subject", "context", "claim", "condition"):
                     if key in item:
-                        print(f"  {t(key)}:")
+                        print(paint(f"  {t(key)}:", "1;36"))
                         record(item[key])
             else:
-                write(f"{item['status']}: {check_message(item, lang)}")
-                for message in item["details"]:
-                    print(f"    {detail(message, lang)}")
+                message = check_message(item, lang)
+                write(message if terminal else f"{item['status']}: {message}")
+                # Source gaps already have their own navigation list below.
+                if not terminal or item["name"] != "source_audit":
+                    for message in item["details"]:
+                        if terminal:
+                            write(detail(message, lang), "    ", "2")
+                        else:
+                            print(f"    {detail(message, lang)}")
+            number = 0
             for field, label in (("recorded_follow_ups", "Recorded next step"), ("suggested_steps", "Suggested next step")):
                 # Authored follow-ups are scientific record content, not UI messages.
                 step_text = t if field == "suggested_steps" else str
                 for step in item.get(field, []):
-                    write(f"{t(label)}: {step_text(step['action'])}")
-                    for requirement in step.get("requires", []):
-                        write(f"{t('Needed')}: {step_text(requirement)}", "      ")
+                    number += 1
+                    if terminal:
+                        print()
+                        write(f"{number}. {t(label)}", code="1;36")
+                        write(step_text(step["action"]), "      ")
+                    else:
+                        write(f"{t(label)}: {step_text(step['action'])}")
+                    requirements = step.get("requires", [])
+                    if terminal and requirements:
+                        write(t("Needed"), "      ", "1")
+                    for requirement in requirements:
+                        if terminal:
+                            write("- " + step_text(requirement), "        ")
+                        else:
+                            write(f"{t('Needed')}: {step_text(requirement)}", "      ")
                     for source in step.get("sources", []):
                         print(f"      {t('Source')}: {source}")
-                    write(f"{t('Completion')}: {step_text(step['completion'])}", "      ")
+                    if terminal:
+                        write(t("Completion"), "      ", "1")
+                        write(step_text(step["completion"]), "        ")
+                    else:
+                        write(f"{t('Completion')}: {step_text(step['completion'])}", "      ")
             for next_command in item.get("next_commands", []):
                 inspect(next_command)
         if contract.get("evidence_gaps"):
-            print("\n  " + t("Evidence gaps (IDs for --evidence)") + ":")
+            print("\n" + paint("  " + t("Evidence gaps (IDs for --evidence)") + ":", "1;33"))
             for key, issues in contract["evidence_gaps"].items():
-                print(f"    {key}: {', '.join(t(issue) for issue in issues)}")
+                message = f"{key}: {', '.join(t(issue) for issue in issues)}"
+                if terminal:
+                    write("? " + message)
+                else:
+                    print("    " + message)
             first = next(iter(contract["evidence_gaps"]))
             inspect(command(path, "--evidence", first), "  ")
         if contract.get("unknown_claims"):
@@ -295,17 +387,34 @@ def display(report, lang="en"):
         for assessment in contract.get("assessments", []):
             print(f"  Assessment {assessment['id']}: {assessment['result']}; context={assessment['context']}")
             inspect(command(path, "--assessment", assessment["id"]), "  ")
+    if terminal:
+        print()
+        write(t("Use --plain for the original text layout or --json for complete records."), "", "2")
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="mceg explain", description=__doc__)
+    parser = argparse.ArgumentParser(
+        prog="mceg explain", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Examples:\n"
+            "  mceg explain -k curated --temperature 1750\n"
+            "  mceg explain -k curated --evidence source_choices --lang ja\n"
+            "  mceg explain contract.yaml --claim physical_accuracy\n"
+            "  mceg explain contract.yaml --assessment imported:physical_accuracy\n"
+            "  mceg explain -k curated --plain\n"
+            "  mceg explain -k curated --json\n\n"
+            "Terminals use highlighted output; pipes and --plain use the original text layout."
+        ),
+    )
     parser.add_argument("paths", type=Path, nargs="*", help="Contract files/directories; default: current directory")
     parser.add_argument("-k", default="", metavar="NAME", help="Filter contract paths, as in mceg check")
     select = parser.add_mutually_exclusive_group()
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
     select.add_argument("--claim", help="Inspect a Claim ID, including all its recorded revisions")
     select.add_argument("--assessment", help="Inspect a v0.2 Assessment ID and its context")
-    parser.add_argument("--json", action="store_true")
+    output = parser.add_mutually_exclusive_group()
+    output.add_argument("--plain", action="store_true", help="Use the original text layout without color or markers")
+    output.add_argument("--json", action="store_true", help="Write the complete machine-readable report")
     add_context_arguments(parser)
     add_language_argument(parser)
     args = parser.parse_args(argv)
@@ -327,7 +436,7 @@ def main(argv=None):
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:
-        display(report, args.lang)
+        display(report, args.lang, args.plain)
         if not contracts:
             print(translate("No contracts selected.", args.lang))
     return 0 if contracts else 5

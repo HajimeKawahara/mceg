@@ -4,6 +4,11 @@
 
 ### v0.2 release candidate (`0.2.0rc1`)
 
+- Make `mceg explain` easier to scan in a terminal with colored status markers,
+  numbered tasks, separate requirements/completion criteria, readable record
+  labels and compact file/sample counts. Preserve the original text with
+  `--plain` and automatic pipe output; JSON remains complete and unchanged.
+  Extend `mceg -h` and `mceg explain -h` with command and usage examples.
 - Add `--lang ja` to `check` and `explain` for Japanese UI messages and suggested
   work. Language follows copyable drill-down commands. A display-only catalog
   preserves authored scientific text, status tokens, IDs, JSON reports and
@@ -51,6 +56,11 @@ files and scientific archives were not modified; no solver was executed.
 Japanese UI follow-up: 254 tests passed. Language selection preserves JSON
 byte-for-byte, authored text, exit codes, requested conditions and quoted paths
 through drill-down commands. Default English output remains unchanged.
+
+Explain UI follow-up: 262 tests passed. Across eight views in English and
+Japanese, 48 comparisons against the preceding wheel preserved redirected text,
+`--plain` and JSON byte-for-byte. Terminal checks covered colors, monochrome,
+ASCII markers, and quoted navigation commands at 50 columns.
 
 ### Earlier CLI work in this candidate
 

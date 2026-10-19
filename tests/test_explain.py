@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 import shlex
+import sys
 
 import pytest
 
@@ -118,3 +119,52 @@ def test_invalid_structure_still_has_an_actionable_explanation(tmp_path, capsys)
     item = json.loads(capsys.readouterr().out)["contracts"][0]["items"][0]
     assert item["status"] == "FAIL"
     assert "Correct the field or local reference" in item["suggested_steps"][0]["action"]
+
+
+@pytest.mark.parametrize("language", ["en", "ja"])
+def test_plain_preserves_redirected_output_on_a_terminal(language, monkeypatch, capsys):
+    args = ["explain", str(V02), "--evidence", "experimental_fit", "--lang", language]
+    assert main(args) == 0
+    redirected = capsys.readouterr().out
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    assert main([*args, "--plain"]) == 0
+    assert capsys.readouterr().out == redirected
+
+
+def test_terminal_preserves_record_values_without_turning_a_historical_pass_into_support(tmp_path, monkeypatch, capsys):
+    data = load_contract(V02).model_dump()
+    evidence = next(e for e in data["evidence"] if e["id"] == "numerical_tests")
+    assert evidence["result"] == "passed"
+    evidence["summary"] = "Source audit"  # Matches a UI translation; authored text must stay original.
+    path = tmp_path / "historical.json"
+    write_json(path, data)
+    before = path.read_bytes()
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    assert main(["explain", str(path), "--evidence", "numerical_tests", "--lang", "ja"]) == 0
+    text = capsys.readouterr().out
+    assert "Source audit" in text and "passed" in text
+    assert "PASS" not in text and "\033[1;32m" not in text
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("command", [[], ["explain"]])
+@pytest.mark.parametrize("flag", ["-h", "--help"])
+def test_help_shows_usage_and_examples_without_reading_contracts(command, flag, tmp_path, capsys):
+    missing = str(tmp_path / "missing.yaml")
+    with pytest.raises(SystemExit) as result:
+        main([*command, missing, flag])
+    assert result.value.code == 0
+    captured = capsys.readouterr()
+    assert "usage: mceg" in captured.out and "Examples:" in captured.out
+    assert "--plain" in captured.out and not captured.err
+
+
+def test_plain_and_json_are_mutually_exclusive(capsys):
+    with pytest.raises(SystemExit) as error:
+        main(["explain", str(V02), "--plain", "--json"])
+    assert error.value.code == 2
+    assert not capsys.readouterr().out

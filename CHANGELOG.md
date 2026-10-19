@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Scoped file verification
+
+- Add `mceg check --assessment ID` and share its Evidence dependency audit with
+  `explain --assessment ID`. Display the selected Subject and Context, preserve
+  historical records, and keep stored support distinct from fresh verification.
+- Add optional `--root DIR` file verification to both commands, requiring a
+  selected v0.2 Assessment. Check its Subject manifest and Evidence dependency
+  artifacts. Report missing, unreadable and mismatched files as failures; URI
+  sources and absent pins remain unknown. Paths must stay within the root.
+- Preserve root selection in follow-up commands and report per-file expected
+  and observed hashes in JSON. No schema or runtime dependency changes.
+
+Validation: 290 tests passed in the isolated PR checkout, including 28 file
+verification tests. ExoInventory's 15 contract tests passed, and its selected
+refactor review matched 26 Subject files and 6 Evidence artifacts.
+
 ### v0.2 release candidate (`0.2.0rc1`)
 
 - Make `mceg explain` easier to scan in a terminal with colored status markers,

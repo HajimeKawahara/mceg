@@ -15,8 +15,9 @@ The `v0.1.0` baseline and its schema meanings remain unchanged.
 
 ## Design principles
 
-- Keep MCEG independent of the packages it describes. ExoEOS and ExoGibbs are
-  examples, not dependencies; neither repository is modified.
+- Keep MCEG independent of the packages it describes. Providers own their model
+  contracts and scientific reviews. MCEG supplies generic schemas and checks;
+  archived provider examples are fixtures, not runtime dependencies.
 - Separate scientific applicability from the domain where equations can be
   evaluated numerically. A finite result is not an accuracy guarantee.
 - Separate numerical **verification** from physical **validation** against
@@ -253,14 +254,6 @@ The [primary-source audit](docs/en/h2_primary_audit.md)
 full-text access gap, a possible material-specific explanation of the temperature
 difference, and the inherited infrared-calibration problem. Scientific accuracy
 remains unknown; no empirical coefficient or computed concentration was corrected.
-
-The later [full-text update trial](docs/en/h2_primary_audit.md#full-text-update-trial-2026-10-19)
-uses an authorized private copy to locate the original basalt regression and
-separate basalt/andesite run envelopes. Its replay appends v0.2 evidence and
-assessments while preserving the historical records; the PDF is not distributed
-or required for replay. Physical accuracy remains unknown. The replay uses
-Assessment selection and explicit follow-up completion records; material
-matching, evidence supersession and calibration transfer remain separate work.
 
 ## Provider adoption trials
 

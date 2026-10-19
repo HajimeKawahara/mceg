@@ -18,6 +18,8 @@ from .provenance import trace_provenance
 from .validator import load_contract
 from .schema_v02 import ContractV02
 from .assessment import compare_condition
+from ._display import (add_language_argument, check_message, detail, language_command,
+                       translate, wrap)
 
 
 def discover(paths):
@@ -133,7 +135,7 @@ def check_contract(path, context):
     return entry
 
 
-def display(report, verbose, plain=False):
+def display(report, verbose, plain=False, lang="en"):
     terminal = not plain and sys.stdout.isatty()
     color = terminal and not os.environ.get("NO_COLOR") and os.environ.get("TERM") != "dumb"
     width = max(40, shutil.get_terminal_size().columns)
@@ -144,27 +146,33 @@ def display(report, verbose, plain=False):
         symbols.update(PASS="+", FAIL="x")
     colors = {"PASS": "32", "FAIL": "31", "UNKNOWN": "33"}
 
+    def t(message):
+        return translate(message, lang)
+
     def paint(text, code):
         return f"\033[{code}m{text}\033[0m" if color else text
 
     def write(text, code=None, indent="  "):
         if terminal:
-            text = textwrap.fill(text, width=width, subsequent_indent=indent)
+            text = wrap(text, width, indent, lang)
         print(paint(text, code) if code else text)
 
-    write("MCEG checks: recorded structure, source audits and scoped evidence reuse", "1")
-    write(f"Collected {report['collected']} contracts; selected {len(report['contracts'])}")
+    write(t("MCEG checks: recorded structure, source audits and scoped evidence reuse"), "1")
+    write(t(f"Collected {report['collected']} contracts; selected {len(report['contracts'])}"))
     if any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"
            for c in report["contracts"]):
         context = report["context"]
-        write(f"Curated context ({report['context_source']}): "
+        source = report["context_source"]
+        if source == "archived example defaults with CLI overrides":
+            source = t(source)
+        write(f"{t('Curated context')} ({source}): "
               f"T={context.get('temperature_K', '?')} K, P={context.get('pressure_bar', '?')} bar, "
               f"network={context.get('network', '?')}")
         write(f"  composition={context.get('composition', '?')}; "
               f"Python={context.get('python', '?')}, JAX={context.get('jax', '?')}, "
               f"{context.get('backend', '?')}/{context.get('dtype', '?')}, "
               f"epsilon={context.get('epsilon_crit', '?')}")
-        write("  Context describes the requested target; the installed numerical environment is not inspected.")
+        write(t("  Context describes the requested target; the installed numerical environment is not inspected."))
     for contract in report["contracts"]:
         path = Path(contract["path"])
         try:
@@ -174,29 +182,31 @@ def display(report, verbose, plain=False):
         print()
         write(label, "1;36")
         for check in contract["checks"]:
+            message = check_message(check, lang)
+            name = t(check["name"].replace("_", " ").capitalize())
             if terminal:
                 status = check["status"]
                 badge = f"{symbols[status]} {status:<7}"
-                name = check["name"].replace("_", " ").capitalize()
                 prefix = f"  {badge} {name:<22} "
-                if width < 80:
+                if width < 80 or lang == "ja":
                     print(f"  {paint(badge, '1;' + colors[status])} {name}")
-                    write("      " + check["message"], indent="      ")
+                    write("      " + message, indent="      ")
                 else:
-                    line = textwrap.fill(prefix + check["message"], width=width,
+                    line = textwrap.fill(prefix + message, width=width,
                                          subsequent_indent=" " * len(prefix))
                     print(line.replace(badge, paint(badge, '1;' + colors[status]), 1))
             else:
-                print(f"  {check['status']:<7} {check['name']:<22} {check['message']}")
+                label = name if lang == "ja" else check["name"]
+                print(f"  {check['status']:<7} {label:<22} {message}")
             if verbose or check["status"] == "FAIL":
-                for detail in check["details"]:
-                    write(f"          {detail}", indent="          ")
+                for item in check["details"]:
+                    write("          " + detail(item, lang), indent="          ")
         if verbose and contract["declarations"]:
-            write("  Recorded v0.1 declarations (not reassessed by structure/source checks):")
+            write(t("  Recorded v0.1 declarations (not reassessed by structure/source checks):"))
             for claim in contract["declarations"]:
                 write(f"    {claim['id']}: {claim['status']} [{claim['kind']}]")
         if verbose and contract.get("assessments"):
-            write("  Recorded v0.2 assessments (each bound to its own subject and context):")
+            write(t("  Recorded v0.2 assessments (each bound to its own subject and context):"))
             for assessment in contract["assessments"]:
                 outcome = assessment.get("status", assessment.get("classification"))
                 write(f"    {assessment['id']}: {outcome}; context={assessment['context']}")
@@ -204,14 +214,14 @@ def display(report, verbose, plain=False):
     print()
     if terminal:
         write("-" * min(width, 72), "2")
-        print(", ".join(paint(f"{counts[status]} {label}", "1;" + colors[status] if counts[status] else "2")
+        print(", ".join(paint(f"{counts[status]} {t(label)}", "1;" + colors[status] if counts[status] else "2")
                         for status, label in (("PASS", "passed"), ("FAIL", "failed"), ("UNKNOWN", "unknown"))))
     else:
-        print(f"{counts['PASS']} passed, {counts['FAIL']} failed, {counts['UNKNOWN']} unknown")
-    write("UNKNOWN identifies missing support or review gaps. These checks do not run numerical solvers.")
+        print(t(f"{counts['PASS']} passed, {counts['FAIL']} failed, {counts['UNKNOWN']} unknown"))
+    write(t("UNKNOWN identifies missing support or review gaps. These checks do not run numerical solvers."))
     if report.get("explain_command") and (counts["UNKNOWN"] or counts["FAIL"]):
         # Keep the command copyable even when terminal prose wraps at a narrow width.
-        print(paint("Next steps: " + report["explain_command"], "36"))
+        print(paint(t("Next steps") + ": " + language_command(report["explain_command"], lang), "36"))
 
 
 def positive(value):
@@ -253,6 +263,7 @@ def main(argv=None):
     output.add_argument("--plain", action="store_true", help="Use the original text format without color or symbols")
     output.add_argument("--json", action="store_true", help="Write the full check report as JSON to stdout")
     add_context_arguments(parser)
+    add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
         context = requested_context(args)
@@ -276,7 +287,7 @@ def main(argv=None):
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:
-        display(report, args.verbose, args.plain)
+        display(report, args.verbose, args.plain, args.lang)
         if not selected:
-            print("No contracts selected. Use a contract file or a directory containing YAML contracts.")
+            print(translate("No contracts selected. Use a contract file or a directory containing YAML contracts.", args.lang))
     return 5 if not selected else 1 if counts["FAIL"] else 0

@@ -33,6 +33,24 @@ and markers without ANSI colors; `TERM=dumb` also disables colors. `--json`
 continues to emit only JSON, even on a terminal. `--plain` and `--json` are mutually
 exclusive.
 
+`--lang ja` selects Japanese UI messages for both `check` and `explain`;
+`--lang en` is the default. It works with terminal markers and `--plain`.
+The next-step commands retain `--lang ja`, including when navigating to an
+Evidence or Assessment. `PASS`/`FAIL`/`UNKNOWN`, IDs and paths remain unchanged.
+
+Only application-owned headings, check messages and suggested work are
+translated at display time, using a small offline catalog. Scientific contract
+text and curator-authored instructions remain in their original language and
+are labeled as original text in the Japanese view. JSON reports are identical
+for both language choices. No schema changes, duplicate-language evidence, or
+external translation service are involved. Parser help and diagnostic errors
+retain their original language.
+
+```bash
+mceg check -k curated --lang ja
+mceg explain -k curated --temperature 1750 --lang ja
+```
+
 ## Discovery and selection
 
 With no path, discovery starts in the current directory. From a repository root,

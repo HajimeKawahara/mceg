@@ -59,6 +59,7 @@ mceg check                               # Check all discovered contracts
 mceg check -k curated                    # Select curated gas
 mceg check -k curated --temperature 1750  # Change the requested temperature (K)
 mceg check -k curated --plain             # Use the original text layout
+mceg check -k curated --lang ja           # Use Japanese UI messages
 mceg check -k curated -v                  # Show audit gaps and recorded claims
 mceg check -k curated --json              # Emit the full JSON report
 ```
@@ -96,6 +97,17 @@ not automatically complete its inspection or support a Claim.
 Recorded curator instructions and generic suggestions are labeled separately.
 Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
 `--json` retains full records. No source is downloaded or evidence changed.
+
+Both `check` and `explain` accept `--lang ja` for Japanese headings, check
+messages and suggested work (`--lang en` is the default). Follow-up commands
+retain the chosen language. This is a display-only translation catalog: contract
+text, authored follow-ups, IDs, status tokens and JSON reports stay original.
+It adds no translated fields to scientific records and needs no translation
+service. For example:
+
+```bash
+mceg explain -k curated --temperature 1750 --lang ja
+```
 
 ### Try the v0.2 format
 

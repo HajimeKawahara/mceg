@@ -14,6 +14,8 @@ from .check import (add_context_arguments, check_contract, context_options, disc
 from .provenance import trace_provenance
 from .schema_v02 import ContractV02
 from .validator import load_contract
+from ._display import (add_language_argument, check_message, detail, language_command,
+                       translate, wrap)
 
 
 def action(text, completion, requires=()):
@@ -224,62 +226,75 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
     return report
 
 
-def display(report):
+def display(report, lang="en"):
     width = max(60, shutil.get_terminal_size().columns)
 
+    def t(message):
+        return translate(message, lang)
+
+    def inspect(next_command, indent="    "):
+        print(indent + t("Inspect") + ": " + language_command(next_command, lang))
+
     def write(text, indent="    "):
-        print(textwrap.fill(indent + text, width=width, subsequent_indent=indent))
+        print(wrap(indent + text, width, indent, lang))
 
     def record(value):
         value = dict(value)
         if "samples" in value and len(value["samples"]) > 2:
             samples = value.pop("samples")
             value.update(sample_count=len(samples), sample_preview=samples[:2],
-                         remaining_samples="Use --json to inspect all joint samples.")
+                         remaining_samples=t("Use --json to inspect all joint samples."))
         print(textwrap.indent(yaml.safe_dump(value, sort_keys=False, allow_unicode=True).rstrip(), "    "))
 
-    print("MCEG next steps: recorded gaps and suggested work; no evidence is changed.")
+    print(t("MCEG next steps: recorded gaps and suggested work; no evidence is changed."))
+    if lang == "ja":
+        print(t("Contract text, authored instructions and IDs are shown in their original language."))
     if any(c["view"] == "overview" and c["model"] == "exogibbs.curated_gas.v1" and c["schema_version"] == "0.1"
            for c in report["contracts"]):
-        print("Requested curated context (not an inspection of the installed environment):")
+        print(t("Requested curated context (not an inspection of the installed environment):"))
         print(yaml.safe_dump(report["context"], sort_keys=False).rstrip())
     for contract in report["contracts"]:
         path = Path(contract["path"])
         print(f"\n{path} [{contract['model']}; v{contract['schema_version']}]")
         for item in contract["items"]:
-            print(f"\n  {item.get('id', item.get('name'))}")
+            label = item.get("id", item.get("name"))
+            if "id" not in item and lang == "ja":
+                label = t(item["name"].replace("_", " ").capitalize())
+            print(f"\n  {label}")
             if "record" in item:
                 record(item["record"])
                 for key in ("subject", "context", "claim", "condition"):
                     if key in item:
-                        print(f"  {key}:")
+                        print(f"  {t(key)}:")
                         record(item[key])
             else:
-                write(f"{item['status']}: {item['message']}")
-                for detail in item["details"]:
-                    print(f"    {detail}")
+                write(f"{item['status']}: {check_message(item, lang)}")
+                for message in item["details"]:
+                    print(f"    {detail(message, lang)}")
             for field, label in (("recorded_follow_ups", "Recorded next step"), ("suggested_steps", "Suggested next step")):
+                # Authored follow-ups are scientific record content, not UI messages.
+                step_text = t if field == "suggested_steps" else str
                 for step in item.get(field, []):
-                    write(f"{label}: {step['action']}")
+                    write(f"{t(label)}: {step_text(step['action'])}")
                     for requirement in step.get("requires", []):
-                        write(f"Needed: {requirement}", "      ")
+                        write(f"{t('Needed')}: {step_text(requirement)}", "      ")
                     for source in step.get("sources", []):
-                        print(f"      Source: {source}")
-                    write(f"Completion: {step['completion']}", "      ")
+                        print(f"      {t('Source')}: {source}")
+                    write(f"{t('Completion')}: {step_text(step['completion'])}", "      ")
             for next_command in item.get("next_commands", []):
-                print(f"    Inspect: {next_command}")
+                inspect(next_command)
         if contract.get("evidence_gaps"):
-            print("\n  Evidence gaps (IDs for --evidence):")
+            print("\n  " + t("Evidence gaps (IDs for --evidence)") + ":")
             for key, issues in contract["evidence_gaps"].items():
-                print(f"    {key}: {', '.join(issues)}")
+                print(f"    {key}: {', '.join(t(issue) for issue in issues)}")
             first = next(iter(contract["evidence_gaps"]))
-            print("  Inspect: " + command(path, "--evidence", first))
+            inspect(command(path, "--evidence", first), "  ")
         if contract.get("unknown_claims"):
-            print("  Unknown Claim IDs: " + ", ".join(contract["unknown_claims"]))
-            print("  Inspect: " + command(path, "--claim", contract["unknown_claims"][0]))
+            print("  " + t("Unknown Claim IDs") + ": " + ", ".join(contract["unknown_claims"]))
+            inspect(command(path, "--claim", contract["unknown_claims"][0]), "  ")
         for assessment in contract.get("assessments", []):
             print(f"  Assessment {assessment['id']}: {assessment['result']}; context={assessment['context']}")
-            print("  Inspect: " + command(path, "--assessment", assessment["id"]))
+            inspect(command(path, "--assessment", assessment["id"]), "  ")
 
 
 def main(argv=None):
@@ -292,6 +307,7 @@ def main(argv=None):
     select.add_argument("--assessment", help="Inspect a v0.2 Assessment ID and its context")
     parser.add_argument("--json", action="store_true")
     add_context_arguments(parser)
+    add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
         context = requested_context(args)
@@ -311,7 +327,7 @@ def main(argv=None):
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:
-        display(report)
+        display(report, args.lang)
         if not contracts:
-            print("No contracts selected.")
+            print(translate("No contracts selected.", args.lang))
     return 0 if contracts else 5

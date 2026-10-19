@@ -4,6 +4,10 @@
 
 ### v0.2 release candidate (`0.2.0rc1`)
 
+- Add `--lang ja` to `check` and `explain` for Japanese UI messages and suggested
+  work. Language follows copyable drill-down commands. A display-only catalog
+  preserves authored scientific text, status tokens, IDs, JSON reports and
+  default English output; no translated fields or dependencies are added.
 - Add a separate `schema_version: "0.2"` reader and common Claim, Evidence,
   Subject, Context, Condition and Assessment records. Claim has no support
   status; support belongs to a scoped Assessment targeting an explicit Claim
@@ -43,6 +47,10 @@ source gaps. The installed wheel was checked outside the source tree against
 the six real ExoGibbs contracts, four requested curated contexts, the H2 example,
 and a changed implementation in a temporary provider copy. Original provider
 files and scientific archives were not modified; no solver was executed.
+
+Japanese UI follow-up: 254 tests passed. Language selection preserves JSON
+byte-for-byte, authored text, exit codes, requested conditions and quoted paths
+through drill-down commands. Default English output remains unchanged.
 
 ### Earlier CLI work in this candidate
 

@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### H2 literature review and task completion (`0.2.0rc2`)
+
+- Add optional v0.2 `follow_up_resolutions` with a task reference, nonempty
+  Evidence references and completion note. Reject missing references and duplicate
+  completions. Show completed tasks separately with links to their evidence,
+  preserving historical source fields, support and v0.1 restoration. Existing
+  v0.2 documents remain readable; rc1 rejects the new field even when empty.
+- Add a private-paper H2 literature-update trial using the existing v0.2 records.
+  Record the original published basalt regression, material-specific run bounds,
+  calibration adoption and remaining dependencies; preserve prior declarations
+  and keep physical accuracy unknown. Replay needs no PDF or provider package.
+  Exercise scoped checks and explicit completion records; document remaining
+  evidence-supersession, material-scope and private-source reproducibility gaps.
+
+Validation: 312 tests passed. The H2 selected review reports 1 passed, 0 failed,
+2 unknown; the all-records audit retains its 3 range failures. Completion does
+not remove the inherited calibration gap or establish physical support.
+
 ### Scoped file verification
 
 - Add `mceg check --assessment ID` and share its Evidence dependency audit with

@@ -5,7 +5,7 @@ evidence, and limitations in machine-readable YAML. The long-term aim is to
 identify incompatible model combinations, unsupported applications, and missing
 evidence across scientific packages.
 
-This repository contains the **experimental v0.2 release candidate** (`0.2.0rc1`).
+This repository contains the **experimental v0.2 release candidate** (`0.2.0rc2`).
 It reads both the frozen v0.1 contracts and the new v0.2 records, which separate
 scientific Claims from context-specific Assessments. It checks structure and
 source records, compares explicitly supplied conditions, and explains remaining
@@ -107,11 +107,17 @@ Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
 `--json` retains full records. No source is downloaded or evidence changed.
 
 For v0.2, `mceg check contract.yaml --assessment ID` audits that Assessment's
-Evidence dependencies and reports its stored support or membership result.
-Add `--root /path/to/provider` to verify the selected Subject's file hashes and
-its Evidence artifact hashes. The same option works with `explain`. This checks
-local bytes without changing historical support; see
-[local file verification](docs/en/checks.md#verify-local-file-hashes).
+Evidence and provenance dependencies. Its next-step command retains the ID.
+Without a selector, checks explicitly include historical records. Authored
+`follow_up_resolutions` move completed tasks out of pending instructions and
+link their completion evidence; historical inspection and support stay intact.
+The new optional field requires rc2 or later; rc1 rejects it. See the
+[v0.2 guide](docs/en/v02.md#record-completed-work).
+
+Add `--root /path/to/provider` with `--assessment ID` to verify the selected
+Subject's file hashes and its Evidence artifact hashes. The same option works
+with `explain`. This checks local bytes without changing historical support;
+see [local file verification](docs/en/checks.md#verify-local-file-hashes).
 
 Both `check` and `explain` accept `--lang ja` for Japanese headings, check
 messages and suggested work (`--lang en` is the default). Follow-up commands
@@ -247,6 +253,14 @@ The [primary-source audit](docs/en/h2_primary_audit.md)
 full-text access gap, a possible material-specific explanation of the temperature
 difference, and the inherited infrared-calibration problem. Scientific accuracy
 remains unknown; no empirical coefficient or computed concentration was corrected.
+
+The later [full-text update trial](docs/en/h2_primary_audit.md#full-text-update-trial-2026-10-19)
+uses an authorized private copy to locate the original basalt regression and
+separate basalt/andesite run envelopes. Its replay appends v0.2 evidence and
+assessments while preserving the historical records; the PDF is not distributed
+or required for replay. Physical accuracy remains unknown. The replay uses
+Assessment selection and explicit follow-up completion records; material
+matching, evidence supersession and calibration transfer remain separate work.
 
 ## Provider adoption trials
 

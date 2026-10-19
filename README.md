@@ -106,6 +106,13 @@ labels; file hashes, artifacts and sample lists are summarized by count.
 Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
 `--json` retains full records. No source is downloaded or evidence changed.
 
+For v0.2, `mceg check contract.yaml --assessment ID` audits that Assessment's
+Evidence dependencies and reports its stored support or membership result.
+Add `--root /path/to/provider` to verify the selected Subject's file hashes and
+its Evidence artifact hashes. The same option works with `explain`. This checks
+local bytes without changing historical support; see
+[local file verification](docs/en/checks.md#verify-local-file-hashes).
+
 Both `check` and `explain` accept `--lang ja` for Japanese headings, check
 messages and suggested work (`--lang en` is the default). Follow-up commands
 retain the chosen language. This is a display-only translation catalog: contract

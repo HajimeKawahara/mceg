@@ -81,13 +81,36 @@ The existing `mceg FILE.yaml` and `mceg --trace ID FILE.yaml` commands retain th
 v0.1 behavior. If a file literally named `check` exists in the current directory,
 `mceg check` retains its original meaning of validating that file.
 
+For v0.2, select the Assessment being reviewed explicitly:
+
+```bash
+mceg check contract.yaml --assessment imported:physical_accuracy
+mceg explain contract.yaml --assessment imported:physical_accuracy
+```
+
+The source audit follows only that Assessment's Evidence and provenance
+dependencies; its Subject and Context are displayed. Other Assessments are not
+implicitly selected, even when they have the same Context. Structural validation
+still checks the entire contract. Without `--assessment`, the scope is labeled
+`All records, including history`. A missing Assessment ID in selected valid
+contracts is a usage error (exit 2); valid contracts lacking the ID are skipped
+when other selected files contain it. Invalid files still produce structure
+failures. An empty file selection retains exit 5.
+
+The JSON report records `audit_scope`, `audited_evidence` and the selected
+Assessment. `explain --assessment` uses the same source audit and displays only
+its dependency gaps. Context override flags apply to the curated v0.1 workflow;
+use `mceg assess` to create a new v0.2 Context/Assessment instead.
+
 ## What each result means
 
 | Check | Scope |
 | --- | --- |
 | `structure` | Declared v0.1/v0.2 schema and local reference consistency |
 | `source_audit` | Whether supplied records declare complete primary-source inspection and comparison; unresolved traces are `UNKNOWN` |
-| `selected_files` | Whether the curated receipt's selected input and output hashes match the checkout |
+| `recorded_support` | With `--assessment`, the selected support Assessment's stored status and origin; no new support evaluation |
+| `selected_files` | Curated receipt hashes, or the selected v0.2 Subject's file hashes when `--root` is supplied |
+| `artifact_hashes` | With `--root`, artifact hashes in the selected v0.2 Assessment's Evidence dependency closure |
 | `temperature_range` | Whether the requested temperature is within the reviewed 1500--4000 K numerical interval |
 | `sample_coverage` | Whether T/P/network matches an archived curated sample; interpolation is not assessed |
 | `evidence_reuse` | Whether the explicitly reviewed numerical declaration is reusable for the selected files and requested context |
@@ -96,7 +119,11 @@ v0.1 behavior. If a file literally named `check` exists in the current directory
 All contracts receive structure and source-audit checks. The curated-specific
 checks apply only to ExoGibbs's provider-owned
 `mceg/contracts/curated_gas.yaml` and its pinned review. Other models report
-`UNKNOWN` for evidence reuse; they have no automatic reuse rule yet.
+`UNKNOWN` for evidence reuse when no Assessment is selected; they have no
+automatic reuse rule yet. For a selected support Assessment, `recorded_support`
+reports its declaration. For a selected range/sample Assessment, only that
+membership result is recomputed. An empty Evidence list leaves `source_audit`
+UNKNOWN, and a completed trace never promotes unknown support.
 
 For the reviewed curated snapshot and default context, the terminal result
 (with explanations omitted here) is:
@@ -170,7 +197,7 @@ change the frozen v0.1 validation/trace reports.
 ## Inspect the next step
 
 When UNKNOWN or FAIL remains, `check` prints one `Next steps: mceg explain ...`
-command preserving the selected paths, filter and context overrides. Detailed
+command preserving the selected paths, filter, Assessment ID and context overrides. Detailed
 work instructions appear only when requested:
 
 ```bash
@@ -227,3 +254,44 @@ intended record with `explain --assessment ID` to see its scoped status. `-v`
 also lists Assessment IDs and outcomes. The old curated context flags are
 rejected for v0.2 artifacts: use `mceg assess CONTRACT --context FILE --subject ID
 --output NEW_FILE` to append a new assessment. See the [v0.2 guide](v02.md).
+
+### Verify local file hashes
+
+Add `--root DIR` to verify the files for an explicitly selected v0.2 Assessment:
+
+```bash
+mceg check contract.yaml --assessment current-review --root /path/to/provider
+mceg explain contract.yaml --assessment current-review --root /path/to/provider
+```
+
+`--root` requires `--assessment ID`. It checks only that Assessment's Subject's
+`selected_files` and the `artifacts` on its Evidence and transitive provenance
+dependencies. Other Subjects' manifests and unrelated Evidence are not checked.
+This permits a current implementation and an archived implementation to coexist
+without comparing all historical hashes against the current checkout. Free-text
+`sources`, source-inspection declarations and installed providers are not verified.
+
+Paths are relative to the explicit root, independently of the contract's location.
+Absolute paths and paths or symlinks resolving outside the root fail. A missing,
+unreadable or non-regular file, or a SHA-256 mismatch, also fails. URI sources
+remain UNKNOWN and are never downloaded; a null selected-file digest or an empty
+manifest remains UNKNOWN. Archives are hashed as files, not extracted.
+
+The two checks report `selected_files` and `artifact_hashes` separately. JSON adds
+an `integrity` record containing the resolved root, Subject, per-file expected
+and observed digests, outcomes and Evidence IDs. Text shows the root and failed
+paths; `-v` also shows unchecked paths. The next-step command preserves `--root`,
+and `explain` uses the same file checks. `check` exits 1 on a file failure;
+UNKNOWN alone still permits exit 0. `explain` retains its inspection exit codes.
+
+Matching bytes establish file integrity only. Historical execution results and
+support Assessments remain unchanged even when files fail verification; successful
+hash checks do not promote unknown support. Without `--root`, generic v0.2 checks
+retain their existing behavior and do not read the referenced files.
+
+For the ExoInventory adoption, run from its repository root:
+
+```bash
+mceg check examples/subneptune_taxonomy/finite_melt/mceg/s1_adopted.yaml \
+  --assessment refactor:reference-material-checks --root .
+```

@@ -18,6 +18,7 @@ from .provenance import trace_provenance
 from .validator import load_contract
 from .schema_v02 import ContractV02
 from .assessment import compare_condition
+from .integrity import file_integrity, resolve_root
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
 
@@ -42,6 +43,35 @@ def discover(paths):
 
 def result(name, status, message, details=()):
     return {"name": name, "status": status, "message": message, "details": list(details)}
+
+
+def source_audit(contract, roots=None):
+    """Audit all records, or the unique dependency closure of explicit evidence roots."""
+    traces = [trace_provenance(contract, key) for key in
+              (roots if roots is not None else [e.id for e in contract.evidence])]
+    if roots is not None:
+        included = {node["id"] for trace in traces for node in trace["nodes"]}
+        traces = [trace_provenance(contract, e.id) for e in contract.evidence if e.id in included]
+    complete = sum(trace["recorded_audit_complete"] for trace in traces)
+    issues = sorted({f"{issue['evidence']}: {issue['issue']}" for trace in traces for issue in trace["issues"]})
+    check = result("source_audit", "UNKNOWN" if issues or not traces else "PASS",
+                   f"{complete}/{len(traces)} evidence records have complete declared source traces"
+                   if traces else "No evidence recorded for the selected assessment", issues)
+    return check, traces
+
+
+def audit_scope(assessment=None):
+    if assessment is None:
+        return {"kind": "all_records_including_history"}
+    return {"kind": "assessment", "assessment": assessment.id,
+            "subject": assessment.subject, "context": assessment.context}
+
+
+def scope_message(scope):
+    if scope["kind"] == "all_records_including_history":
+        return "All records, including history"
+    return (f"Assessment {scope['assessment']}; subject={scope['subject']}; "
+            f"context={scope['context']}")
 
 
 def curated_checks(path, context):
@@ -91,7 +121,25 @@ def curated_checks(path, context):
     return checks, report
 
 
-def check_contract(path, context):
+def integrity_checks(contract, assessment, evidence_ids, root):
+    report = file_integrity(contract, assessment, evidence_ids, root)
+    checks = []
+    for name in ("selected_files", "artifact_hashes"):
+        records = report[name]
+        statuses = {r["status"] for r in records}
+        status = "FAIL" if "FAIL" in statuses else "UNKNOWN" if not records or "UNKNOWN" in statuses else "PASS"
+        matched = sum(r["status"] == "PASS" for r in records)
+        details = [f"{r['source']}: {r['message']}" +
+                   (f" (evidence={r['evidence']})" if "evidence" in r else "")
+                   for r in records if r["status"] != "PASS"]
+        checks.append(result(name, status, f"{matched}/{len(records)} recorded hashes match"
+                             if records else "No file hashes recorded for this selection", details))
+    return checks, report
+
+
+def check_contract(path, context, assessment_id=None, *, root=None):
+    """Return checks, or None when a valid contract does not contain the selected ID."""
+    root = resolve_root(root, assessment_id)
     entry = {"path": str(path), "model": None, "checks": [], "declarations": []}
     try:
         contract = load_contract(path)
@@ -100,20 +148,33 @@ def check_contract(path, context):
         return entry
     entry["model"] = contract.model.id
     entry["schema_version"] = contract.schema_version
+    selected = None
+    if assessment_id is not None:
+        selected = next((a for a in getattr(contract, "assessments", []) if a.id == assessment_id), None)
+        if selected is None:
+            return None
+    entry["audit_scope"] = audit_scope(selected)
     if contract.schema_version == "0.1":
         entry["declarations"] = [claim.model_dump() for claim in contract.claims]
     entry["checks"].append(result("structure", "PASS", f"v{contract.schema_version} structure and local references are consistent"))
-    traces = [trace_provenance(contract, item.id) for item in contract.evidence]
-    complete = sum(trace["recorded_audit_complete"] for trace in traces)
-    issues = sorted({f"{issue['evidence']}: {issue['issue']}" for trace in traces for issue in trace["issues"]})
-    entry["checks"].append(result("source_audit", "UNKNOWN" if issues else "PASS",
-                                  f"{complete}/{len(traces)} evidence records have complete declared source traces", issues))
+    audit, traces = source_audit(contract, selected.evidence if selected is not None else None)
+    entry["checks"].append(audit)
+    entry["audited_evidence"] = [trace["evidence"] for trace in traces]
+    if root is not None:
+        checks, entry["integrity"] = integrity_checks(contract, selected, entry["audited_evidence"], root)
+        entry["checks"].extend(checks)
     if isinstance(contract, ContractV02):
-        entry["assessments"] = [a.model_dump() for a in contract.assessments]
+        assessments = [selected] if selected is not None else contract.assessments
+        entry["assessments"] = [a.model_dump() for a in assessments]
         contexts = {c.id: c for c in contract.contexts}
         conditions = {(c.id, c.revision): c for c in contract.conditions}
-        for assessment in contract.assessments:
+        for assessment in assessments:
             if assessment.kind == "evidence_support":
+                if selected is not None:
+                    entry["checks"].append(result(
+                        "recorded_support", "PASS" if assessment.status == "supported" else "UNKNOWN",
+                        f"Stored support: {assessment.status}; claim={assessment.claim}; origin={assessment.origin}",
+                        ["Recorded judgment only; no new support evaluation.", *assessment.reasons]))
                 continue
             classification, reasons = compare_condition(
                 conditions[assessment.condition, assessment.condition_revision], contexts[assessment.context])
@@ -124,8 +185,9 @@ def check_contract(path, context):
                 reasons.append("Recorded classification differs from the current Condition/Context; review the changed record.")
             entry["checks"].append(result(assessment.condition, status,
                 f"context={assessment.context}; {classification}", [f"Assessment: {assessment.id}", *reasons]))
-        entry["checks"].append(result("evidence_reuse", "UNKNOWN",
-            "Stored support assessments are scoped records; inspect a specific assessment with mceg explain"))
+        if selected is None:
+            entry["checks"].append(result("evidence_reuse", "UNKNOWN",
+                "Stored support assessments are scoped records; inspect a specific assessment with mceg explain"))
     elif contract.model.id == "exogibbs.curated_gas.v1":
         checks, assessment = curated_checks(path, context)
         entry["checks"].extend(checks)
@@ -181,6 +243,10 @@ def display(report, verbose, plain=False, lang="en"):
             label = str(path)
         print()
         write(label, "1;36")
+        if "audit_scope" in contract:
+            write(t("Scope") + ": " + scope_message(contract["audit_scope"]), "2")
+        if "integrity" in contract:
+            write("File root: " + contract["integrity"]["root"], "2")
         for check in contract["checks"]:
             message = check_message(check, lang)
             name = t(check["name"].replace("_", " ").capitalize())
@@ -259,6 +325,9 @@ def main(argv=None):
     parser.add_argument("paths", nargs="*", type=Path, help="Files or directories; default: current directory")
     parser.add_argument("-k", default="", metavar="NAME", help="Case-insensitive substring of contract paths")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show audit gaps and recorded Claim declarations")
+    parser.add_argument("--assessment", help="Check one v0.2 Assessment ID and its evidence dependencies")
+    parser.add_argument("--root", type=Path, metavar="DIR",
+                        help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--plain", action="store_true", help="Use the original text format without color or symbols")
     output.add_argument("--json", action="store_true", help="Write the full check report as JSON to stdout")
@@ -266,12 +335,16 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
+        root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = discover(args.paths or [Path.cwd()])
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
     selected = [p for p in paths if args.k.casefold() in str(p).casefold()]
-    contracts = [check_contract(p, context) for p in selected]
+    contracts = [entry for p in selected
+                 if (entry := check_contract(p, context, args.assessment, root=root)) is not None]
+    if args.assessment is not None and selected and not contracts:
+        parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2")
     if context_options(args) and any(c.get("schema_version") == "0.2" for c in contracts):
         parser.error("For v0.2 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
     counts = Counter(check["status"] for entry in contracts for check in entry["checks"])
@@ -283,7 +356,10 @@ def main(argv=None):
                                 if curated_context else None,
               "summary": {s: counts[s] for s in ("PASS", "FAIL", "UNKNOWN")},
               "explain_command": shlex.join(["mceg", "explain", *map(str, args.paths),
-                                             *(["-k", args.k] if args.k else []), *context_options(args)])}
+                                             *(["-k", args.k] if args.k else []),
+                                             *(["--assessment", args.assessment] if args.assessment is not None else []),
+                                             *(["--root", str(args.root)] if args.root is not None else []),
+                                             *context_options(args)])}
     if args.json:
         print(json.dumps(report, indent=2, allow_nan=False))
     else:

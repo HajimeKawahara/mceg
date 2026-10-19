@@ -11,8 +11,9 @@ import textwrap
 
 import yaml
 
-from .check import (add_context_arguments, check_contract, context_options, discover,
-                    requested_context)
+from .check import (add_context_arguments, audit_scope, check_contract, context_options,
+                    discover, integrity_checks, requested_context, scope_message, source_audit)
+from .integrity import resolve_root
 from .provenance import trace_provenance
 from .schema_v02 import ContractV02
 from .validator import load_contract
@@ -166,6 +167,9 @@ def check_steps(name, entry):
     if name == "source_audit":
         return [action("Select an evidence ID below to see the source, recorded access/inspection notes and upstream comparisons.",
                        "Complete the scoped inspection and comparisons; obtaining a document alone does not complete the audit.")]
+    if name in {"selected_files", "artifact_hashes"} and "integrity" in entry:
+        return [action("Inspect the listed file pins against the supplied root, including any unchecked sources.",
+                       "Resolve path or access issues, or review new evidence for changed bytes. Missing pins and URI sources remain unchecked; matching hashes do not establish scientific support.")]
     if name == "selected_files":
         return [action("Inspect the changed or missing paths listed below.",
                        "Restore the archived files for a replay, or produce and review new evidence for the changed implementation; do not replace hashes to manufacture a pass.")]
@@ -194,7 +198,10 @@ def check_steps(name, entry):
                    "Address the stated reason and append a separately identified assessment; preserve the old record.")]
 
 
-def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None):
+def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None, *, root=None):
+    root = resolve_root(root, assessment_id)
+    if root is not None and (evidence_id is not None or claim_id is not None):
+        raise ValueError("--root requires an Assessment view")
     try:
         contract = load_contract(path)
     except (OSError, ValueError, yaml.YAMLError):
@@ -210,10 +217,27 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
     elif claim_id:
         report.update(view="claim", items=[claim_detail(contract, path, c) for c in contract.claims if c.id == claim_id])
     elif assessment_id:
-        report.update(view="assessment", items=[assessment_detail(contract, path, a) for a in
-                      getattr(contract, "assessments", []) if a.id == assessment_id])
+        selected = next((a for a in getattr(contract, "assessments", []) if a.id == assessment_id), None)
+        report.update(view="assessment", items=[])
+        if selected is not None:
+            audit, traces = source_audit(contract, selected.evidence)
+            gaps = {}
+            for trace in traces:
+                for issue in trace["issues"]:
+                    gaps.setdefault(issue["evidence"], set()).add(issue["issue"])
+            report.update(audit_scope=audit_scope(selected),
+                          audited_evidence=[trace["evidence"] for trace in traces],
+                          evidence_gaps={key: sorted(value) for key, value in gaps.items()},
+                          items=[assessment_detail(contract, path, selected),
+                                 {**audit, "suggested_steps": check_steps("source_audit", {})
+                                  if audit["status"] != "PASS" else []}])
+            if root is not None:
+                checks, report["integrity"] = integrity_checks(contract, selected, report["audited_evidence"], root)
+                report["items"].extend({**check, "suggested_steps": check_steps(check["name"], report)
+                                        if check["status"] != "PASS" else []} for check in checks)
     else:
         entry = check_contract(path, context)
+        report["audit_scope"] = entry["audit_scope"]
         gaps = {}
         for evidence in contract.evidence:
             for issue in trace_provenance(contract, evidence.id)["issues"]:
@@ -314,6 +338,10 @@ def display(report, lang="en", plain=False):
         if terminal:
             print(paint("-" * min(width, 72), "2"))
         print(paint(f"{path} [{contract['model']}; v{contract['schema_version']}]", "1;36"))
+        if "audit_scope" in contract:
+            write(t("Scope") + ": " + scope_message(contract["audit_scope"]))
+        if "integrity" in contract:
+            write("File root: " + contract["integrity"]["root"])
         for item in contract["items"]:
             label = item.get("id", item.get("name"))
             if "id" not in item and (lang == "ja" or terminal):
@@ -412,6 +440,8 @@ def main(argv=None):
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
     select.add_argument("--claim", help="Inspect a Claim ID, including all its recorded revisions")
     select.add_argument("--assessment", help="Inspect a v0.2 Assessment ID and its context")
+    parser.add_argument("--root", type=Path, metavar="DIR",
+                        help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--plain", action="store_true", help="Use the original text layout without color or markers")
     output.add_argument("--json", action="store_true", help="Write the complete machine-readable report")
@@ -419,9 +449,10 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
+        root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = [p for p in discover(args.paths or [Path.cwd()]) if args.k.casefold() in str(p).casefold()]
-        contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment) for p in paths]
+        contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root) for p in paths]
         if context_options(args) and any(c["schema_version"] == "0.2" for c in contracts):
             raise ValueError("v0.2 contexts belong to recorded assessments; use --assessment ID or mceg assess")
         if args.evidence or args.claim or args.assessment:

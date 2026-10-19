@@ -84,10 +84,11 @@ and all assessment outcomes are unchanged.
 - Treat cross-contract source paths as locators. Automatic propagation of
   support or limitations across source-adoption contracts remains unimplemented.
 
-Before moving these ideas into the core, define version dispatch and migration
-fixtures that preserve old declarations and allow different assessments for
-different revisions and contexts. This example deliberately handles one
-reviewed numerical claim; it does not define a general inference policy.
+The [v0.2 candidate](v02.md) now provides version dispatch, common records and
+migration fixtures preserving old declarations and different assessments for
+different revisions and contexts. `mceg assess --curated` exports this reviewed
+policy into those records. This example deliberately handles one reviewed
+numerical claim; it does not define a general inference policy.
 The imported Claim text still contains its old evaluative wording. Rewriting
 it as an outcome-independent proposition needs an explicit Claim revision;
 extracting its status must not silently change what was asserted.

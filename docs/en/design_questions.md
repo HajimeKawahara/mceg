@@ -31,9 +31,9 @@ between them, and a class with arbitrary coefficients has no universal range
 of accuracy for real substances. Missing higher virial coefficients cannot be
 turned into a numerical truncation threshold without additional evidence.
 
-## What the current statuses mean
+## What the frozen v0.1 statuses mean
 
-The executable schema is [schema.py](../../src/mceg/schema.py). Domains have
+The v0.1 executable schema is [schema.py](../../src/mceg/schema.py). Domains have
 kind `scientific_applicability` or `numerical_evaluation`, and status
 `documented` or `unknown`. `documented` means conditions were recorded with
 evidence; it does not mean that every condition is checked by the provider or
@@ -56,10 +56,10 @@ claim statuses cannot express conflicting evidence or partial support precisely.
 ## Claim, Evidence, and Assessment separation
 
 The [H2 range experiment](h2_solubility.md#partial-automatic-range-assessment)
-tests a small step toward separating assertions from their assessment. This is
-a design proposal for a later schema version; v0.1 fields and meanings remain
-frozen. The example adds source-specific conditions and calculated assessments
-outside the contract, without reclassifying any Claim.
+tested a small step toward separating assertions from their assessment. The
+[v0.2 candidate](v02.md) now implements the common records and migration described
+below; v0.1 fields and meanings remain frozen. The original example and its
+source-specific conditions remain available as historical artifacts.
 
 | Concept | Responsibility | H2 example |
 | --- | --- | --- |
@@ -99,11 +99,11 @@ review if the contract changes. These identities make a result reproducible;
 they do not prove that the chosen interval was transcribed or scoped correctly.
 There is no aggregate applicability flag or automatic preferred-source policy.
 
-### Proposed migration into a later schema
+### Migration requirements implemented in v0.2
 
-1. Keep the v0.1 contract and its hash as the original record. A future v0.2
-   reader must dispatch on the version explicitly; v0.1 readers continue to
-   reject new fields. This example does not implement that reader.
+1. Keep the v0.1 contract and its hash as the original record. The v0.2 reader
+   dispatches on the version explicitly; v0.1 readers continue to reject new
+   fields. The core CLI implements this; old example scripts remain unchanged.
 2. Move each Claim's `status` and evaluative `evidence` links into a separate
    `evidence_support` Assessment targeting the Claim's identified version and
    scope. Mark it as an imported v0.1 declaration, with its original contract
@@ -121,7 +121,7 @@ There is no aggregate applicability flag or automatic preferred-source policy.
    summary status must identify the selected assessment; it must not become a
    second independently editable status on Claim.
 
-A core migration will need fixtures demonstrating preservation of historical
+The core migration has fixtures demonstrating preservation of historical
 declarations, coexistence of assessments for different revisions, and continued
 v0.1 compatibility. Conflict resolution, quantitative confidence, uncertain
 inputs, joint regions and general unit algebra are deferred until concrete
@@ -145,7 +145,8 @@ example-specific reviewed policy, not a v0.2 reader or generic support inference
 The two experiments now supply concrete migration requirements: preserve
 historical outcomes, identify the target implementation and context, keep
 range/sample membership separate from support, and require explicit review when
-the contract or recorded run changes. The core still accepts only v0.1.
+the contract or recorded run changes. The core now accepts v0.1 and v0.2
+explicitly, while these scientific review questions remain open.
 
 1. **What identifies a model?** A class, coefficient set, component ordering,
    mixing rule, root selector, and software revision can each change its

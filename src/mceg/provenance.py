@@ -1,9 +1,10 @@
 """Trace declared source ancestry; never certify source content or applicability."""
 
 from .schema import Contract
+from .schema_v02 import ContractV02
 
 
-def trace_provenance(contract: Contract, evidence_id: str) -> dict:
+def trace_provenance(contract: Contract | ContractV02, evidence_id: str) -> dict:
     """Report every recorded branch and audit gap, using local evidence IDs."""
     evidence = {item.id: item for item in contract.evidence}
     if evidence_id not in evidence:

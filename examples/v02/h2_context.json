@@ -1,0 +1,8 @@
+{
+  "id": "h2-1750K-7500bar",
+  "scope": "Requested temperature and actual melt pressure only; composition and hydrogen fugacity are unspecified.",
+  "quantities": {
+    "temperature": {"value": 1750, "unit": "K"},
+    "melt_total_pressure": {"value": 7500, "unit": "bar"}
+  }
+}

@@ -33,6 +33,32 @@ and markers without ANSI colors; `TERM=dumb` also disables colors. `--json`
 continues to emit only JSON, even on a terminal. `--plain` and `--json` are mutually
 exclusive.
 
+`explain` uses the same terminal/plain selection and color controls. Its terminal
+view highlights unresolved checks, numbers the proposed tasks, and separates
+required material from completion criteria. Record fields have readable labels;
+file hashes, artifacts and joint-sample lists are summarized by count, while
+missing file paths remain visible. Copyable navigation commands stay on one
+physical line. Historical results retain their original tokens and do not
+become new PASS badges.
+
+`--lang ja` selects Japanese UI messages for both `check` and `explain`;
+`--lang en` is the default. It works with terminal markers and `--plain`.
+The next-step commands retain `--lang ja`, including when navigating to an
+Evidence or Assessment. `PASS`/`FAIL`/`UNKNOWN`, IDs and paths remain unchanged.
+
+Only application-owned headings, check messages and suggested work are
+translated at display time, using a small offline catalog. Scientific contract
+text and curator-authored instructions remain in their original language and
+are labeled as original text in the Japanese view. JSON reports are identical
+for both language choices. No schema changes, duplicate-language evidence, or
+external translation service are involved. Parser help and diagnostic errors
+retain their original language.
+
+```bash
+mceg check -k curated --lang ja
+mceg explain -k curated --temperature 1750 --lang ja
+```
+
 ## Discovery and selection
 
 With no path, discovery starts in the current directory. From a repository root,
@@ -59,7 +85,7 @@ v0.1 behavior. If a file literally named `check` exists in the current directory
 
 | Check | Scope |
 | --- | --- |
-| `structure` | Frozen v0.1 schema and local reference consistency |
+| `structure` | Declared v0.1/v0.2 schema and local reference consistency |
 | `source_audit` | Whether supplied records declare complete primary-source inspection and comparison; unresolved traces are `UNKNOWN` |
 | `selected_files` | Whether the curated receipt's selected input and output hashes match the checkout |
 | `temperature_range` | Whether the requested temperature is within the reviewed 1500--4000 K numerical interval |
@@ -139,4 +165,65 @@ the command does not select among those archives or launch a new run.
 
 `UNKNOWN` is a visible review or coverage gap, not a failed scientific claim.
 The command and JSON check report are experimental conveniences; they do not
-introduce a v0.2 contract schema or change the frozen validation/trace reports.
+change the frozen v0.1 validation/trace reports.
+
+## Inspect the next step
+
+When UNKNOWN or FAIL remains, `check` prints one `Next steps: mceg explain ...`
+command preserving the selected paths, filter and context overrides. Detailed
+work instructions appear only when requested:
+
+```bash
+mceg explain -k curated --temperature 1750
+mceg explain -k curated --evidence source_choices
+mceg explain -k curated --plain
+mceg explain -h
+mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --evidence experimental_fit
+mceg explain /path/to/mceg/examples/v02/h2_solubility.yaml --claim physical_accuracy
+```
+
+The overview lists unresolved checks and Evidence IDs. Selecting `--evidence ID`
+shows its source, scope, stored inspection/access notes, upstream gaps, and
+copyable navigation commands. `--claim ID` lists its revisions and associated
+Assessments; `--assessment ID` shows the precise v0.2 Subject, Context, method,
+evidence and reason for that judgment. `--json` includes the complete records;
+`--plain` retains the original record layout and previews large joint-sample
+lists. `mceg -h` lists commands and examples; `mceg explain -h` lists its selectors,
+context options, language and output modes.
+
+Each proposed task includes what to do, any material required, and completion
+criteria. Authored v0.2 follow-ups are labeled **Recorded next step**; guidance
+derived from gap categories is labeled **Suggested next step**. For example:
+
+| Gap | Next work |
+| --- | --- |
+| Original H2 fit not inspected | Obtain authorized full text, possibly through a human's institution/library, then inspect the exact fit and concentration/unit transformations |
+| Missing curated context | Supply the actual missing composition/environment/tolerance fields |
+| 1750 K or a different environment | Obtain numerical evidence for those conditions and review its coverage; keep a separate receipt and Assessment |
+| Changed selected files | Inspect the listed changes; restore the archived inputs for a replay or obtain evidence for the changed model |
+| Physical accuracy unknown | Define observable, accuracy criterion and conditions, then compare independent physical measurements |
+
+No sources are fetched, provider code executed, or evidence edited. Stored
+access failures are historical notes, not fresh availability checks. A local
+paper path alone does not mark it inspected. Local cross-contract commands are
+navigation links; they do not propagate support between contracts.
+
+`explain` exits 0 after inspection, even if gaps remain; 2 for invalid arguments,
+an unavailable requested ID or an unreadable selected record; and 5 when no
+contracts are selected. A malformed contract's overview explains its structural
+error without attempting evidence inspection.
+
+## Checking v0.2 artifacts
+
+Discovery also accepts `schema_version: "0.2"`. `check` compares every stored
+membership Assessment with its own Condition revision and Context, and fails
+if its recorded classification disagrees. A reported interval exclusion is a
+failed range check, not proof of physical invalidity. Historical assessments
+remain visible when a new Context is added.
+
+Stored support Assessments are not automatically treated as judgments about
+an implicit current calculation. The reuse check stays UNKNOWN; select the
+intended record with `explain --assessment ID` to see its scoped status. `-v`
+also lists Assessment IDs and outcomes. The old curated context flags are
+rejected for v0.2 artifacts: use `mceg assess CONTRACT --context FILE --subject ID
+--output NEW_FILE` to append a new assessment. See the [v0.2 guide](v02.md).

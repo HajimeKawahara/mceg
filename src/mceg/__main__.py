@@ -12,12 +12,37 @@ from .provenance import trace_provenance
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
-    if argv and argv[0] == "check" and not Path("check").is_file():
-        from .check import main as check_main
-        return check_main(argv[1:])
+    if argv and not Path(argv[0]).is_file():
+        if argv[0] == "check":
+            from .check import main as command
+            return command(argv[1:])
+        if argv[0] == "migrate":
+            from .migration import main as command
+            return command(argv[1:])
+        if argv[0] == "assess":
+            from .assessment import main as command
+            return command(argv[1:])
+        if argv[0] == "explain":
+            from .explain import main as command
+            return command(argv[1:])
     parser = argparse.ArgumentParser(
-        description="Validate MCEG v0.1 contract structure.",
-        epilog="Discover checks in a checkout: mceg check [PATH] [-k NAME] [-v]",
+        prog="mceg",
+        usage="%(prog)s COMMAND [OPTIONS]\n       %(prog)s [--trace EVIDENCE_ID] FILE [FILE ...]",
+        description="Inspect scientific model contracts, evidence and review gaps.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Commands:\n"
+            "  check     Discover contracts and summarize available checks.\n"
+            "  explain   Inspect gaps, evidence and concrete next steps.\n"
+            "  migrate   Preserve a v0.1 contract in the v0.2 format.\n"
+            "  assess    Evaluate explicit conditions and save scoped assessments.\n\n"
+            "Examples:\n"
+            "  mceg check -k curated\n"
+            "  mceg explain -k curated --temperature 1750 --lang ja\n"
+            "  mceg explain -k curated --plain\n"
+            "  mceg contracts/h2_solubility.yaml\n\n"
+            "Use mceg COMMAND -h for that command's options and usage."
+        ),
     )
     parser.add_argument("paths", nargs="+", type=Path, help="YAML contract files")
     parser.add_argument("--trace", metavar="EVIDENCE_ID", help="Report recorded source ancestry as JSON")

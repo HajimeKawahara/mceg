@@ -89,6 +89,36 @@ class Claim(Record):
     evidence: list[Text]
 
 
+def _evidence_graph(records):
+    """Shared provenance validation; does not assess scientific support."""
+    evidence = {item.id: item for item in records}
+    parents = {}
+    for item in records:
+        links = item.provenance.derived_from if item.provenance else []
+        targets = [link.evidence for link in links]
+        if len(targets) != len(set(targets)):
+            raise ValueError(f"Duplicate provenance links for {item.id!r}")
+        missing = set(targets) - evidence.keys()
+        if missing:
+            raise ValueError(f"Unknown provenance references: {sorted(missing)}")
+        parents[item.id] = set(targets)
+        for link in links:
+            if link.comparison != "not_checked":
+                upstream = evidence[link.evidence].provenance
+                if (item.provenance.inspection != "inspected" or upstream is None
+                        or upstream.inspection != "inspected"):
+                    raise ValueError("A recorded comparison requires both sources to be inspected")
+    resolved = set()
+    while parents:
+        ready = {key for key, targets in parents.items() if targets <= resolved}
+        if not ready:
+            raise ValueError("Provenance links must not contain a cycle")
+        resolved.update(ready)
+        for key in ready:
+            del parents[key]
+    return evidence
+
+
 class Contract(Record):
     schema_version: Literal["0.1"]
     model: Model
@@ -103,31 +133,7 @@ class Contract(Record):
         ids = [item.id for item in self.evidence] + [item.id for item in self.claims]
         if len(ids) != len(set(ids)):
             raise ValueError("Claim and evidence IDs must be unique within a contract")
-        evidence = {item.id: item for item in self.evidence}
-        parents = {}
-        for item in self.evidence:
-            links = item.provenance.derived_from if item.provenance else []
-            targets = [link.evidence for link in links]
-            if len(targets) != len(set(targets)):
-                raise ValueError(f"Duplicate provenance links for {item.id!r}")
-            missing = set(targets) - evidence.keys()
-            if missing:
-                raise ValueError(f"Unknown provenance references: {sorted(missing)}")
-            parents[item.id] = set(targets)
-            for link in links:
-                if link.comparison != "not_checked":
-                    upstream = evidence[link.evidence].provenance
-                    if (item.provenance.inspection != "inspected" or upstream is None
-                            or upstream.inspection != "inspected"):
-                        raise ValueError("A recorded comparison requires both sources to be inspected")
-        resolved = set()
-        while parents:
-            ready = {key for key, targets in parents.items() if targets <= resolved}
-            if not ready:
-                raise ValueError("Provenance links must not contain a cycle")
-            resolved.update(ready)
-            for key in ready:
-                del parents[key]
+        evidence = _evidence_graph(self.evidence)
         for item in [*self.assumptions, *self.domains, *self.claims, *self.limitations]:
             missing = set(item.evidence) - evidence.keys()
             if missing:

@@ -1,0 +1,12 @@
+/* Keep source identifiers, tables and linked graphs readable on small screens. */
+div.body, .rst-content { overflow-wrap: anywhere; }
+div.body table { width: 100%; }
+div.body td, div.body th { padding: .5rem; vertical-align: top; }
+div.body td p { margin: 0; }
+div.graphviz { overflow-x: auto; margin: 1.25rem 0; }
+object.graphviz { max-width: 100%; }
+pre { overflow-x: auto; }
+.rst-content .mceg-table td, .rst-content .mceg-table th { white-space: normal; }
+details.mceg-details { margin: 1rem 0; padding: .6rem .8rem; border: 1px solid #aaa; border-radius: .25rem; }
+details.mceg-details > summary { cursor: pointer; font-weight: bold; }
+details.mceg-details[open] > summary { margin-bottom: .75rem; }

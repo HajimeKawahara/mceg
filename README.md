@@ -15,6 +15,7 @@ Run these from a provider repository after installing MCEG.
 | Check discovered contracts and saved evidence | `mceg check` |
 | Explain gaps and the next review steps | `mceg explain` |
 | Find inventory, contract and source-review gaps | `mceg coverage .` |
+| Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
 | Compare recorded conditions with a context | `mceg assess CONTRACT --context CONTEXT --subject ID --output NEW_FILE` |
 | Preserve a v0.1 contract in v0.2 format | `mceg migrate CONTRACT --output NEW_FILE` |
@@ -82,6 +83,19 @@ solver run. For a recorded v0.2 Assessment, `--assessment ID --root .` also chec
 its selected source and artifact hashes; see the [check guide](docs/en/checks.md).
 
 ## Documentation and examples
+
+For a browsable model catalog and linked calculation/evidence graphs, see the
+[HTML guide](docs/en/html.md). Build it with Graphviz installed:
+
+```bash
+python -m pip install -e '.[docs]'
+./update_doc.sh -W --keep-going
+```
+
+Open `docs/_build/html/index.html` and select **Calculation cases** for the H2
+connection. The build reads saved records; it runs no scientific calculation.
+Run `mceg docs --config mceg/docs.yaml` to generate RST and CSS for a provider.
+Each repository builds HTML with its own Sphinx configuration and update script.
 
 | Topic | Guides |
 | --- | --- |

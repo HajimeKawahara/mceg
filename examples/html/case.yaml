@@ -1,0 +1,43 @@
+# Documentation-only composition; scientific judgments stay in the pinned records.
+format: mceg_documentation_case_v1
+id: h2-solubility
+title: Pure-H2 EOS to dissolved hydrogen at 1700 K
+description: >-
+  Follow the reference pure-H2 EOS and solubility law at 1700 K and 7500 bar.
+  This is a fixed-input connection, not a coupled atmospheric or magma equilibrium
+  solution. Combined physical accuracy remains unknown in the recorded audit.
+providers:
+  mceg: ../..
+legacy_case:
+  provider: mceg
+  path: examples/h2_solubility/case.yaml
+  sha256: 166299fcc82608ffdd55e5e1770a56e4c9ec8e94c9ac0da7b4f3cc5783123ccd
+highlights:
+  - assessment: combined_accuracy
+    title: Combined physical accuracy
+  - assessment: eos_temperature
+    title: EOS temperature coverage
+  - assessment: solubility_fugacity
+    title: Hydrogen fugacity coverage
+components:
+  eos:
+    provider: mceg
+    model_id: exoeos.zhang_duan_h2
+    path: contracts/zhang_duan_h2.yaml
+    sha256: 514ff6ae813f059ef37e93ea46f9818eceb8a4dac555bdc891e5c2b91683ebd6
+    settings: {phase_selector: vapor, H2_mole_fraction: 1.0}
+  solubility:
+    provider: mceg
+    model_id: exogibbs.h2_hirschmann2012
+    path: contracts/h2_solubility.yaml
+    sha256: 0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda
+    settings: {melt_composition: unknown}
+connections:
+  - consumer: solubility
+    dependency: eos
+    quantity: hydrogen_fugacity
+    description: >-
+      exogibbs.interop.exoeos.make_pure_lnphi_func converts total pressure
+      from bar to Pa for the EOS. For pure H2, f_H2_bar = exp(lnphi_H2) * P_bar.
+      The solubility law also receives actual melt pressure P_bar / 10000 in GPa;
+      melt pressure and fugacity remain separate quantities.

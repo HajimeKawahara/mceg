@@ -46,8 +46,9 @@ agreement checks numerical solving; it does not independently validate those
 thermochemical constants or the physical accuracy of the mixture. The recorded
 interval between samples and other compositions remain unverified.
 
-Each [run directory](../../examples/curated_gas/runs) retains the untouched
-provider receipt, CSVs, compressed arrays, thermal checks and execution log.
+Each run directory retains the untouched provider receipt, CSVs, compressed
+arrays, thermal checks and execution log. See, for example, the
+[JAX 0.10.2 receipt](../../examples/curated_gas/runs/jax-0.10.2/receipt.json).
 `execution.json` additionally records the observed environment, command, process
 exit code, selected input hashes, comparator hash and receipt hash. The optional
 capture script runs the provider's existing validator without importing it into

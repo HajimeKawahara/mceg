@@ -1,7 +1,7 @@
 # Experimental v0.1 YAML schema
 
 The executable definition is [schema.py](../../src/mceg/schema.py).
-The [model contracts](../../contracts) are complete examples.
+The [H2 model contract](../../contracts/h2_solubility.yaml) is a complete example.
 There are no ExoFamily-specific fields or required scientific vocabularies.
 The format and its documented semantics are frozen with package `0.1.0`;
 see the [version policy](versioning.md) for compatibility and evidence updates.

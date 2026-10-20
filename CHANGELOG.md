@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Repository-owned RST documentation
+
+- Add `mceg docs --config mceg/docs.yaml` to generate RST and CSS from explicit
+  contracts and calculation cases. Resolve configuration paths from the YAML
+  file, preserve authored files, and remove only manifest-owned obsolete pages.
+- Keep HTML builds in each repository. Generated sources use standard Sphinx
+  Graphviz, document and reference roles, without a MyST or MCEG extension.
+  Preserve links to rendered RST and download other local source files.
+- Provide short model/case overviews, separate applicability, assessments,
+  evidence, references and implementation records, and individual evidence and
+  assessment pages. Collapse technical metadata while keeping scope and unknowns
+  visible. Never select a current assessment from historical records implicitly.
+- Integrate all registered ExoGibbs and ExoEOS contracts through their own
+  `update_doc.sh` workflows. Keep the pinned EOS-to-solubility case in ExoGibbs.
+- Reject changed contract pins, invalid record references, conflicting provider
+  roots and mismatched Subject/Context selections before writing output. Preserve
+  scientific records; generation imports no providers and executes no solvers.
+
+Validation: 440 tests passed, including 25 documentation tests. The wheel
+generates all 21 current provider contracts without Sphinx, MyST or provider
+imports. Generated RST builds with standard Sphinx 7; MCEG's own Markdown/RST
+documentation builds with Sphinx 9. ExoEOS passes its warning-as-error build;
+ExoGibbs retains its existing API/gallery diagnostics without adding new ones.
+
 ### Model initialization and command-first README
 
 - Add `mceg init MODEL_ID --source PATH --symbol NAME` with explicit model

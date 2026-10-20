@@ -1,0 +1,11 @@
+# Paths are relative to this configuration file.
+source_root: .
+output: _generated
+contracts:
+  - provider: mceg
+    root: ..
+    paths:
+      - contracts/*.yaml
+      - examples/v02/h2_solubility.yaml
+cases:
+  - ../examples/html/case.yaml

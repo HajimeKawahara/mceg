@@ -13,6 +13,7 @@ dependencies = ["pydantic>=2,<3", "PyYAML>=6,<7"]
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
+docs = ["sphinx>=7,<10", "myst-parser>=4,<6"]
 
 [project.scripts]
 mceg = "mceg.__main__:main"
@@ -21,7 +22,7 @@ mceg = "mceg.__main__:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-mceg = ["data/curated_gas/*.json"]
+mceg = ["data/curated_gas/*.json", "_static/*.css"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -91,4 +91,4 @@ source rankings or cross-contract support. The earlier H2 and lifecycle trial
 formats remain historical example artifacts, not accepted core contracts.
 The [partial primary-source audit](h2_primary_audit.md) records remaining evidence
 gaps; `mceg explain` now exposes those gaps and next steps without changing them.
-The [changelog](../../CHANGELOG.md) records package changes.
+The [changelog](changelog.md) records package changes.

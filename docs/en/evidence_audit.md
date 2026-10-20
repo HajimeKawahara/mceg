@@ -25,8 +25,8 @@ the selected `IdealEOS` contract.
 | SecondVirialEOS | Constant symmetric `B_ij`; `B_mix=x^T B x`; `alphar=rho B_mix`; `Z=1+rho B_mix`; low-density TP root | Higher density terms omitted; their negligibility and coefficient temperature relevance must be established separately; quantitative range unknown |
 | PengRobinsonEOS | PR76 alpha, exact critical-condition constants, quadratic attraction/linear covolume mixing, constant `k_ij` | Parameter/mixture calibration unknown; root selection does not establish phase stability; repeated-root derivatives not guaranteed |
 
-Source equations, numeric preconditions, and test scopes are linked in each
-[contract](../../contracts). The common
+Source equations, numeric preconditions, and test scopes are recorded in the
+model contracts, including the [ideal-gas contract](../../contracts/ideal_gas.yaml). The common
 [upstream interface document](https://github.com/HajimeKawahara/exoeos/blob/d7681db4393fd85904846b083013230d81d45d4e/documents/thermodynamic_state_contract.md)
 distinguishes residual quantities, input shape checks, caller-owned numerical
 domains, and the absence of absolute caloric information.

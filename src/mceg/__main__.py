@@ -22,6 +22,9 @@ def main(argv: list[str] | None = None) -> int:
         if argv[0] == "coverage":
             from .coverage import main as command
             return command(argv[1:])
+        if argv[0] == "docs":
+            from .documentation import main as command
+            return command(argv[1:])
         if argv[0] == "migrate":
             from .migration import main as command
             return command(argv[1:])
@@ -41,6 +44,7 @@ def main(argv: list[str] | None = None) -> int:
             "  init      Start a model contract and register it for review.\n"
             "  check     Discover contracts and summarize available checks.\n"
             "  coverage  Find model registration and source-review gaps.\n"
+            "  docs      Generate RST sources for a repository's Sphinx docs.\n"
             "  explain   Inspect gaps, evidence and concrete next steps.\n"
             "  migrate   Preserve a v0.1 contract in the v0.2 format.\n"
             "  assess    Evaluate explicit conditions and save scoped assessments.\n\n"

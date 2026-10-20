@@ -39,6 +39,21 @@ passed. A real Sun-Yao Context preserved unknown physical support while missing
 partial pressure, substituted fugacity and changed oxide composition produced
 the expected distinct membership outcomes.
 
+### Authored task completion (`0.2.0rc2`)
+
+- Add optional v0.2 `follow_up_resolutions` with a task reference, nonempty
+  Evidence references and completion note. Reject missing references and duplicate
+  completions. Show completed tasks separately with links to their evidence,
+  preserving historical source fields, support and v0.1 restoration. Existing
+  v0.2 documents remain readable; rc1 rejects the new field even when empty.
+- Exercise completion, scoped checks and preservation of history using synthetic
+  records. Scientific reviews and completion declarations remain provider-owned;
+  MCEG does not depend on a particular provider, paper or review dataset.
+
+Validation: 302 tests passed, including 12 synthetic completion cases covering
+pending/completed work, invalid references, scoped navigation and unchanged
+source traces, support judgments and v0.1 restoration.
+
 ### Scoped file verification
 
 - Add `mceg check --assessment ID` and share its Evidence dependency audit with

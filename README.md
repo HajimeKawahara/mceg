@@ -5,7 +5,7 @@ evidence, and limitations in machine-readable YAML. The long-term aim is to
 identify incompatible model combinations, unsupported applications, and missing
 evidence across scientific packages.
 
-This repository contains the **experimental v0.2 release candidate** (`0.2.0rc1`).
+This repository contains the **experimental v0.2 release candidate** (`0.2.0rc2`).
 It reads both the frozen v0.1 contracts and the new v0.2 records, which separate
 scientific Claims from context-specific Assessments. It checks structure and
 source records, compares explicitly supplied conditions, and explains remaining
@@ -15,9 +15,9 @@ The `v0.1.0` baseline and its schema meanings remain unchanged.
 
 ## Design principles
 
-- Keep MCEG independent of the packages it describes. ExoEOS and ExoGibbs are
-  examples, not dependencies. Provider-owned contracts and numerical receipts
-  live with the provider; core validation never imports its implementation.
+- Keep MCEG independent of the packages it describes. Providers own their model
+  contracts and scientific reviews. MCEG supplies generic schemas and checks;
+  archived provider examples are fixtures, not runtime dependencies.
 - Separate scientific applicability from the domain where equations can be
   evaluated numerically. A finite result is not an accuracy guarantee.
 - Separate numerical **verification** from physical **validation** against
@@ -115,11 +115,17 @@ Use `--claim ID` or `--assessment ID` for their scope, evidence and next steps;
 `--json` retains full records. No source is downloaded or evidence changed.
 
 For v0.2, `mceg check contract.yaml --assessment ID` audits that Assessment's
-Evidence dependencies and reports its stored support or membership result.
-Add `--root /path/to/provider` to verify the selected Subject's file hashes and
-its Evidence artifact hashes. The same option works with `explain`. This checks
-local bytes without changing historical support; see
-[local file verification](docs/en/checks.md#verify-local-file-hashes).
+Evidence and provenance dependencies. Its next-step command retains the ID.
+Without a selector, checks explicitly include historical records. Authored
+`follow_up_resolutions` move completed tasks out of pending instructions and
+link their completion evidence; historical inspection and support stay intact.
+The new optional field requires rc2 or later; rc1 rejects it. See the
+[v0.2 guide](docs/en/v02.md#record-completed-work).
+
+Add `--root /path/to/provider` with `--assessment ID` to verify the selected
+Subject's file hashes and its Evidence artifact hashes. The same option works
+with `explain`. This checks local bytes without changing historical support;
+see [local file verification](docs/en/checks.md#verify-local-file-hashes).
 
 Both `check` and `explain` accept `--lang ja` for Japanese headings, check
 messages and suggested work (`--lang en` is the default). Follow-up commands

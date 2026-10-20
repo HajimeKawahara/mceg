@@ -11,7 +11,12 @@ from .schema import (Domain, Evidence as Evidence01, Implementation, Model,
 
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Unit = Literal["K", "Pa", "bar", "MPa", "GPa"]
-QuantityName = Literal["temperature", "pressure", "melt_total_pressure", "hydrogen_fugacity"]
+QuantityName = Literal[
+    "temperature", "pressure", "melt_total_pressure", "hydrogen_fugacity",
+    "water_partial_pressure", "carbon_dioxide_partial_pressure",
+    "carbon_monoxide_fugacity", "methane_fugacity", "nitrogen_partial_pressure",
+    "water_fugacity", "helium_fugacity",
+]
 SCALE = {"K": 1, "Pa": 1, "bar": 100000, "MPa": 1000000, "GPa": 1000000000}
 
 

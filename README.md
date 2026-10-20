@@ -16,7 +16,8 @@ The `v0.1.0` baseline and its schema meanings remain unchanged.
 ## Design principles
 
 - Keep MCEG independent of the packages it describes. ExoEOS and ExoGibbs are
-  examples, not dependencies; neither repository is modified.
+  examples, not dependencies. Provider-owned contracts and numerical receipts
+  live with the provider; core validation never imports its implementation.
 - Separate scientific applicability from the domain where equations can be
   evaluated numerically. A finite result is not an accuracy guarantee.
 - Separate numerical **verification** from physical **validation** against
@@ -28,7 +29,7 @@ The `v0.1.0` baseline and its schema meanings remain unchanged.
 - Record missing knowledge explicitly as `unknown`. Unknown does not mean false,
   physically invalid, or universally applicable.
 - Keep model definitions, test conditions, and physical calibration distinct.
-- Start small: no graph database, reasoning engine, or automatic code inspection.
+- Start small: no graph database, reasoning engine, or automatic scientific-model inference.
   Automatic evidence reuse is limited to explicitly reviewed cases. Upstream
   execution is confined to optional examples.
 
@@ -62,6 +63,7 @@ mceg check -k curated --plain             # Use the original text layout
 mceg check -k curated --lang ja           # Use Japanese UI messages
 mceg check -k curated -v                  # Show audit gaps and recorded claims
 mceg check -k curated --json              # Emit the full JSON report
+mceg coverage .                          # Check the provider's model inventory
 mceg -h                                 # Show commands and usage examples
 ```
 
@@ -76,6 +78,12 @@ the temperature is in range but is not an archived sample, so evidence reuse is
 inspect saved evidence without running a solver or detecting installed Python/JAX
 versions. See `mceg check --help` and the [check command guide](docs/en/checks.md)
 for all options, scope, and exit codes.
+
+Providers can publish `mceg/models.yaml` to map scientific models to code and
+contracts, including multiple model choices within one function. `mceg coverage`
+reports uncontracted models, broken mappings, and new or changed source/data
+files requiring review. It checks registration and review coverage, independently
+of numerical or physical support; see the [inventory guide](docs/en/coverage.md).
 
 ### Follow an UNKNOWN result
 
@@ -249,6 +257,13 @@ difference, and the inherited infrared-calibration problem. Scientific accuracy
 remains unknown; no empirical coefficient or computed concentration was corrected.
 
 ## Provider adoption trials
+
+The [provider authoring procedure](docs/en/provider_onboarding.md) describes how
+to add a v0.2 model contract, from model identity and source review to numerical
+receipts, file verification and later updates. It was exercised on six ExoGibbs
+solubility laws and eight ExoEOS magma, fluid, alloy and solute constructions.
+Each provider's `mceg/model_inventory.md` lists coverage and remaining work.
+The new pressure quantity names are described in the [v0.2 guide](docs/en/v02.md).
 
 The [three trials](docs/en/provider_trials.md) ([Japanese](docs/ja/provider_trials.md))
 use the frozen v0.1 format to test a second connection and provider-side workflows:

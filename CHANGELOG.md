@@ -2,6 +2,43 @@
 
 ## Unreleased
 
+### Model inventory coverage
+
+- Add a separate machine-readable inventory with many-to-many code/model/contract
+  bindings, explicit model settings, and reviewed file classifications/digests.
+- Add `mceg coverage [ROOT] [--inventory PATH] [--json]` to detect uncontracted
+  models, missing or mismatched references, unlisted contracts, absent definitions,
+  and new/changed source or coefficient files. AST checks never import providers.
+- Keep source-review status, model registration, numerical evidence and physical
+  support distinct. Document the initial-review and scope limits of detection.
+
+Validation: 359 MCEG tests passed, including 33 coverage regressions. Actual
+provider inventories map all 9 ExoEOS and 12 ExoGibbs contracts, while exposing
+28 and 8 uncontracted entries and 7 and 188 unreviewed files, respectively.
+Eight mutations per provider produced the expected new gaps; an additional
+case per provider records the limit of detecting an entirely omitted variant
+when its shared file and contract remain mapped.
+
+### Volatile-solubility quantities
+
+- Add distinct v0.2 quantities for H2O/CO2/N2 partial pressures and H2O/He/CO/CH4
+  fugacities, identified while reviewing ExoGibbs solubility laws and ExoEOS
+  magma models. Existing pressure-unit conversion and exact sample matching
+  apply without treating these inputs as total melt pressure or as each other.
+- Preserve the v0.1 schema and existing scientific assessments. No provider
+  imports, solver execution, new dependencies, or automatic support rules.
+- Document the provider authoring workflow using fourteen new provider-owned
+  contracts, separate numerical/physical reviews, actual test receipts and
+  selected-file verification. Numerical execution is an optional provider task,
+  outside MCEG core.
+
+Validation: 326 MCEG tests passed. All 21 provider contracts validated, including
+the 14 new records; their 70 selected numerical/hash checks passed. The provider
+runs recorded 877 ExoEOS and 72 ExoGibbs tests, and seven provider metadata checks
+passed. A real Sun-Yao Context preserved unknown physical support while missing
+partial pressure, substituted fugacity and changed oxide composition produced
+the expected distinct membership outcomes.
+
 ### Scoped file verification
 
 - Add `mceg check --assessment ID` and share its Evidence dependency audit with

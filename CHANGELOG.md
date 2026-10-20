@@ -2,6 +2,78 @@
 
 ## Unreleased
 
+### Model initialization and command-first README
+
+- Add `mceg init MODEL_ID --source PATH --symbol NAME` with explicit model
+  settings. Generate a valid v0.2 draft and append its inventory mapping without
+  importing the provider, assigning review hashes or fabricating test results.
+- Mark generated inventory models `review_pending`; coverage reports them even
+  when their shared source file has already been reviewed for another model.
+- Preserve existing contracts, inventory records, pins and comments. Validate
+  inputs before writing and roll back a new contract if its inventory update fails.
+- Lead the README with the main command reference, installation and first-model
+  workflow. Move detailed initialization guidance into its own guide and link
+  existing reference material and evidence studies.
+
+Validation: 415 tests passed against the installed wheel in an isolated
+environment with no ExoEOS, ExoGibbs, ExoInventory or JAX importable, including
+44 initialization cases. The README first-use commands and both real provider
+inventories were exercised on temporary copies: existing records stayed intact
+and new models sharing reviewed source files remained pending. All 21 provider
+contracts validated and their 70 selected numerical/hash checks passed.
+
+### Model inventory coverage
+
+- Add a separate machine-readable inventory with many-to-many code/model/contract
+  bindings, explicit model settings, and reviewed file classifications/digests.
+- Add `mceg coverage [ROOT] [--inventory PATH] [--json]` to detect uncontracted
+  models, missing or mismatched references, unlisted contracts, absent definitions,
+  and new/changed source or coefficient files. AST checks never import providers.
+- Keep source-review status, model registration, numerical evidence and physical
+  support distinct. Document the initial-review and scope limits of detection.
+
+Validation: 359 MCEG tests passed, including 33 coverage regressions. Actual
+provider inventories map all 9 ExoEOS and 12 ExoGibbs contracts, while exposing
+28 and 8 uncontracted entries and 7 and 188 unreviewed files, respectively.
+Eight mutations per provider produced the expected new gaps; an additional
+case per provider records the limit of detecting an entirely omitted variant
+when its shared file and contract remain mapped.
+
+### Volatile-solubility quantities
+
+- Add distinct v0.2 quantities for H2O/CO2/N2 partial pressures and H2O/He/CO/CH4
+  fugacities, identified while reviewing ExoGibbs solubility laws and ExoEOS
+  magma models. Existing pressure-unit conversion and exact sample matching
+  apply without treating these inputs as total melt pressure or as each other.
+- Preserve the v0.1 schema and existing scientific assessments. No provider
+  imports, solver execution, new dependencies, or automatic support rules.
+- Document the provider authoring workflow using fourteen new provider-owned
+  contracts, separate numerical/physical reviews, actual test receipts and
+  selected-file verification. Numerical execution is an optional provider task,
+  outside MCEG core.
+
+Validation: 326 MCEG tests passed. All 21 provider contracts validated, including
+the 14 new records; their 70 selected numerical/hash checks passed. The provider
+runs recorded 877 ExoEOS and 72 ExoGibbs tests, and seven provider metadata checks
+passed. A real Sun-Yao Context preserved unknown physical support while missing
+partial pressure, substituted fugacity and changed oxide composition produced
+the expected distinct membership outcomes.
+
+### Authored task completion (`0.2.0rc2`)
+
+- Add optional v0.2 `follow_up_resolutions` with a task reference, nonempty
+  Evidence references and completion note. Reject missing references and duplicate
+  completions. Show completed tasks separately with links to their evidence,
+  preserving historical source fields, support and v0.1 restoration. Existing
+  v0.2 documents remain readable; rc1 rejects the new field even when empty.
+- Exercise completion, scoped checks and preservation of history using synthetic
+  records. Scientific reviews and completion declarations remain provider-owned;
+  MCEG does not depend on a particular provider, paper or review dataset.
+
+Validation: 302 tests passed, including 12 synthetic completion cases covering
+pending/completed work, invalid references, scoped navigation and unchanged
+source traces, support judgments and v0.1 restoration.
+
 ### Scoped file verification
 
 - Add `mceg check --assessment ID` and share its Evidence dependency audit with

@@ -198,6 +198,29 @@ def check_steps(name, entry):
                    "Address the stated reason and append a separately identified assessment; preserve the old record.")]
 
 
+def apply_resolutions(contract, path, item):
+    """Separate completed authored work from suggestions without rewriting source gaps."""
+    if not isinstance(contract, ContractV02):
+        return
+    resolutions = {r.follow_up: r for r in contract.follow_up_resolutions}
+    instructions = item.get("recorded_follow_ups", [])
+    completed = [{**resolutions[f["id"]].model_dump(), "instruction": f}
+                 for f in instructions if f["id"] in resolutions]
+    if not completed:
+        return
+    item["recorded_follow_ups"] = [f for f in instructions if f["id"] not in resolutions]
+    item["resolved_follow_ups"] = completed
+    if not item["recorded_follow_ups"]:
+        # The original inspection state is still reported. Show completion evidence
+        # instead of repeating a generic acquisition request for that historical gap.
+        item["suggested_steps"] = [s for s in item.get("suggested_steps", [])
+                                   if s != SOURCE_ACTIONS["source_not_fully_inspected"]]
+    item["next_commands"] = list(dict.fromkeys([
+        *item.get("next_commands", []),
+        *(command(path, "--evidence", key) for r in completed for key in r["evidence"]),
+    ]))
+
+
 def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None, *, root=None):
     root = resolve_root(root, assessment_id)
     if root is not None and (evidence_id is not None or claim_id is not None):
@@ -249,6 +272,8 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                       assessments=[{"id": a.id, "context": a.context,
                                     "result": getattr(a, "status", getattr(a, "classification", None))}
                                    for a in getattr(contract, "assessments", [])])
+    for item in report["items"]:
+        apply_resolutions(contract, path, item)
     return report
 
 
@@ -371,6 +396,11 @@ def display(report, lang="en", plain=False):
                         else:
                             print(f"    {detail(message, lang)}")
             number = 0
+            for resolution in item.get("resolved_follow_ups", []):
+                write(t("Completed follow-up") + ": " + resolution["follow_up"], code="1;36")
+                write(resolution["note"], "      ")
+                write(t("Recorded task completion only; historical source fields and support judgments are unchanged."),
+                      "      ", "2")
             for field, label in (("recorded_follow_ups", "Recorded next step"), ("suggested_steps", "Suggested next step")):
                 # Authored follow-ups are scientific record content, not UI messages.
                 step_text = t if field == "suggested_steps" else str

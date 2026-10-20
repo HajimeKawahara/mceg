@@ -11,7 +11,12 @@ from .schema import (Domain, Evidence as Evidence01, Implementation, Model,
 
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Unit = Literal["K", "Pa", "bar", "MPa", "GPa"]
-QuantityName = Literal["temperature", "pressure", "melt_total_pressure", "hydrogen_fugacity"]
+QuantityName = Literal[
+    "temperature", "pressure", "melt_total_pressure", "hydrogen_fugacity",
+    "water_partial_pressure", "carbon_dioxide_partial_pressure",
+    "carbon_monoxide_fugacity", "methane_fugacity", "nitrogen_partial_pressure",
+    "water_fugacity", "helium_fugacity",
+]
 SCALE = {"K": 1, "Pa": 1, "bar": 100000, "MPa": 1000000, "GPa": 1000000000}
 
 
@@ -180,6 +185,13 @@ class FollowUp(Record):
     sources: list[Text] = Field(default_factory=list)
 
 
+class FollowUpResolution(Record):
+    """An authored completion record, not an automatic evidence/support judgment."""
+    follow_up: Text
+    evidence: list[Text] = Field(min_length=1)
+    note: Text
+
+
 class Migration(Record):
     from_schema: Literal["0.1"]
     source_sha256: Digest
@@ -200,6 +212,7 @@ class ContractV02(Record):
     conditions: list[Condition] = Field(default_factory=list)
     assessments: list[Assessment] = Field(default_factory=list)
     follow_ups: list[FollowUp] = Field(default_factory=list)
+    follow_up_resolutions: list[FollowUpResolution] = Field(default_factory=list)
     migration: Migration | None = None
 
     @model_validator(mode="after")
@@ -261,4 +274,14 @@ class ContractV02(Record):
         for action in self.follow_ups:
             if (action.target, action.revision) not in references[action.target_kind]:
                 raise ValueError("Unknown follow-up target; Claim/Condition targets require a revision")
+        resolved = [r.follow_up for r in self.follow_up_resolutions]
+        if len(resolved) != len(set(resolved)):
+            raise ValueError("Duplicate follow-up resolutions")
+        if set(resolved) - {f.id for f in self.follow_ups}:
+            raise ValueError("Unknown resolved follow-up")
+        for resolution in self.follow_up_resolutions:
+            if set(resolution.evidence) - evidence.keys():
+                raise ValueError("Unknown resolution evidence")
+            if len(resolution.evidence) != len(set(resolution.evidence)):
+                raise ValueError("Duplicate resolution evidence")
         return self

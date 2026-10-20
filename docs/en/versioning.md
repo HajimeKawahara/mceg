@@ -1,9 +1,22 @@
 # Versions and compatibility
 
-The working package version is `0.2.0rc1`, a release candidate with explicit
+The working package version is `0.2.0rc2`, a release candidate with explicit
 readers for schemas `"0.1"` and `"0.2"`. This does not move the baseline tag or
 publish a final release. The [v0.2 guide](v02.md) defines the common records,
 limited automatic comparisons and migration procedure.
+
+The second candidate adds optional `follow_up_resolutions` to the experimental
+v0.2 format. Existing v0.2 records remain readable; resolutions default to an
+empty list. The rc1 reader rejects documents
+containing the new field, including an empty list, because unknown fields are
+forbidden. Such documents require rc2 or later. This is an explicitly documented
+candidate-format extension, not a change to the frozen v0.1 format or tracing
+semantics. Task completion never changes historical inspection or support.
+
+The candidate also adds distinct volatile partial-pressure/fugacity quantity
+names described in the [v0.2 guide](v02.md). Older readers that lack these enum
+values reject contracts using them. `init` and `coverage` are additive commands;
+their separate inventory format is documented in the [coverage guide](coverage.md).
 
 ## Experimental v0.1 baseline
 

@@ -51,6 +51,11 @@ classify reviewed support files with a reason, and leave other files unreviewed.
 See the [inventory format and detection limits](coverage.md). File hashes guard
 the reviewed snapshot; they cannot discover an omitted pre-existing model.
 
+For a new model, [`mceg init`](initialization.md) can create the v0.2 draft and
+inventory mapping together. Fill its TODO fields and review its bindings before
+clearing `review_pending`. Existing file reviews do not automatically cover a
+new model choice, and the generated Subject/Context records no execution.
+
 ## 2. Separate numerical domains from scientific applicability
 
 Put implementation constraints under `domains: numerical_evaluation`: supported

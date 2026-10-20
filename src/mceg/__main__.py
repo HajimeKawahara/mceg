@@ -13,6 +13,9 @@ from .provenance import trace_provenance
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv and not Path(argv[0]).is_file():
+        if argv[0] == "init":
+            from .initialization import main as command
+            return command(argv[1:])
         if argv[0] == "check":
             from .check import main as command
             return command(argv[1:])
@@ -35,12 +38,14 @@ def main(argv: list[str] | None = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Commands:\n"
+            "  init      Start a model contract and register it for review.\n"
             "  check     Discover contracts and summarize available checks.\n"
             "  coverage  Find model registration and source-review gaps.\n"
             "  explain   Inspect gaps, evidence and concrete next steps.\n"
             "  migrate   Preserve a v0.1 contract in the v0.2 format.\n"
             "  assess    Evaluate explicit conditions and save scoped assessments.\n\n"
             "Examples:\n"
+            "  mceg init mypkg.water --source src/mypkg/water.py --symbol concentration\n"
             "  mceg check -k curated\n"
             "  mceg explain -k curated --temperature 1750 --lang ja\n"
             "  mceg explain -k curated --plain\n"

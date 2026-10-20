@@ -11,6 +11,10 @@ mceg coverage /path/to/provider --json
 mceg coverage . --inventory mceg/models.yaml
 ```
 
+To start a contract and its pending inventory entry, use
+[`mceg init`](initialization.md). It leaves source files unclassified and model
+review pending until a human records the review.
+
 The default inventory is `mceg/models.yaml`, relative to the provider root
 (current directory by default). YAML and JSON use the same strict schema and
 duplicate-key checks. Exit codes are **0** for complete registration/review
@@ -66,6 +70,13 @@ Bindings are authored independently of contract `implementation.entry_points`,
 which remain descriptive strings; the checker does not resolve re-export aliases
 or prove that those strings describe the bound model's scientific scope.
 
+`models[].review_pending` optionally marks a model whose boundary and contract
+links still need review. It defaults to `false` for existing authored inventories;
+`init` sets it to `true`. Pending models produce `unreviewed_model` even if a
+shared file already has a current review hash. Clear it only after reviewing
+the new model's identity and links. This flag concerns inventory review, not
+scientific support or the contract's separate Follow-up records.
+
 `source_roots` and `contract_roots` name explicit directories or individual files.
 Paths are normalized, relative POSIX paths within the provider. Symlinks are
 reported as gaps without reading their targets. All source files, including
@@ -92,6 +103,7 @@ execute or validate arbitrary argument values, data keys or callback choices.
 | Gap | Diagnostic |
 | --- | --- |
 | An inventoried model has no contract | `uncontracted_model` |
+| A model's boundary/link review is pending | `unreviewed_model` |
 | A contract is missing, invalid or linked with the wrong model ID | `invalid_contract`, `contract_mismatch` |
 | A discovered contract has no inventory link | `unlisted_contract` |
 | A new or not-yet-classified source/data file exists | `unreviewed_file` |

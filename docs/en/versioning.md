@@ -13,6 +13,11 @@ forbidden. Such documents require rc2 or later. This is an explicitly documented
 candidate-format extension, not a change to the frozen v0.1 format or tracing
 semantics. Task completion never changes historical inspection or support.
 
+The candidate also adds distinct volatile partial-pressure/fugacity quantity
+names described in the [v0.2 guide](v02.md). Older readers that lack these enum
+values reject contracts using them. `init` and `coverage` are additive commands;
+their separate inventory format is documented in the [coverage guide](coverage.md).
+
 ## Experimental v0.1 baseline
 
 MCEG freezes its first proof of concept on 2026-10-15. The package version and

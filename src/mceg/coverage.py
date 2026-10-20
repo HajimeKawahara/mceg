@@ -51,6 +51,7 @@ class ContractLink(Record):
 class InventoryModel(Record):
     id: Text
     description: Text
+    review_pending: bool = False
     bindings: list[Binding] = Field(min_length=1)
     contracts: list[ContractLink] = Field(default_factory=list)
 
@@ -184,6 +185,9 @@ def check_coverage(root: str | Path, inventory: Inventory) -> dict:
     bound_files = set()
     for model in inventory.models:
         source_status = "current"
+        if model.review_pending:
+            issue("unreviewed_model", None,
+                  "Review model boundaries and contract links before clearing review_pending", model.id)
         for binding in model.bindings:
             bound_files.add(binding.path)
             review = inventory.files.get(binding.path)
@@ -208,6 +212,7 @@ def check_coverage(root: str | Path, inventory: Inventory) -> dict:
                       f"Expected model.id {link.model_id!r}; found {actual!r}", model.id)
         models.append({"id": model.id, "registration": registration,
                        "source_status": source_status,
+                       **({"review_pending": True} if model.review_pending else {}),
                        "bindings": [binding.model_dump(exclude_none=True) for binding in model.bindings],
                        "contracts": [link.model_dump() for link in model.contracts]})
 

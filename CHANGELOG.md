@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Model initialization and command-first README
+
+- Add `mceg init MODEL_ID --source PATH --symbol NAME` with explicit model
+  settings. Generate a valid v0.2 draft and append its inventory mapping without
+  importing the provider, assigning review hashes or fabricating test results.
+- Mark generated inventory models `review_pending`; coverage reports them even
+  when their shared source file has already been reviewed for another model.
+- Preserve existing contracts, inventory records, pins and comments. Validate
+  inputs before writing and roll back a new contract if its inventory update fails.
+- Lead the README with the main command reference, installation and first-model
+  workflow. Move detailed initialization guidance into its own guide and link
+  existing reference material and evidence studies.
+
+Validation: 415 tests passed against the installed wheel in an isolated
+environment with no ExoEOS, ExoGibbs, ExoInventory or JAX importable, including
+44 initialization cases. The README first-use commands and both real provider
+inventories were exercised on temporary copies: existing records stayed intact
+and new models sharing reviewed source files remained pending. All 21 provider
+contracts validated and their 70 selected numerical/hash checks passed.
+
 ### Model inventory coverage
 
 - Add a separate machine-readable inventory with many-to-many code/model/contract

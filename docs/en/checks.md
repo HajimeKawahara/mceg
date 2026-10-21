@@ -218,6 +218,23 @@ evidence and reason for that judgment. `--json` includes the complete records;
 lists. `mceg -h` lists commands and examples; `mceg explain -h` lists its selectors,
 context options, language and output modes.
 
+For an unchecked or discrepant comparison, the suggested task identifies the
+upstream Evidence ID, source links, recorded page/equation location, inspection
+state and comparison note. Its navigation command is shown even when the source
+itself is already inspected: reading a source and comparing it with an
+implementation are separate review steps.
+
+When a completed follow-up cites an inspected comparison of the same source,
+`explain` shows its result before the historical record, instead of asking for
+that comparison again. Source identity must match by Evidence ID or recorded
+artifact SHA-256; a shared URL alone is insufficient. The follow-up may record
+agreement **or a discrepancy**: finishing a comparison does not resolve every
+difference or establish physical accuracy. Commands lead to the completion
+evidence and assessments that explicitly cite it. Other unchecked sources and
+open tasks remain visible. JSON retains the deferred suggestions in
+`historical_steps` and the source matches in `completed_comparisons`; the original
+records and source audit are unchanged.
+
 Each proposed task includes what to do, any material required, and completion
 criteria. Authored v0.2 follow-ups are labeled **Recorded next step**; guidance
 derived from gap categories is labeled **Suggested next step**. For example:

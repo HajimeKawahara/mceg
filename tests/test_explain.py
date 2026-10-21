@@ -47,6 +47,69 @@ def test_upstream_gaps_have_copyable_navigation(capsys):
     assert "HTTP 403" in capsys.readouterr().out
 
 
+@pytest.mark.parametrize("contract_path", [H2, V02])
+def test_comparison_tasks_identify_inspected_sources_and_preserve_navigation(
+        contract_path, tmp_path, monkeypatch, capsys):
+    data = load_contract(contract_path).model_dump()
+    links = []
+    for comparison in ("not_checked", "discrepancy", "consistent"):
+        key = "reference_" + comparison
+        data["evidence"].append({
+            "id": key, "kind": "literature", "summary": "Source audit",
+            "sources": [f"https://example.org/{key}.pdf"],
+            "scope": "Synthetic equation convention.",
+            "provenance": {"role": "primary", "inspection": "inspected",
+                           "location": f"Fixture Eq. 8: {key}", "note": "Synthetic inspection."},
+        })
+        links.append({"evidence": key, "comparison": comparison,
+                      "note": f"Recorded comparison of physical Z: {key}"})
+    data["evidence"].append({
+        "id": "review", "kind": "implementation", "summary": "Synthetic source review.",
+        "sources": ["src/model.py"], "scope": "Synthetic equation convention.",
+        "provenance": {"role": "implementation", "inspection": "inspected",
+                       "location": "model.py:pressure", "note": "Synthetic review.", "derived_from": links},
+    })
+    path = tmp_path / "review with spaces.json"
+    write_json(path, data)
+    before = path.read_bytes()
+    args = ["explain", str(path), "--evidence", "review"]
+    assert main([*args, "--json"]) == 0
+    report = capsys.readouterr().out
+    item = json.loads(report)["contracts"][0]["items"][0]
+    assert item["upstream_gaps"] == []  # Both sources are inspected; their comparisons are unresolved.
+    targets = [target for step in item["suggested_steps"] for target in step["comparison_targets"]]
+    assert [target["evidence"] for target in targets] == ["reference_not_checked", "reference_discrepancy"]
+    assert item["comparisons"] == links
+    for target in targets:
+        key = target["evidence"]
+        assert target["sources"] == [f"https://example.org/{key}.pdf"]
+        assert target["location"] == f"Fixture Eq. 8: {key}"
+        assert target["inspection"] == "inspected"
+        assert target["note"] == f"Recorded comparison of physical Z: {key}"
+    assert main([*args, "--json", "--lang", "ja"]) == 0
+    assert capsys.readouterr().out == report
+
+    monkeypatch.setenv("NO_COLOR", "1")
+    for language, terminal in (("en", False), ("ja", False), ("ja", True)):
+        monkeypatch.setattr(sys.stdout, "isatty", lambda: terminal)
+        assert main([*args, "--lang", language]) == 0
+        output = capsys.readouterr().out
+        assert ("Comparison target" if language == "en" else "比較対象") in output
+        assert "Source audit" in output  # Authored values remain untranslated.
+        for target in targets:
+            assert target["sources"][0] in output
+            assert target["location"] in " ".join(output.split())
+        commands = [line.split(": ", 1)[1] for line in output.splitlines() if ": mceg explain " in line]
+        assert len(commands) == 2
+        for next_command, target in zip(commands, targets):
+            options = shlex.split(next_command)[1:]
+            assert options[:4] == ["explain", str(path), "--evidence", target["evidence"]]
+            assert options[4:] == (["--lang", "ja"] if language == "ja" else [])
+            assert main(options) == 0
+            assert target["sources"][0] in capsys.readouterr().out
+    assert path.read_bytes() == before
+
+
 def test_physical_unknown_requires_physical_evidence_and_explicit_claim_review(capsys):
     assert main(["explain", str(V02), "--claim", "physical_accuracy"]) == 0
     output = " ".join(capsys.readouterr().out.split())

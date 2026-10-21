@@ -3,6 +3,7 @@
 from copy import deepcopy
 import json
 import shlex
+import sys
 
 import pytest
 
@@ -110,6 +111,150 @@ def test_one_completed_task_does_not_hide_other_pending_inspection_work(reviewed
     assert [f["id"] for f in item["recorded_follow_ups"]] == ["another-task"]
     assert item["resolved_follow_ups"][0]["follow_up"] == "inspect-source"
     assert SOURCE_ACTIONS["source_not_fully_inspected"] in item["suggested_steps"]
+
+
+@pytest.fixture
+def compared(reviewed):
+    path, contract, _, _ = reviewed
+    data = contract.model_dump()
+    for source in data["evidence"]:
+        source["provenance"]["inspection"] = "inspected"
+        source["artifacts"] = [{"source": "https://example.org/source", "sha256": "a" * 64}]
+    review = {
+        "id": "old-review", "kind": "implementation", "summary": "Synthetic implementation review.",
+        "sources": ["model.py"], "scope": "Synthetic equation convention.",
+        "provenance": {"role": "implementation", "location": "model.py:pressure",
+                       "inspection": "inspected", "note": "Historical comparison gap.",
+                       "derived_from": [{"evidence": "original-source", "comparison": "not_checked",
+                                         "note": "Equivalence had not been checked."}]},
+    }
+    data["evidence"].append(review)
+    updated = deepcopy(review)
+    updated.update(id="follow-up-review", summary="Source audit")
+    updated["provenance"]["derived_from"] = [
+        {"evidence": "reviewed-source", "comparison": "discrepancy", "note": "A convention differs."}]
+    data["evidence"].append(updated)
+    data["follow_ups"][0].update(id="compare-source", target="old-review",
+                                 action="Compare the equation convention.", completion="Record the comparison.")
+    data["follow_ups"].append({
+        "id": "clarify-difference", "target_kind": "evidence", "target": "follow-up-review",
+        "action": "Clarify the differing convention.", "completion": "Record its intended definition.",
+    })
+    data["follow_up_resolutions"][0].update(follow_up="compare-source", evidence=["follow-up-review"],
+                                           note="Compared; the convention still needs clarification.")
+    data["assessments"][-1]["evidence"] = ["follow-up-review"]
+    path.write_text(ContractV02.model_validate(data).model_dump_json())
+    return path, data
+
+
+@pytest.mark.parametrize("identity", ["id", "hash"])
+@pytest.mark.parametrize("outcome", ["consistent", "discrepancy"])
+def test_completed_comparison_routes_to_results_without_rewriting_history(compared, identity, outcome):
+    path, data = compared
+    link = data["evidence"][-1]["provenance"]["derived_from"][0]
+    link["comparison"] = outcome
+    if identity == "id":
+        link["evidence"] = "original-source"
+        for source in data["evidence"][:2]:
+            source["artifacts"] = []
+    path.write_text(ContractV02.model_validate(data).model_dump_json())
+    before = path.read_bytes()
+    trace = trace_provenance(load_contract(path), "old-review")
+    item = explain_contract(path, {}, evidence_id="old-review")["items"][0]
+    assert item["suggested_steps"] == item["recorded_follow_ups"] == []
+    assert item["issues"] == ["comparison_not_checked"]
+    assert item["comparisons"][0]["comparison"] == "not_checked"
+    assert item["historical_steps"][0]["comparison_targets"][0]["evidence"] == "original-source"
+    assert item["completed_comparisons"][0]["comparison"] == outcome
+    assert item["completed_comparisons"][0]["source"] == link["evidence"]
+    commands = [shlex.split(c) for c in item["next_commands"]]
+    assert commands[0][-2:] == ["--assessment", "current-review"]
+    assert commands[1][-2:] == ["--evidence", "follow-up-review"]
+    follow_up = explain_contract(path, {}, evidence_id="follow-up-review")["items"][0]
+    assert follow_up["recorded_follow_ups"][0]["id"] == "clarify-difference"
+    assessment = explain_contract(path, {}, assessment_id="current-review")["items"][0]
+    assert assessment["record"]["status"] == "unknown"
+    assert trace_provenance(load_contract(path), "old-review") == trace
+    assert not trace["recorded_audit_complete"]
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("gap", ["url_only", "different_bytes", "source_only",
+                                "unchecked", "no_resolution", "open_task"])
+def test_completion_does_not_hide_comparisons_without_scoped_review(compared, gap):
+    path, data = compared
+    if gap == "url_only":
+        data["evidence"][1]["artifacts"] = []
+    elif gap == "different_bytes":
+        data["evidence"][1]["artifacts"][0]["sha256"] = "b" * 64
+    elif gap == "source_only":
+        data["follow_up_resolutions"][0]["evidence"] = ["reviewed-source"]
+    elif gap == "unchecked":
+        data["evidence"][-1]["provenance"]["derived_from"][0]["comparison"] = "not_checked"
+    elif gap == "no_resolution":
+        data["follow_up_resolutions"] = []
+    else:
+        task = deepcopy(data["follow_ups"][0])
+        task["id"] = "another-comparison"
+        data["follow_ups"].append(task)
+    path.write_text(ContractV02.model_validate(data).model_dump_json())
+    item = explain_contract(path, {}, evidence_id="old-review")["items"][0]
+    assert item["suggested_steps"][0]["comparison_targets"][0]["evidence"] == "original-source"
+    assert not item.get("historical_steps")
+    assert not item.get("completed_comparisons")
+
+
+def test_completion_keeps_unrelated_unchecked_sources_and_discrepancies(compared):
+    path, data = compared
+    links = data["evidence"][-2]["provenance"]["derived_from"]
+    for key, outcome, digest in [("another-source", "not_checked", "b"),
+                                 ("differing-source", "discrepancy", "c")]:
+        source = deepcopy(data["evidence"][0])
+        source["id"] = key
+        source["artifacts"][0]["sha256"] = digest * 64
+        data["evidence"].append(source)
+        links.append({"evidence": key, "comparison": outcome, "note": "A separate review gap."})
+    path.write_text(ContractV02.model_validate(data).model_dump_json())
+    item = explain_contract(path, {}, evidence_id="old-review")["items"][0]
+    targets = [t["evidence"] for s in item["suggested_steps"] for t in s["comparison_targets"]]
+    assert targets == ["another-source", "differing-source"]
+    assert item["historical_steps"][0]["comparison_targets"][0]["evidence"] == "original-source"
+    assert item["comparisons"] == links
+
+
+def test_completed_comparison_explains_progress_in_both_languages_and_layouts(compared, monkeypatch, capsys):
+    path, _ = compared
+    before = path.read_bytes()
+    args = ["explain", str(path), "--evidence", "old-review"]
+    assert main([*args, "--json"]) == 0
+    machine_report = capsys.readouterr().out
+    assert main([*args, "--json", "--lang", "ja"]) == 0
+    assert capsys.readouterr().out == machine_report
+    monkeypatch.setenv("NO_COLOR", "1")
+    for lang in ("en", "ja"):
+        for terminal in (False, True):
+            monkeypatch.setattr(sys.stdout, "isatty", lambda: terminal)
+            assert main([*args, "--lang", lang]) == 0
+            output = capsys.readouterr().out
+            compact = "".join(output.split())
+            heading = "Review progress" if lang == "en" else "確認作業の進み具合"
+            history = "Original record (history retained)" if lang == "en" else "元の記録（当時の状態を保持）"
+            assert output.index(heading) < output.index(history)
+            explanation = ("Compared; differences remain to be explained." if lang == "en"
+                           else "比較済み：違いが見つかり、その理由や扱いの確認が残っています。")
+            assert "".join(explanation.split()) in compact
+            assert "Source audit" in output  # Authored result summaries remain original.
+            assert "not_checked" in output  # The historical link remains available.
+            assert "Suggested next step" not in output and "提案する次の作業" not in output
+            commands = [line.split(": ", 1)[1] for line in output.splitlines() if ": mceg explain " in line]
+            assert len(commands) == 2
+            for command in commands:
+                options = shlex.split(command)[1:]
+                assert options[:2] == ["explain", str(path)]
+                assert options[4:] == (["--lang", "ja"] if lang == "ja" else [])
+                assert main(options) == 0
+                capsys.readouterr()
+    assert path.read_bytes() == before
 
 
 @pytest.mark.parametrize("kind,target,selector", [("claim", "accuracy", "claim_id"),

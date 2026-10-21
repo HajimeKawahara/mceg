@@ -40,11 +40,11 @@ SOURCE_ACTIONS = {
         "Trace the scoped statement to its original theoretical, experimental or observational source.",
         "Add a primary evidence record and the inspected derivation/comparison links."),
     "comparison_not_checked": action(
-        "Compare the scoped statement with the upstream passage, including values, units, conventions and experimental subset.",
-        "Record the compared locations and a consistent/discrepancy result only after both scoped sources are inspected."),
+        "Compare the equations, tables or code at the source locations below. Check values, units, definitions and the materials and conditions covered.",
+        "After inspecting both sources, record where you compared them, what agrees and what differs."),
     "comparison_discrepancy": action(
-        "Investigate the recorded discrepancy; compare material scope, units and transcription before revising a claim.",
-        "Document the resolution or preserve the discrepancy with its unresolved scope."),
+        "The comparison found differences. Check whether units, definitions, conditions or transcription explain them before changing a claim.",
+        "Record how each difference was explained, or which differences still need investigation."),
 }
 
 VALIDATION_ACTION = action(
@@ -81,18 +81,36 @@ def linked_contracts(path, sources):
 
 
 def evidence_detail(contract, path, evidence_id):
-    evidence = next(e for e in contract.evidence if e.id == evidence_id)
+    by_id = {e.id: e for e in contract.evidence}
+    evidence = by_id[evidence_id]
     trace = trace_provenance(contract, evidence_id)
     local = [i for i in trace["issues"] if i["evidence"] == evidence_id]
     issues = list(dict.fromkeys(i["issue"] for i in local))
     upstream = list(dict.fromkeys(i["evidence"] for i in trace["issues"] if i["evidence"] != evidence_id))
     links = evidence.provenance.derived_from if evidence.provenance else []
+    steps = []
+    for key in issues:
+        step = dict(SOURCE_ACTIONS[key])
+        targets = []
+        for link in links:
+            if key != f"comparison_{link.comparison}":
+                continue
+            source = by_id[link.evidence]
+            provenance = source.provenance
+            targets.append({"evidence": source.id, "summary": source.summary, "sources": source.sources,
+                            "location": provenance.location if provenance else None,
+                            "inspection": provenance.inspection if provenance else None, "note": link.note})
+        if targets:
+            step["comparison_targets"] = targets
+        steps.append(step)
+    pending_comparisons = [link.evidence for link in links if link.comparison != "consistent"]
     return {"id": evidence.id, "record": evidence.model_dump(exclude_none=True), "issues": issues,
             "recorded_follow_ups": recorded_follow_ups(contract, "evidence", evidence_id),
-            "suggested_steps": [SOURCE_ACTIONS[key] for key in issues],
+            "suggested_steps": steps,
             "comparisons": [link.model_dump() for link in links],
             "upstream_gaps": upstream,
-            "next_commands": list(dict.fromkeys([command(path, "--evidence", key) for key in upstream] +
+            "next_commands": list(dict.fromkeys([command(path, "--evidence", key) for key in
+                                                  [*upstream, *pending_comparisons]] +
                                                   linked_contracts(path, evidence.sources)))}
 
 
@@ -198,6 +216,37 @@ def check_steps(name, entry):
                    "Address the stated reason and append a separately identified assessment; preserve the old record.")]
 
 
+def completed_comparisons(contract, item, completed):
+    """Find declared follow-up comparisons of the same recorded source.
+
+    A completion must cite an inspected comparison, with an inspected upstream
+    source identified by its ID or artifact hash. A shared URL alone is not enough.
+    This routes readers to the follow-up; it never changes the original audit.
+    """
+    by_id = {e.id: e for e in contract.evidence}
+    results = []
+    for old in item.get("comparisons", []):
+        if old["comparison"] != "not_checked":
+            continue
+        source = by_id[old["evidence"]]
+        hashes = {a.sha256 for a in source.artifacts}
+        for key in dict.fromkeys(key for r in completed for key in r["evidence"]):
+            review = by_id[key]
+            if not review.provenance:
+                continue
+            for link in review.provenance.derived_from:
+                upstream = by_id[link.evidence]
+                # Schema validation already requires both sides of a checked link
+                # to be inspected.
+                if link.comparison == "not_checked":
+                    continue
+                if source.id == upstream.id or hashes & {a.sha256 for a in upstream.artifacts}:
+                    results.append({"upstream": source.id, "evidence": review.id,
+                                    "source": upstream.id, "comparison": link.comparison,
+                                    "summary": review.summary})
+    return results
+
+
 def apply_resolutions(contract, path, item):
     """Separate completed authored work from suggestions without rewriting source gaps."""
     if not isinstance(contract, ContractV02):
@@ -210,14 +259,38 @@ def apply_resolutions(contract, path, item):
         return
     item["recorded_follow_ups"] = [f for f in instructions if f["id"] not in resolutions]
     item["resolved_follow_ups"] = completed
+    reviewed_sources = set()
     if not item["recorded_follow_ups"]:
-        # The original inspection state is still reported. Show completion evidence
-        # instead of repeating a generic acquisition request for that historical gap.
-        item["suggested_steps"] = [s for s in item.get("suggested_steps", [])
-                                   if s != SOURCE_ACTIONS["source_not_fully_inspected"]]
+        comparisons = completed_comparisons(contract, item, completed)
+        if comparisons:
+            item["completed_comparisons"] = comparisons
+        reviewed_sources = {c["upstream"] for c in comparisons}
+        pending, historical = [], []
+        for step in item.get("suggested_steps", []):
+            if step == SOURCE_ACTIONS["source_not_fully_inspected"]:
+                historical.append(step)
+            elif step["action"] == SOURCE_ACTIONS["comparison_not_checked"]["action"]:
+                targets = step.get("comparison_targets", [])
+                old = [t for t in targets if t["evidence"] in reviewed_sources]
+                remaining = [t for t in targets if t["evidence"] not in reviewed_sources]
+                if old:
+                    historical.append({**step, "comparison_targets": old})
+                if remaining or not old:
+                    pending.append({**step, "comparison_targets": remaining})
+            else:
+                pending.append(step)
+        item["suggested_steps"] = pending
+        if historical:
+            item["historical_steps"] = historical
+    evidence_ids = {key for r in completed for key in r["evidence"]}
+    # Offer explicitly linked assessments, without guessing a latest version from IDs.
+    assessments = [a.id for a in contract.assessments if evidence_ids.intersection(a.evidence)]
+    historical_commands = {command(path, "--evidence", key) for key in reviewed_sources
+                           if key not in item.get("upstream_gaps", [])}
     item["next_commands"] = list(dict.fromkeys([
-        *item.get("next_commands", []),
+        *(command(path, "--assessment", key) for key in assessments),
         *(command(path, "--evidence", key) for r in completed for key in r["evidence"]),
+        *(c for c in item.get("next_commands", []) if c not in historical_commands),
     ]))
 
 
@@ -379,7 +452,22 @@ def display(report, lang="en", plain=False):
                 write(t(contract["view"].capitalize()) + ": " + label, "  ", "1;36")
             else:
                 print(f"  {label}")
+            if item.get("resolved_follow_ups"):
+                write(t("Review progress"), code="1;36")
+                write(t("Follow-up work has a completion record. Its results are listed below."))
+                if item.get("completed_comparisons"):
+                    write(t("The sources below have follow-up comparison results. Their old 'not_checked' entries are kept as history."))
+                    for comparison in item["completed_comparisons"]:
+                        outcome = ("The compared parts agree." if comparison["comparison"] == "consistent"
+                                   else "Compared; differences remain to be explained.")
+                        write(t(outcome) + " " + comparison["evidence"], "      ")
+                        write(comparison["summary"], "        ")
+                elif item.get("historical_steps"):
+                    write(t("The source-reading task has a completion record. The old inspection state is kept as history."))
+                write(t("Task completion does not establish model accuracy. Use the linked assessments to see what the evidence supports."))
             if "record" in item:
+                if item.get("resolved_follow_ups"):
+                    write(t("Original record (history retained)"), code="1")
                 record(item["record"])
                 for key in ("subject", "context", "claim", "condition"):
                     if key in item:
@@ -412,6 +500,14 @@ def display(report, lang="en", plain=False):
                         write(step_text(step["action"]), "      ")
                     else:
                         write(f"{t(label)}: {step_text(step['action'])}")
+                    for target in step.get("comparison_targets", []):
+                        write(t("Comparison target") + ": " + target["evidence"], "      ", "1")
+                        for key, title in (("summary", "Summary"), ("inspection", "Inspection"),
+                                           ("location", "Location"), ("note", "Comparison note")):
+                            if target.get(key):
+                                write(f"{t(title)}: {target[key]}", "        ")
+                        for source in target["sources"]:
+                            print(f"        {t('Source')}: {source}")
                     requirements = step.get("requires", [])
                     if terminal and requirements:
                         write(t("Needed"), "      ", "1")

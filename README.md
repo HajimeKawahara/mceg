@@ -5,15 +5,41 @@ YAML. It checks contracts, explains missing support, and maps models to code.
 Providers own their scientific records; core checks work without importing or
 running provider implementations.
 
+## Start with the package you use
+
+After [installing MCEG](#install), start by inspecting your scientific package:
+
+```bash
+mceg explain --package exogibbs
+```
+
+This shows all models and evidence records indexed by the installed package,
+including documented differences, limitations and open questions. You do not
+need to know a model ID or suspect a particular molecule first.
+
+Once you find a topic to investigate, narrow the report:
+
+```bash
+mceg explain --package exogibbs --species HCN
+```
+
+These commands work from any directory and require a provider version that
+includes an evidence catalog. For editable installations or explicit catalog
+files, see [packaged evidence catalogs](docs/en/package_evidence.md).
+The report describes recorded evidence, not an evaluation of your calculation's
+conditions. ExoGibbs itself works without MCEG installed.
+
 ## Main commands
 
-Run these from a provider repository after installing MCEG.
+The package command above reads an installed distribution. Run the repository
+commands below from a provider checkout after installing MCEG.
 
 | Task | Command |
 | --- | --- |
 | Start a model contract and inventory entry | `mceg init MODEL_ID --source PATH --symbol NAME` |
 | Check discovered contracts and saved evidence | `mceg check` |
 | Explain gaps and the next review steps | `mceg explain` |
+| Discover an installed provider's model evidence | `mceg explain --package exogibbs` |
 | Find inventory, contract and source-review gaps | `mceg coverage .` |
 | Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
@@ -23,6 +49,11 @@ Run these from a provider repository after installing MCEG.
 
 Use `mceg COMMAND -h` for options. `check`, `explain` and `coverage` offer JSON
 reports; `check` and `explain` also accept `--lang ja`.
+
+[Packaged evidence catalogs](docs/en/package_evidence.md) let users inspect a
+provider's model/species records without cloning its repository or importing its
+code. The provider supplies the catalog as data and need not depend on MCEG.
+This reports recorded evidence; it does not evaluate a user's run conditions.
 
 ## Install
 

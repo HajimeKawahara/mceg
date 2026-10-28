@@ -11,9 +11,12 @@ mceg explain --package exogibbs --model exogibbs.curated_gas.v1 --species HCN
 ```
 
 Omit `--model` to inspect all models in the catalog, or omit `--species` to see
-all indexed records. `--json` retains full records and stable field names;
-`--plain` uses text, and `--lang ja` translates the interface labels. Authored
-scientific content retains its original language.
+all indexed records. Terminals highlight headings, support judgments and open
+follow-ups, and wrap explanatory prose to the terminal width. Commands and URLs
+remain on single physical lines for copying. `--plain` and redirected output
+retain the plain layout; `NO_COLOR` and `TERM=dumb` disable color. `--json`
+retains full records and stable field names, and `--lang ja` translates the
+interface labels. Authored scientific content retains its original language.
 
 This lookup reads the installed distribution's file list using Python package
 metadata. It does **not** import the provider, call its code, download evidence,

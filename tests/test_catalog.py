@@ -2,7 +2,9 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
+import re
 import sys
 
 import pytest
@@ -187,3 +189,71 @@ def test_unknown_model_and_package_are_actionable(catalog):
         explain_catalog(catalog=path, model="unknown")
     with pytest.raises(ValueError, match="not installed; use --catalog"):
         explain_catalog(package="mceg-nonexistent-fixture-package")
+
+
+def enable_terminal(monkeypatch):
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    monkeypatch.setattr("mceg.catalog.shutil.get_terminal_size", lambda: os.terminal_size((72, 24)))
+
+
+def test_terminal_catalog_highlights_scoped_status_and_wraps_only_prose(catalog, monkeypatch, capsys):
+    enable_terminal(monkeypatch)
+    path, data = catalog
+    assert main(["explain", "--catalog", str(path), "--species", "HCN"]) == 0
+    output = capsys.readouterr().out
+    assert "\033[1;36m  study\033[0m" in output
+    assert "\033[1;32m    numerical_verification / formula_evaluation: supported" in output
+    assert "\033[1;33m    physical_validation / physical_accuracy: unknown" in output
+    text = re.sub(r"\033\[[0-9;]*m", "", output)
+    assert data["models"][0]["records"][0]["summary"] in " ".join(text.split())
+    assert "Your conditions: not evaluated" in text
+    commands = [line.strip() for line in text.splitlines() if "Inspect: " in line]
+    assert any(f"mceg explain {path.parent / 'study.yaml'} --assessment imported:physical_accuracy" in c
+               for c in commands)
+    for line in text.splitlines():
+        if "Inspect: " not in line and "https://" not in line:
+            assert len(line) <= 72, line
+
+
+@pytest.mark.parametrize("language", ["en", "ja"])
+def test_catalog_plain_on_terminal_matches_redirected_output(catalog, monkeypatch, capsys, language):
+    path, _ = catalog
+    args = ["explain", "--catalog", str(path), "--lang", language]
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: False)
+    assert main(args) == 0
+    redirected = capsys.readouterr().out
+    assert "\033[" not in redirected
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    assert main([*args, "--plain"]) == 0
+    assert capsys.readouterr().out == redirected
+
+
+@pytest.mark.parametrize("variable,value", [("NO_COLOR", "1"), ("TERM", "dumb")])
+def test_catalog_respects_terminal_color_opt_out(catalog, monkeypatch, capsys, variable, value):
+    enable_terminal(monkeypatch)
+    path, _ = catalog
+    monkeypatch.setenv(variable, value)
+    assert main(["explain", "--catalog", str(path)]) == 0
+    output = capsys.readouterr().out
+    assert "\033[" not in output
+    assert "physical_accuracy: unknown" in output
+
+
+def test_catalog_json_is_identical_on_terminal_and_pipe(catalog, monkeypatch, capsys):
+    path, _ = catalog
+    args = ["explain", "--catalog", str(path), "--json"]
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: False)
+    assert main(args) == 0
+    redirected = capsys.readouterr().out
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setenv("TERM", "xterm")
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    assert main(args) == 0
+    output = capsys.readouterr().out
+    assert output == redirected
+    assert "\033[" not in output
+    assert json.loads(output)["user_conditions"] == "not_evaluated"

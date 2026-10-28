@@ -14,6 +14,7 @@ Run these from a provider repository after installing MCEG.
 | Start a model contract and inventory entry | `mceg init MODEL_ID --source PATH --symbol NAME` |
 | Check discovered contracts and saved evidence | `mceg check` |
 | Explain gaps and the next review steps | `mceg explain` |
+| Inspect an installed provider's records | `mceg explain --package exogibbs --species HCN` |
 | Find inventory, contract and source-review gaps | `mceg coverage .` |
 | Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
@@ -23,6 +24,11 @@ Run these from a provider repository after installing MCEG.
 
 Use `mceg COMMAND -h` for options. `check`, `explain` and `coverage` offer JSON
 reports; `check` and `explain` also accept `--lang ja`.
+
+[Packaged evidence catalogs](docs/en/package_evidence.md) let users inspect a
+provider's model/species records without cloning its repository or importing its
+code. The provider supplies the catalog as data and need not depend on MCEG.
+This reports recorded evidence; it does not evaluate a user's run conditions.
 
 ## Install
 

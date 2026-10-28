@@ -555,12 +555,18 @@ def main(argv=None):
             "  mceg explain -k curated --evidence source_choices --lang ja\n"
             "  mceg explain contract.yaml --claim physical_accuracy\n"
             "  mceg explain contract.yaml --assessment imported:physical_accuracy\n"
+            "  mceg explain --package exogibbs --model exogibbs.curated_gas.v1 --species HCN\n"
             "  mceg explain -k curated --plain\n"
             "  mceg explain -k curated --json\n\n"
             "Terminals use highlighted output; pipes and --plain use the original text layout."
         ),
     )
     parser.add_argument("paths", type=Path, nargs="*", help="Contract files/directories; default: current directory")
+    catalog_source = parser.add_mutually_exclusive_group()
+    catalog_source.add_argument("--package", help="Read an installed distribution's packaged evidence catalog without importing it")
+    catalog_source.add_argument("--catalog", type=Path, help="Read an explicit evidence index.json (including editable checkouts)")
+    parser.add_argument("--model", help="Select an exact model ID in a package/catalog")
+    parser.add_argument("--species", help="Select an exact species ID or declared alias in a package/catalog")
     parser.add_argument("-k", default="", metavar="NAME", help="Filter contract paths, as in mceg check")
     select = parser.add_mutually_exclusive_group()
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
@@ -575,6 +581,21 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
+        if args.package or args.catalog:
+            if (args.paths or args.k or args.root or args.evidence or args.claim or args.assessment
+                    or context_options(args)):
+                raise ValueError("Package/catalog lookup cannot be combined with contract selectors or context options; "
+                                 "inspect the reported contract separately for those views")
+            from .catalog import display_catalog, explain_catalog
+            report = explain_catalog(package=args.package, catalog=args.catalog,
+                                     model=args.model, species=args.species)
+            if args.json:
+                print(json.dumps(report, indent=2, allow_nan=False))
+            else:
+                display_catalog(report, args.lang)
+            return 0 if any(m["records"] for m in report["models"]) else 5
+        if args.model or args.species:
+            raise ValueError("--model and --species require --package or --catalog")
         root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = [p for p in discover(args.paths or [Path.cwd()]) if args.k.casefold() in str(p).casefold()]

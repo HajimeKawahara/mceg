@@ -592,7 +592,7 @@ def main(argv=None):
             if args.json:
                 print(json.dumps(report, indent=2, allow_nan=False))
             else:
-                display_catalog(report, args.lang)
+                display_catalog(report, args.lang, args.plain)
             return 0 if any(m["records"] for m in report["models"]) else 5
         if args.model or args.species:
             raise ValueError("--model and --species require --package or --catalog")

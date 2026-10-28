@@ -3,12 +3,16 @@
 import hashlib
 from importlib import metadata
 import json
+import os
 from pathlib import Path
 import re
+import shutil
+import sys
 from typing import Literal
 
 from pydantic import Field, model_validator
 
+from ._display import wrap
 from .integrity import check_file
 from .schema import Text
 from .schema_v02 import ContractV02, Digest, Record
@@ -197,50 +201,72 @@ def explain_catalog(*, package: str | None = None, catalog: Path | None = None,
     }
 
 
-def display_catalog(report: dict, lang: str = "en") -> None:
+def display_catalog(report: dict, lang: str = "en", plain: bool = False) -> None:
     """Present model selection, scoped judgments and unresolved work together."""
     from .explain import command
+
+    terminal = not plain and sys.stdout.isatty()
+    color = terminal and not os.environ.get("NO_COLOR") and os.environ.get("TERM") != "dumb"
+    width = max(40, shutil.get_terminal_size().columns)
 
     def label(en, ja):
         return ja if lang == "ja" else en
 
-    print(f"{report['provider']} — {label('evidence snapshot', '評価記録の版')}: {report['record_version']}")
-    print(f"{label('Catalog SHA-256', '索引 SHA-256')}: {report['catalog_sha256']}")
-    print(label("Your conditions: not evaluated; recorded findings retain their original scope.",
-                "使用条件: 未評価。以下は記録された条件における評価です。"))
+    def write(text, indent="", code=None, literal=False):
+        text = indent + text
+        if terminal and not literal:
+            text = wrap(text, width, indent, lang)
+        if color and code:
+            text = f"\033[{code}m{text}\033[0m"
+        print(text)
+
+    write(f"{report['provider']} — {label('evidence snapshot', '評価記録の版')}: {report['record_version']}", code="1")
+    write(f"{label('Catalog SHA-256', '索引 SHA-256')}: {report['catalog_sha256']}", code="2")
+    write(label("Your conditions: not evaluated; recorded findings retain their original scope.",
+                "使用条件: 未評価。以下は記録された条件における評価です。"), code="33")
     for model in report["models"]:
-        print(f"\n{model['id']}: {model['label']}")
-        print(label("Declared model identity (your run not verified): ", "宣言されたモデル識別情報（実行との一致は未検証）: ")
-              + json.dumps(model["declared_identity"], ensure_ascii=False, sort_keys=True))
+        print()
+        write(f"{model['id']}: {model['label']}", code="1;36")
+        write(label("Declared model identity (your run not verified): ", "宣言されたモデル識別情報（実行との一致は未検証）: ")
+              + json.dumps(model["declared_identity"], ensure_ascii=False, sort_keys=True), code="2")
         if model["requested_species"] is not None:
-            print(f"{label('Species', '化学種')}: {model['requested_species']} -> {model['canonical_species'] or 'unknown'}")
+            write(f"{label('Species', '化学種')}: {model['requested_species']} -> {model['canonical_species'] or 'unknown'}")
             if not model["species_specific_records"]:
-                print(label("No species-specific records; this does not establish absence of uncertainty.",
-                            "分子固有の評価記録なし。不定性がないことを示すものではありません。"))
+                write(label("No species-specific records; this does not establish absence of uncertainty.",
+                            "分子固有の評価記録なし。不定性がないことを示すものではありません。"), code="33")
         if not model["records"]:
-            print(label("No relevant records.", "関連する評価記録なし。"))
+            write(label("No relevant records.", "関連する評価記録なし。"), code="33")
         for record in model["records"]:
-            print(f"\n  {record['id']}: {record['summary']}")
+            print()
+            if terminal:
+                write(record["id"], "  ", "1;36")
+                write(record["summary"], "    ")
+            else:
+                write(f"{record['id']}: {record['summary']}", "  ")
             for claim in record["claims"]:
                 value = claim["record"]
                 statuses = [a.get("status", a.get("classification")) for a in claim["assessments"]]
                 status = ", ".join(statuses) if statuses else value.get("status", "unknown (no selected assessment)")
-                print(f"    {value['kind']} / {claim['id']}: {status}")
-                print(f"      {label('Claim', '主張')}: {value['statement']}")
-                print(f"      {label('Scope', '評価範囲')}: {value['scope']}")
+                supported = all(s == "supported" for s in (statuses or [value.get("status")]))
+                write(f"{value['kind']} / {claim['id']}: {status}", "    ", "1;32" if supported else "1;33")
+                write(f"{label('Claim', '主張')}: {value['statement']}", "      ")
+                write(f"{label('Scope', '評価範囲')}: {value['scope']}", "      ")
                 commands = [command(record["path"], "--assessment", a["id"])
                             for a in claim["assessments"]]
                 if not commands:
                     commands = [command(record["path"], "--claim", claim["id"])]
                 for next_command in commands:
-                    print(f"      {label('Inspect', '詳細')}: {next_command}")
+                    # Preserve a single physical line for copyable commands and links.
+                    write(f"{label('Inspect', '詳細')}: {next_command}", "      ", "36", literal=True)
             for limitation in record["limitations"]:
-                print(f"    {label('Limitation', '制約')}: {limitation['statement']}")
+                write(f"{label('Limitation', '制約')}: {limitation['statement']}", "    ", "33")
             for follow_up in record["follow_ups"]:
                 status = "completed" if follow_up["resolution"] else "open"
-                print(f"    {label('Follow-up', '追跡事項')} [{status}]: {follow_up['record']['action']}")
+                write(f"{label('Follow-up', '追跡事項')} [{status}]: {follow_up['record']['action']}",
+                      "    ", "36" if follow_up["resolution"] else "33")
             for link in record["links"]:
-                print(f"    {link}")
-    print("\n" + label(report["interpretation"],
+                write(link, "    ", "36", literal=True)
+    print()
+    write(label(report["interpretation"],
                       "同梱ファイルのハッシュ一致は、実行モデルの一致、物理的精度、誤差分布を保証しません。"
-                      "科学計算の入出力ファイルは検査・再実行していません。"))
+                      "科学計算の入出力ファイルは検査・再実行していません。"), code="33")

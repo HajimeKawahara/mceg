@@ -4,33 +4,23 @@ This module does not import Sphinx or scientific provider implementations.
 """
 
 import argparse
-from dataclasses import dataclass
-import hashlib
 import html
 import json
 import os
 from pathlib import Path
 import re
 from textwrap import indent
-from typing import Literal
 from urllib.parse import quote
 
-from pydantic import Field, model_validator
+from pydantic import Field
 import yaml
 
-from mceg import ContractV02, load_contract, trace_provenance
-from mceg.coverage import LocalPath, _local
-from mceg.schema import Text
-from mceg.schema_v02 import Digest, Record
+from mceg import ContractV02, trace_provenance
+from mceg.schema_v02 import Record
+from mceg._sources import (ContractSource, SourceEntry, SourceCatalog,
+                           digest, identity, load_case)
+from mceg.graph import _case_graph, _contract_graph
 from mceg.validator import read_document
-
-
-class ContractSource(Record):
-    """A provider checkout and explicit contract paths or glob patterns."""
-
-    provider: Text
-    root: Path
-    paths: list[LocalPath] = Field(min_length=1)
 
 
 class DocumentationConfig(Record):
@@ -40,78 +30,6 @@ class DocumentationConfig(Record):
     output: Path
     contracts: list[ContractSource] = Field(default_factory=list)
     cases: list[Path] = Field(default_factory=list)
-
-
-class FileRef(Record):
-    provider: Text
-    path: LocalPath
-    sha256: Digest
-
-
-class Component(Record):
-    provider: Text
-    model_id: Text
-    path: LocalPath | None = None
-    sha256: Digest | None = None
-    settings: dict[Text, Text | int | float | bool] = Field(default_factory=dict)
-    subject: Text | None = None
-    context: Text | None = None
-    assessments: list[Text] = Field(default_factory=list)
-
-    @model_validator(mode="after")
-    def paired_fields(self):
-        if (self.path is None) != (self.sha256 is None):
-            raise ValueError("A registered component needs both path and sha256")
-        if (self.subject is None) != (self.context is None):
-            raise ValueError("Select both subject and context")
-        if self.assessments and self.subject is None:
-            raise ValueError("Assessment selection requires subject and context")
-        if self.path is None and self.subject is not None:
-            raise ValueError("An unregistered component cannot select contract records")
-        return self
-
-
-class Connection(Record):
-    consumer: Text
-    dependency: Text
-    quantity: Text
-    description: Text
-
-
-class Highlight(Record):
-    assessment: Text
-    title: Text
-
-
-class Case(Record):
-    format: Literal["mceg_documentation_case_v1"]
-    id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]*$")
-    title: Text
-    description: Text
-    inputs: dict[Text, Text | int | float | bool] = Field(default_factory=dict)
-    providers: dict[Text, Text]
-    components: dict[Text, Component] = Field(min_length=1)
-    connections: list[Connection] = Field(default_factory=list)
-    legacy_case: FileRef | None = None
-    highlights: list[Highlight] = Field(default_factory=list, max_length=3)
-
-    @model_validator(mode="after")
-    def references(self):
-        for component in [*self.components.values(), *([self.legacy_case] if self.legacy_case else [])]:
-            if component.provider not in self.providers:
-                raise ValueError(f"Unknown provider: {component.provider}")
-        for edge in self.connections:
-            if edge.consumer not in self.components or edge.dependency not in self.components:
-                raise ValueError("Unknown connection endpoint")
-        return self
-
-
-def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def identity(*parts):
-    return hashlib.sha256(json.dumps(parts, ensure_ascii=True).encode()).hexdigest()[:24]
 
 
 def text(value):
@@ -171,14 +89,50 @@ def graph(nodes, edges):
             + indent("\n".join([*lines, "}"]), "   ") + "\n")
 
 
-@dataclass
-class Entry:
-    provider: str
-    root: Path
-    path: str
-    sha256: str
-    contract: object
+def evidence_graph(entry, evidence_ids=None, *, inspection=False):
+    data = _contract_graph(entry)
+    by_id = {n["id"]: n for n in data["nodes"] if n["type"] == "evidence"}
+    by_key = {n["ref"]["id"]: n for n in by_id.values()}
+    keys = list(evidence_ids) if evidence_ids is not None else [e.id for e in entry.contract.evidence]
+    order = {key: i for i, key in enumerate(keys)}
+    nodes = []
+    for key in keys:
+        node = by_key[key]
+        provenance = node["record"].get("provenance") or {}
+        label = key + ("\n" + provenance.get("inspection", "unknown") if inspection else "")
+        nodes.append((node["id"], label, entry.svg_link("evidence", key)))
+    links = [e for e in data["edges"] if e["type"] == "derived_from"
+             and by_id[e["source"]]["ref"]["id"] in order
+             and by_id[e["target"]]["ref"]["id"] in order]
+    links.sort(key=lambda e: (order[by_id[e["source"]]["ref"]["id"]],
+                              int(e["origin"]["pointer"].rsplit("/", 1)[1])))
+    rendered = graph(nodes, [(e["source"], e["target"], e["data"]["comparison"]) for e in links])
+    return rendered, [(by_id[e["source"]]["ref"]["id"], by_id[e["target"]]["ref"]["id"],
+                       e["data"]["comparison"]) for e in links]
 
+
+def case_graph(case, entries):
+    data = _case_graph(case)
+    nodes = []
+    order = {key: i for i, key in enumerate(case.components)}
+    by_id = {n["id"]: n for n in data["nodes"]}
+    for node in sorted(data["nodes"], key=lambda n: -1 if n["type"] == "case" else order[n["ref"]["id"]]):
+        if node["type"] == "case":
+            nodes.append((node["id"], case.title, None))
+        else:
+            key = node["ref"]["id"]
+            entry = entries[key]
+            nodes.append((node["id"], key + ("\nUNREGISTERED" if entry is None else ""),
+                          entry.svg_link() if entry else None))
+    edges = [(e["source"], e["target"],
+              "requires " + e["data"]["quantity"] if e["type"] == "requires" else e["type"])
+             for e in sorted(data["edges"], key=lambda e:
+                             (0, order[by_id[e["target"]]["ref"]["id"]]) if e["type"] == "selects"
+                             else (1, int(e["origin"]["pointer"].rsplit("/", 1)[1])))]
+    return graph(nodes, edges)
+
+
+class Entry(SourceEntry):
     @property
     def page(self):
         return "model-" + identity(self.provider, self.path, self.sha256)
@@ -210,32 +164,15 @@ class Entry:
         return f"{page}.html{anchor}"
 
 
-class Catalog:
+class Catalog(SourceCatalog):
+    entry_type = Entry
+
     def __init__(self, output, source_root=None):
+        super().__init__()
         self.output = Path(output).resolve()
         self.source_root = Path(source_root or self.output.parent).resolve()
         if self.output == self.source_root or not self.output.is_relative_to(self.source_root):
             raise ValueError("Output must be a dedicated directory inside the Sphinx source root")
-        self.entries = {}
-        self.roots = {}
-
-    def add(self, provider, root, path, sha256=None):
-        root = Path(root).resolve()
-        if self.roots.setdefault(provider, root) != root:
-            raise ValueError(f"Ambiguous provider root: {provider}")
-        source = _local(root, path)
-        actual = digest(source)
-        if sha256 is not None and actual != sha256:
-            raise ValueError(f"Contract hash mismatch: {provider}:{path}")
-        key = (provider, path)
-        if key in self.entries:
-            previous = self.entries[key]
-            if previous.root != root or previous.sha256 != actual:
-                raise ValueError(f"Ambiguous provider/path: {provider}:{path}")
-            return previous
-        entry = Entry(provider, root, path, actual, load_contract(source))
-        self.entries[key] = entry
-        return entry
 
     def source(self, entry, locator):
         if locator.startswith(("https://", "http://")):
@@ -475,11 +412,10 @@ def evidence_index(entry):
                  ((entry.link("evidence", e.id, label=e.summary), text(e.kind),
                    text(e.provenance.inspection.replace("_", " ") if e.provenance else "unknown"))
                   for e in entry.contract.evidence))]
-    edges = [(e.id, r.evidence, r.comparison) for e in entry.contract.evidence if e.provenance
-             for r in e.provenance.derived_from]
+    rendered, edges = evidence_graph(entry)
     if edges:
         out += [heading("Recorded dependencies", 2),
-                graph([(e.id, e.id, entry.svg_link("evidence", e.id)) for e in entry.contract.evidence], edges),
+                rendered,
                 table(["Derived evidence", "Source evidence", "Comparison"],
                       ((entry.link("evidence", start), entry.link("evidence", end), text(label))
                        for start, end, label in edges))]
@@ -519,10 +455,8 @@ def evidence_page(catalog, entry, e):
             table(["Evidence", "Audit gap"],
                   ((entry.link("evidence", i["evidence"]), text(i["issue"])) for i in trace["issues"]))]
     if trace["links"]:
-        nodes = [(n["id"], n["id"] + "\n" + n.get("provenance", {}).get("inspection", "unknown"),
-                  entry.svg_link("evidence", n["id"])) for n in trace["nodes"]]
-        edges = [(r["from"], r["to"], r["comparison"]) for r in trace["links"]]
-        out += [heading("Ancestry", 2), graph(nodes, edges),
+        rendered, _ = evidence_graph(entry, [n["id"] for n in trace["nodes"]], inspection=True)
+        out += [heading("Ancestry", 2), rendered,
                 table(["Derived evidence", "Source evidence", "Comparison", "Note"],
                       ((entry.link("evidence", r["from"]), entry.link("evidence", r["to"]),
                         text(r["comparison"]), text(r["note"])) for r in trace["links"]))]
@@ -544,58 +478,6 @@ def model_pages(catalog, entry):
         pages.update({entry.record_page("assessment", a.id): assessment_page(entry, a)
                       for a in entry.contract.assessments})
     return pages
-
-
-def load_case(path, catalog):
-    case = Case.model_validate(read_document(path))
-    roots = {key: (path.parent / value).resolve() for key, value in case.providers.items()}
-    entries = {}
-    for key, component in case.components.items():
-        if component.path is None:
-            entries[key] = None
-            continue
-        entry = catalog.add(component.provider, roots[component.provider], component.path, component.sha256)
-        if entry.contract.model.id != component.model_id:
-            raise ValueError(f"Model ID mismatch: {key}")
-        if component.subject is not None:
-            c = entry.contract
-            if not isinstance(c, ContractV02):
-                raise ValueError("Subject/context selection requires a v0.2 contract")
-            if component.subject not in {s.id for s in c.subjects} or component.context not in {s.id for s in c.contexts}:
-                raise ValueError(f"Unknown subject/context: {key}")
-            assessments = {a.id: a for a in c.assessments}
-            for selected in component.assessments:
-                a = assessments.get(selected)
-                if a is None or (a.subject, a.context) != (component.subject, component.context):
-                    raise ValueError(f"Assessment does not match selected subject/context: {selected}")
-        entries[key] = entry
-    legacy = None
-    if case.legacy_case:
-        if case.inputs:
-            raise ValueError("Use legacy inputs or documentation inputs, not both")
-        ref = case.legacy_case
-        source = _local(roots[ref.provider], ref.path)
-        if digest(source) != ref.sha256:
-            raise ValueError("Legacy case hash mismatch")
-        legacy = read_document(source)
-        if legacy.get("case_version") != "0.1" or legacy.get("assessment_method") != "manual":
-            raise ValueError("Expected a v0.1 manual example case")
-        expected = {k: c.path for k, c in case.components.items() if c.path is not None}
-        if legacy["components"] != expected:
-            raise ValueError("Legacy case components differ from the selected contracts")
-        for a in legacy["assessments"]:
-            for locator in a["evidence"]:
-                target, sep, key = locator.partition("#")
-                entry = catalog.entries.get((ref.provider, target))
-                if not sep or entry is None or key not in {e.id for e in entry.contract.evidence}:
-                    raise ValueError(f"Unknown legacy evidence reference: {locator}")
-    assessment_ids = [a["id"] for a in legacy["assessments"]] if legacy else []
-    if len(set(assessment_ids)) != len(assessment_ids):
-        raise ValueError("Duplicate legacy assessment IDs")
-    for highlight in case.highlights:
-        if highlight.assessment not in assessment_ids:
-            raise ValueError(f"Unknown highlighted assessment: {highlight.assessment}")
-    return case, entries, legacy
 
 
 def case_pages(catalog, case, entries, legacy):
@@ -620,21 +502,15 @@ def case_pages(catalog, case, entries, legacy):
                            ((doc_link(h.title, manual_pages[h.assessment]),
                              text(by_id[h.assessment]["classification"])) for h in case.highlights))]
     overview.append(heading("Model connections", 2))
-    nodes = [("case", case.title, None)]
-    edges, models, rows = [], [], []
+    models, rows = [], []
     for key, component in case.components.items():
         entry = entries[key]
-        nodes.append(("component:" + key, key + ("\nUNREGISTERED" if entry is None else ""),
-                      entry.svg_link() if entry else None))
-        edges.append(("case", "component:" + key, "selects"))
         model = entry.link() if entry else text(component.model_id) + " — **unregistered / unknown**"
         models.append(f"- {text(key)}: {model}")
         rows.append((text(key), model, text(component.settings)))
         records += [heading(text(key), 2),
                     values(component.model_dump(include={"provider", "model_id", "path", "sha256"}))]
-    edges += [("component:" + e.consumer, "component:" + e.dependency, "requires " + e.quantity)
-              for e in case.connections]
-    overview += [graph(nodes, edges), *models, "\n" + heading("Details", 2),
+    overview += [case_graph(case, entries), *models, "\n" + heading("Details", 2),
                  toctree(name + "-" + suffix for suffix in ("assessments", "setup", "records"))]
     if legacy:
         setup += [heading("Calculation inputs", 2), values(legacy["inputs"])]

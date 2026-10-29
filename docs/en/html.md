@@ -6,6 +6,10 @@ theme, CI and HTML publication. Source generation needs only MCEG's core
 requirements; it does not import Sphinx or scientific providers, run numerical
 calculations, retrieve papers or create assessments.
 
+For programmatic access to the same recorded relationships, use the
+[Graph JSON API](graph.md). The documentation renderer adds presentation labels
+and links to the shared graph construction.
+
 ## Generate sources
 
 Run this from a provider repository containing `mceg/docs.yaml`:

@@ -257,6 +257,66 @@ an unavailable requested ID or an unreadable selected record; and 5 when no
 contracts are selected. A malformed contract's overview explains its structural
 error without attempting evidence inspection.
 
+## Resume an investigation
+
+Add `--investigation` to a selected Evidence, Claim or Assessment view to gather
+the related records for a human or LLM reviewer in one read-only report:
+
+```bash
+mceg explain examples/v02/h2_solubility.yaml --evidence implementation --investigation
+mceg explain examples/v02/h2_solubility.yaml --claim physical_accuracy --investigation --json
+mceg explain examples/v02/h2_solubility.yaml --assessment imported:physical_accuracy --investigation --root .
+```
+
+Run these examples from the MCEG checkout. In a provider, use its contract path
+and recorded IDs. Package/catalog lookup supplies those locators; investigation
+requires the contract itself. The flag requires exactly one of the existing
+selectors. It supports v0.1 and v0.2, with completion and Assessment records
+available only when supplied by v0.2. Ordinary `explain` output is unchanged.
+
+The text view presents completed follow-ups before pending authored tasks, then
+the related judgments, implementation/context records and evidence. It retains
+exact source locations and comparison notes, including agreement and discrepancy.
+Generated suggestions are labeled separately from authored work. Source and
+artifact locators, including provider decision records, remain available for
+inspection; their contents are not fetched or interpreted.
+
+JSON adds an `investigation` object to each selected contract's existing report:
+
+| Field | Meaning |
+| --- | --- |
+| `selection`, `scope` | Selected records and the traversal boundary |
+| `completed_follow_ups`, `pending_follow_ups` | Explicit completion records and outstanding authored tasks |
+| `evidence`, `assessments` | Related records with their original scopes, source locations, reasons and judgments |
+| `subjects`, `contexts` | Bindings from included Evidence and Assessments |
+| `suggested_steps` | Generated guidance labeled with its target record |
+| `excluded_evidence` | Evidence IDs outside this selected investigation |
+| `next_commands` | Copyable navigation, including sources that agree |
+
+Selection follows upstream provenance and explicit task-completion Evidence in
+the same contract. Assessments for a selected Claim use its exact recorded
+revision; selecting a Claim ID still includes all its recorded revisions.
+Assessments citing selected Evidence or explicit completion Evidence are also
+included. Merely sharing an upstream paper does not pull unrelated Assessments
+into the report. Completion links are deduplicated and may refer back to an
+already included record without causing a loop. External contracts remain
+navigation links rather than automatically imported support.
+
+For example, a completed coefficient-choice task can link to the record adopting
+`-1873/T`, while author confirmation and physical accuracy remain unresolved.
+The report preserves that completion and those remaining questions together.
+It does not choose a coefficient, infer that a paper contains a typo, treat
+`UNKNOWN` as a blocker, or promote an old numerical result to current support.
+If an adoption decision is missing, no decision is manufactured from agreeing
+sources. A discrepancy can remain visible after the scoped selection task ends.
+
+With `--assessment ID --root DIR`, the existing audit and hash checks still
+apply only to that selected Assessment's original dependency scope. The
+investigation can include additional completion records for navigation; those
+records are not implicitly covered by the selected hash check. JSON retains
+the original `audit_scope`, `audited_evidence` and `integrity` alongside the new
+investigation. Use a record's normal `explain` command for its full detail.
+
 ## Checking v0.2 artifacts
 
 Discovery also accepts `schema_version: "0.2"`. `check` compares every stored

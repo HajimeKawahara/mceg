@@ -294,7 +294,10 @@ def apply_resolutions(contract, path, item):
     ]))
 
 
-def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None, *, root=None):
+def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None, *, root=None,
+                     investigation=False):
+    if investigation and not (evidence_id or claim_id or assessment_id):
+        raise ValueError("--investigation requires --evidence, --claim or --assessment")
     root = resolve_root(root, assessment_id)
     if root is not None and (evidence_id is not None or claim_id is not None):
         raise ValueError("--root requires an Assessment view")
@@ -347,6 +350,10 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                                    for a in getattr(contract, "assessments", [])])
     for item in report["items"]:
         apply_resolutions(contract, path, item)
+    if investigation and report["items"]:
+        from .investigation import build_investigation
+        report["investigation"] = build_investigation(
+            contract, path, evidence_id=evidence_id, claim_id=claim_id, assessment_id=assessment_id)
     return report
 
 
@@ -412,6 +419,58 @@ def display(report, lang="en", plain=False):
                          remaining_samples=t("Use --json to inspect all joint samples."))
         print(textwrap.indent(yaml.safe_dump(value, sort_keys=False, allow_unicode=True).rstrip(), "    "))
 
+    def investigation_view(bundle):
+        write(t("Scope") + ": " + bundle["scope"])
+        write(f"{t('Evidence')}: {len(bundle['evidence'])}; "
+              f"excluded_evidence: {len(bundle['excluded_evidence'])}")
+        for selected in bundle["selection"]:
+            write(t(selected["kind"].capitalize()) + ": " + selected["id"], code="1;36")
+            if selected["kind"] == "claim":
+                record({k: v for k, v in selected["record"].items()
+                        if k in {"id", "revision", "statement", "scope"}})
+        write(t("Review progress"), code="1;36")
+        for resolution in bundle["completed_follow_ups"]:
+            write(t("Completed follow-up") + ": " + resolution["follow_up"], code="1;36")
+            write(resolution["note"], "      ")
+            write(t("Evidence") + ": " + ", ".join(resolution["evidence"]), "      ")
+        for task in bundle["pending_follow_ups"]:
+            write(t("Recorded next step") + ": " + task["id"], code="1;36")
+            write(task["action"], "      ")
+            write(f"{task['target_kind']}: {task['target']}" +
+                  (f"; revision={task['revision']}" if task.get("revision") else ""), "      ")
+            for requirement in task["requires"]:
+                write(t("Needed") + ": " + requirement, "      ")
+            write(t("Completion") + ": " + task["completion"], "      ")
+            for source in task.get("sources", []):
+                print(f"      {t('Source')}: {source}")
+        for item in bundle["assessments"]:
+            write(t("Assessment") + ": " + item["id"], code="1;36")
+            record(item["record"])
+            for key in ("claim", "condition"):
+                if key in item:
+                    write(t(key), code="1")
+                    terminal_record(item[key])
+        for key, label in (("subjects", "Subject"), ("contexts", "Context")):
+            for item in bundle[key]:
+                write(t(label) + ": " + item["id"], code="1;36")
+                terminal_record(item)  # Summarize large pin/sample sets in both text layouts.
+        for item in bundle["evidence"]:
+            write(t("Evidence") + ": " + item["id"], code="1;36")
+            if item.get("resolved_follow_ups"):
+                write(t("Original record (history retained)"), code="1")
+            value = {k: v for k, v in item["record"].items() if k != "artifacts"}
+            record(value)
+            for artifact in item["record"].get("artifacts", []):
+                print(f"      {t('Source')}: {artifact['source']}")
+        for step in bundle["suggested_steps"]:
+            write(t("Suggested next step") + f": {step['target_kind']} {step['target']}", code="1;36")
+            write(t(step["action"]), "      ")
+            for requirement in step["requires"]:
+                write(t("Needed") + ": " + t(requirement), "      ")
+            write(t("Completion") + ": " + t(step["completion"]), "      ")
+        for next_command in bundle["next_commands"]:
+            inspect(next_command)
+
     heading = t("MCEG next steps: recorded gaps and suggested work; no evidence is changed.")
     if terminal:
         write(heading, "", "1")
@@ -440,6 +499,10 @@ def display(report, lang="en", plain=False):
             write(t("Scope") + ": " + scope_message(contract["audit_scope"]))
         if "integrity" in contract:
             write("File root: " + contract["integrity"]["root"])
+        if "investigation" in contract:
+            investigation_view(contract["investigation"])
+            # Keep requested audit/hash checks visible without repeating the selected record.
+            contract = {**contract, "items": [i for i in contract["items"] if "name" in i]}
         for item in contract["items"]:
             label = item.get("id", item.get("name"))
             if "id" not in item and (lang == "ja" or terminal):
@@ -555,6 +618,7 @@ def main(argv=None):
             "  mceg explain -k curated --evidence source_choices --lang ja\n"
             "  mceg explain contract.yaml --claim physical_accuracy\n"
             "  mceg explain contract.yaml --assessment imported:physical_accuracy\n"
+            "  mceg explain contract.yaml --evidence source_choices --investigation --json\n"
             "  mceg explain --package exogibbs --model exogibbs.curated_gas.v1 --species HCN\n"
             "  mceg explain -k curated --plain\n"
             "  mceg explain -k curated --json\n\n"
@@ -572,6 +636,8 @@ def main(argv=None):
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
     select.add_argument("--claim", help="Inspect a Claim ID, including all its recorded revisions")
     select.add_argument("--assessment", help="Inspect a v0.2 Assessment ID and its context")
+    parser.add_argument("--investigation", action="store_true",
+                        help="Gather related evidence, completed work and pending tasks for the selected ID")
     parser.add_argument("--root", type=Path, metavar="DIR",
                         help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
@@ -581,8 +647,10 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
+        if args.investigation and not (args.evidence or args.claim or args.assessment):
+            raise ValueError("--investigation requires --evidence, --claim or --assessment")
         if args.package or args.catalog:
-            if (args.paths or args.k or args.root or args.evidence or args.claim or args.assessment
+            if (args.paths or args.k or args.root or args.evidence or args.claim or args.assessment or args.investigation
                     or context_options(args)):
                 raise ValueError("Package/catalog lookup cannot be combined with contract selectors or context options; "
                                  "inspect the reported contract separately for those views")
@@ -599,7 +667,8 @@ def main(argv=None):
         root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = [p for p in discover(args.paths or [Path.cwd()]) if args.k.casefold() in str(p).casefold()]
-        contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root) for p in paths]
+        contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root,
+                                     investigation=args.investigation) for p in paths]
         if context_options(args) and any(c["schema_version"] == "0.2" for c in contracts):
             raise ValueError("v0.2 contexts belong to recorded assessments; use --assessment ID or mceg assess")
         if args.evidence or args.claim or args.assessment:

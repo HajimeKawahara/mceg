@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Investigation context for reviewers
+
+- Add `explain --investigation` with an existing Evidence, Claim or Assessment
+  selector. Gather agreeing and discrepant sources, explicit task completions,
+  pending work and scoped judgments without changing the underlying records.
+- Keep generated suggestions separate from authored work and include copyable
+  source navigation. Follow declared local links with cycle-safe deduplication;
+  sharing an upstream source does not imply a related Assessment.
+- Preserve ordinary output, v0.1/v0.2 formats and selected Assessment hash-check
+  scope. The investigation report reads no external source or decision artifact
+  and infers no preferred model, blocking status or scientific support.
+
 ### Repository-owned RST documentation
 
 - Add `mceg docs --config mceg/docs.yaml` to generate RST and CSS from explicit

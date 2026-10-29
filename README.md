@@ -27,7 +27,18 @@ Once you find a topic to investigate, narrow the report:
 mceg explain --package exogibbs --species HCN
 ```
 
-These commands work from any directory and require a provider version that
+From a provider checkout, gather a selected record's related sources, completed
+reviews and remaining tasks in one report:
+
+```bash
+mceg explain mceg/contracts/model.yaml --evidence source_review --investigation --json
+```
+
+Use the contract path and Evidence ID reported by your provider. See the
+[investigation guide](docs/en/checks.md#resume-an-investigation) for selection
+boundaries and the distinction between completed work and scientific support.
+
+The package commands above work from any directory and require a provider version that
 includes an evidence catalog. For editable installations or explicit catalog
 files, see [packaged evidence catalogs](docs/en/package_evidence.md).
 The report describes recorded evidence, not an evaluation of your calculation's

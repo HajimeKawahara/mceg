@@ -56,9 +56,12 @@ commands below from a provider checkout after installing MCEG.
 | Check discovered contracts and saved evidence | `mceg check` |
 | Explain gaps and the next review steps | `mceg explain` |
 | Discover an installed provider's model evidence | `mceg explain --package exogibbs` |
+| Resume a recorded investigation | `mceg explain CONTRACT --evidence EVIDENCE_ID --investigation --json` |
 | Find inventory, contract and source-review gaps | `mceg coverage .` |
 | Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
-| Export recorded relationships as JSON | `mceg graph --package exogibbs` |
+| Export an installed provider's graph | `mceg graph --package exogibbs` |
+| Export one contract's graph | `mceg graph CONTRACT` |
+| Export a calculation's graph | `mceg graph --case CASE` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
 | Compare recorded conditions with a context | `mceg assess CONTRACT --context CONTEXT --subject ID --output NEW_FILE` |
 | Preserve a v0.1 contract in v0.2 format | `mceg migrate CONTRACT --output NEW_FILE` |
@@ -131,6 +134,28 @@ support or an unresolved review. Numerical agreement, registered model mappings
 and physical accuracy are separate questions. A stored result is not a fresh
 solver run. For a recorded v0.2 Assessment, `--assessment ID --root .` also checks
 its selected source and artifact hashes; see the [check guide](docs/en/checks.md).
+
+## Export relationship graphs
+
+From this MCEG checkout, export a model's evidence and judgments or a calculation's
+component connections:
+
+```bash
+mceg graph examples/v02/h2_solubility.yaml --provider mceg > model-graph.json
+mceg graph --case examples/html/case.yaml --provider mceg > case-graph.json
+```
+
+For an installed provider with an evidence catalog:
+
+```bash
+mceg graph --package exogibbs > package-graph.json
+```
+
+Use `mceg graph --catalog PATH` for an explicit catalog, including editable
+provider checkouts. Local contract and case paths resolve from `--root`, which
+defaults to the current directory. JSON retains source identities, scoped
+judgments and explicit selections for viewers and LLM tools. See the
+[Graph JSON API](docs/en/graph.md) for Python examples and relationship meanings.
 
 ## Documentation and examples
 

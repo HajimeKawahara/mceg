@@ -56,8 +56,12 @@ commands below from a provider checkout after installing MCEG.
 | Check discovered contracts and saved evidence | `mceg check` |
 | Explain gaps and the next review steps | `mceg explain` |
 | Discover an installed provider's model evidence | `mceg explain --package exogibbs` |
+| Resume a recorded investigation | `mceg explain CONTRACT --evidence EVIDENCE_ID --investigation --json` |
 | Find inventory, contract and source-review gaps | `mceg coverage .` |
 | Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
+| Export an installed provider's graph | `mceg graph --package exogibbs` |
+| Export one contract's graph | `mceg graph CONTRACT` |
+| Export a calculation's graph | `mceg graph --case CASE` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
 | Compare recorded conditions with a context | `mceg assess CONTRACT --context CONTEXT --subject ID --output NEW_FILE` |
 | Preserve a v0.1 contract in v0.2 format | `mceg migrate CONTRACT --output NEW_FILE` |
@@ -65,6 +69,8 @@ commands below from a provider checkout after installing MCEG.
 
 Use `mceg COMMAND -h` for options. `check`, `explain` and `coverage` offer JSON
 reports; `check` and `explain` also accept `--lang ja`.
+The [Graph JSON API](docs/en/graph.md) exports contracts, scoped judgments,
+investigation records and calculation connections for viewers and other tools.
 
 [Packaged evidence catalogs](docs/en/package_evidence.md) let users inspect a
 provider's model/species records without cloning its repository or importing its
@@ -129,6 +135,28 @@ and physical accuracy are separate questions. A stored result is not a fresh
 solver run. For a recorded v0.2 Assessment, `--assessment ID --root .` also checks
 its selected source and artifact hashes; see the [check guide](docs/en/checks.md).
 
+## Export relationship graphs
+
+From this MCEG checkout, export a model's evidence and judgments or a calculation's
+component connections:
+
+```bash
+mceg graph examples/v02/h2_solubility.yaml --provider mceg > model-graph.json
+mceg graph --case examples/html/case.yaml --provider mceg > case-graph.json
+```
+
+For an installed provider with an evidence catalog:
+
+```bash
+mceg graph --package exogibbs > package-graph.json
+```
+
+Use `mceg graph --catalog PATH` for an explicit catalog, including editable
+provider checkouts. Local contract and case paths resolve from `--root`, which
+defaults to the current directory. JSON retains source identities, scoped
+judgments and explicit selections for viewers and LLM tools. See the
+[Graph JSON API](docs/en/graph.md) for Python examples and relationship meanings.
+
 ## Documentation and examples
 
 For a browsable model catalog and linked calculation/evidence graphs, see the
@@ -148,6 +176,7 @@ Each repository builds HTML with its own Sphinx configuration and update script.
 | --- | --- |
 | Model registration | [Init](docs/en/initialization.md), [inventory coverage](docs/en/coverage.md), [provider workflow](docs/en/provider_onboarding.md) |
 | Checks and source review | [CLI checks](docs/en/checks.md), [provenance](docs/en/provenance.md), [evidence audit](docs/en/evidence_audit.md) |
+| Relationship graphs | [Graph JSON API](docs/en/graph.md), [HTML documentation](docs/en/html.md) |
 | Contract formats | [v0.2](docs/en/v02.md), [v0.1](docs/en/schema.md), [compatibility](docs/en/versioning.md) |
 | Worked connections | [H2 solubility](docs/en/h2_solubility.md), [provider trials](docs/en/provider_trials.md), [provider-owned pilot](docs/en/provider_pilot.md) |
 | Evidence studies | [H2 sources](docs/en/h2_primary_audit.md), [curated gas](docs/en/curated_assessment.md), [assessment lifecycle](docs/en/assessment_lifecycle.md) |

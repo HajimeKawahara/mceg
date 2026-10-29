@@ -13,6 +13,7 @@ membership in a reported range and physical validation answer different question
 _generated/catalog
 _generated/cases
 en/html
+en/graph
 en/package_evidence
 ```
 

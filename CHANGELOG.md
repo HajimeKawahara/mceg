@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Graph JSON API
+
+- Add `mceg.graph.build_graph()` and `mceg graph` for local contracts,
+  calculation cases, installed packages and provider catalogs.
+- Export deterministic snapshot IDs, source hashes and field origins, typed
+  relationships and original records. Retain scoped Assessments, Claim/Condition
+  revisions, investigation completions and per-record/component selections.
+- Share contract/case readers and graph construction with documentation while
+  preserving page links and existing validation. Keep v0.1 declarations and
+  legacy manual judgments distinct from v0.2 Assessments.
+- Preserve explicit unknowns and unregistered components without importing
+  providers, following external sources or inferring scientific support.
+
+Validation: 520 tests passed, including 28 graph cases and the existing HTML/SVG
+link checks. The installed wheel exports the H2 contracts and calculation case
+with provider and documentation imports blocked. The ExoGibbs packaged catalog
+exports both indexed model records with their separate Assessment selections.
+
 ### Investigation context for reviewers
 
 - Add `explain --investigation` with an existing Evidence, Claim or Assessment

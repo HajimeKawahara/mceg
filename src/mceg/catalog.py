@@ -105,11 +105,8 @@ def _checked_path(root: Path, artifact: CatalogArtifact) -> tuple[Path, dict]:
     return root / artifact.path, check
 
 
-def record_report(root: Path, record: CatalogRecord) -> dict:
-    """Expose recorded judgments in their original scope, not a new assessment."""
-    # Reuse the existing explain readers so claim and follow-up semantics stay shared.
-    from .explain import apply_resolutions, assessment_detail, claim_detail, command
-
+def load_record(root: Path, record: CatalogRecord):
+    """Validate a catalog selection and its files without constructing a report."""
     path, contract_check = _checked_path(root, record)
     artifact_checks = [_checked_path(root, artifact)[1] for artifact in record.artifacts]
     contract = load_contract(path)
@@ -122,6 +119,14 @@ def record_report(root: Path, record: CatalogRecord) -> dict:
             selected.append(by_id[key])
     elif record.assessments:
         raise ValueError(f"v0.1 catalog record {record.id} cannot select assessments")
+    return path, contract, selected, [contract_check, *artifact_checks]
+
+
+def record_report(root: Path, record: CatalogRecord) -> dict:
+    """Expose recorded judgments in their original scope, not a new assessment."""
+    from .explain import apply_resolutions, assessment_detail, claim_detail, command
+
+    path, contract, selected, checks = load_record(root, record)
     claims = []
     for claim in contract.claims:
         item = claim_detail(contract, path, claim)
@@ -145,7 +150,7 @@ def record_report(root: Path, record: CatalogRecord) -> dict:
     return {
         "id": record.id, "path": str(path), "contract_model": contract.model.id,
         "summary": record.summary or contract.model.description, "links": record.links,
-        "relevance": record.species, "packaged_files": [contract_check, *artifact_checks],
+        "relevance": record.species, "packaged_files": checks,
         "scientific_files": "not_checked", "domains": [d.model_dump() for d in contract.domains],
         "claims": claims, "assessments": assessments,
         "evidence": [e.model_dump(exclude_none=True) for e in contract.evidence],

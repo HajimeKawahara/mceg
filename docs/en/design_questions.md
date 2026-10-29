@@ -352,3 +352,123 @@ selected audited files remain unchanged. ExoGibbs also had a real intervening
 adapter update; source review and fresh scoped tests preceded adoption.
 General graph storage, automatic scientific decisions and a new schema version
 were not needed to test this workflow.
+
+## Investigations by human and LLM reviewers
+
+MCEG should help a reviewer resume a scientific investigation, identify the next
+useful comparison, and connect its result to a model decision. Humans and LLMs
+are both consumers of that interface. A useful outcome can be a justified model
+change or an explicit unresolved question, even when an offline check continues
+to report `UNKNOWN`. Design success therefore includes the quality of the
+investigation that the records enable.
+
+### Concrete case: the ExoEOS oxygen coefficient
+
+The 2026-10-29 review led to the provisional change proposed in
+[ExoEOS PR #92](https://github.com/HajimeKawahara/exoeos/pull/92).
+Its [decision record](https://github.com/HajimeKawahara/exoeos/blob/9ed2c72c58ad45003fce11141a32ce9b9ecbeaba/results/mceg/20261029_badro_default/decision.json)
+connects the inspected Badro supplement and pinned Young code to the choice of
+`epsilon_OO=-1873/T`. The distinct `ln_gamma0_O=4.29-16500/T` term is retained.
+The printed/code difference, missing source inspection, implementation choice
+and future author clarification were separable review tasks.
+
+This case has several simultaneous outcomes: the coefficient choice is made
+provisionally, the printed equation still differs, author confirmation is absent,
+and empirical accuracy remains unknown. A later reviewer should recover that
+state without repeating the completed coefficient review or treating an optional
+author reply as a prerequisite for the provisional choice. Provider-side file
+checks also detected changes to the old evidence snapshot; the PR records exact
+reviewed transitions and a separate numerical receipt while retaining history.
+Source interpretation and adoption were review judgments, not automatic MCEG
+inferences.
+
+### Use the existing records as durable investigation context
+
+Store the conclusions and their support so that another reviewer can continue
+without the original conversation. The current format already supplies most
+of the necessary pieces:
+
+| Investigation need | Existing record and authoring practice |
+| --- | --- |
+| State the question and when it is answered | A targeted FollowUp with required material and a concrete completion criterion |
+| Locate and compare the evidence | Evidence scope, exact source location, inspection state, artifact identity and `derived_from` comparisons |
+| Separate observations, interpretation and adoption | Inspection/comparison Evidence, scoped Assessment reasons, and a linked provider decision artifact recording alternatives and the selected implementation |
+| Resume completed and pending work | FollowUpResolution links to the actual completion evidence; separate FollowUps for remaining questions |
+| Reconsider a provisional choice | An explicit future trigger and required evidence, such as an attributable reply or correction |
+| Identify what must be checked after a change | Subject file pins, inventory bindings, affected Assessments and fresh provider receipts |
+
+A decision artifact should explain which uncertainty matters to the choice,
+which findings support it, what remains unknown and what would change the
+decision. It is a small provider-owned record, as in the ExoEOS example; this
+proposal adds no generic Decision schema. Scope a FollowUp to the actual decision
+so that its completion does not require resolving every physical-validation gap.
+Keep new hypotheses distinguishable from inspected source statements and reviewed
+support. Preserve dated access outcomes so a failed retrieval can be resumed
+without presenting that old outcome as current availability.
+
+### First implementation candidate: improve the selected `explain` view
+
+`explain --json` already returns authored FollowUps, resolved work, generated
+suggestions, comparisons and navigation commands. The next small increment to
+evaluate is a compact investigation view assembled from those existing records,
+starting from a selected Claim, Evidence or Assessment. This is proposed work,
+not an existing additional CLI mode.
+
+The selected view should bring together the question, Subject/Context, relevant
+source excerpts or locators, comparison outcomes, completion records, decision
+artifact links and remaining tasks. Include relevant agreeing evidence as well
+as gaps. Distinguish authored tasks from generated suggestions, and preserve
+record IDs and source locations so every summary can be checked. If a decision
+has not been recorded, say so; do not infer the preferred coefficient from the
+number of agreeing citations or from publication order.
+
+Present completed work and its outcome before suggesting that the same question
+be investigated again. Keep an unresolved discrepancy visible, with a link to
+the recorded adoption decision and any separately scoped remaining question.
+An unresolved author-intent claim does not itself reopen a completed provisional
+selection. Any blocker or priority label must come from an explicit scoped
+review instruction; it cannot be inferred from `UNKNOWN` alone. A compact view
+must state its selection boundary and leave the complete records accessible.
+
+Pilot this with existing JSON output and provider authoring conventions before
+adding fields or flags. The core continues to assemble records and check explicit
+relationships. The surrounding reviewer obtains sources, interprets them,
+proposes changes and executes provider tests, then records the resulting evidence
+and judgments. This workflow requires no LLM dependency or provider execution in
+the core.
+
+### Subsequent candidate: show the declared impact of a change
+
+Within one provider, an initial impact report could follow a changed selected
+file to its Subjects and Assessments and use inventory bindings to locate the
+models requiring review. Report a candidate review set, with the exact links used.
+File overlap does not establish a scientific dependency, and the declared graph
+does not cover unregistered callers. In the oxygen example, review must include
+the dry model, ideal-H wrapper and corresponding standard-state shifts; the
+coefficient and standard convention must describe the same selected model.
+
+Cross-provider connections can later record the consumed quantity, units,
+composition basis, standard-state conversion, implementation selection and
+supporting evidence. Those links would help a reviewer examine ExoEOS-to-ExoGibbs
+or ExoInventory use. They require their own reviewed scope; source agreement
+within ExoEOS does not establish a downstream connection's validity. Start with
+the actual affected connection before introducing general compatibility rules.
+
+### Evaluate investigation outcomes
+
+Use frozen records from the oxygen review and the existing evidence-reuse trial
+as small evaluation cases. A reviewer starting a new session should be able to:
+
+- Locate the disputed term and distinguish it from the separate infinite-dilution term.
+- Recover both the evidence for a choice and its remaining limitations.
+- Resume the next unfinished task without repeating a completed source comparison.
+- Explain which new evidence would confirm or revise a provisional decision.
+- Recognize changed implementation pins and obtain scoped replacement evidence
+  while preserving the original outcomes.
+
+Measure source-location accuracy, unsupported assertions, missed discrepancies
+and repeated completed work, alongside commands or tokens needed to answer the
+question. Faster summaries are useful only when scope and uncertainty survive.
+Implement the selected-view improvement first if these cases show a navigation
+or handoff gap; broaden the schema only when a concrete record cannot express
+the required distinction.

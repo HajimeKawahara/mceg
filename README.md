@@ -5,6 +5,10 @@ YAML. It checks contracts, explains missing support, and maps models to code.
 Providers own their scientific records; core checks work without importing or
 running provider implementations.
 
+Human and LLM reviewers also use these records to resume investigations, compare
+sources and justify model changes. The [investigation design](docs/en/design_questions.md#investigations-by-human-and-llm-reviewers)
+describes this workflow and the proposed next improvements.
+
 ## Start with the package you use
 
 After [installing MCEG](#install), start by inspecting your scientific package:

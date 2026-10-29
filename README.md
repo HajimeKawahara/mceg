@@ -1,9 +1,10 @@
 # MCEG: Model Contracts and Evidence Graphs
 
-MCEG records scientific models, their assumptions, applicability and evidence in
-YAML. It checks contracts, explains missing support, and maps models to code.
-Providers own their scientific records; core checks work without importing or
-running provider implementations.
+**Model Contracts and Evidence Graphs (MCEG)** is a framework for making the claims, assumptions, applicability domains, and supporting evidence of computational scientific models explicit, traceable, and auditable by both humans and AI systems.
+
+By systematically representing what a scientific model claims, under which conditions those claims hold, and what evidence supports them, MCEG facilitates scientifically informed decisions throughout model development, validation, and use.
+
+Rather than automatically guaranteeing the correctness of scientific models, MCEG provides a transparent foundation for humans and AI systems to continuously examine their scientific validity, limitations, and supporting evidence.
 
 Human and LLM reviewers also use these records to resume investigations, compare
 sources and justify model changes. The [investigation design](docs/en/design_questions.md#investigations-by-human-and-llm-reviewers)

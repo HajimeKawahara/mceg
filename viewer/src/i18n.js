@@ -62,6 +62,11 @@ export const translations = {
     inventoryHint: 'Browse literature evidence and DOI citations without literature records. Counts are records, not unique papers: historical attempts and different scopes remain separate. Status reflects the imported JSON, not citation lookup or the files on your computer.',
     materialSearch: 'Search DOI, description or scope', inspectionRecordCount: 'material records',
     otherMaterialLinks: 'PDFs & other recorded links', emptyMaterials: 'No material records match this source, search and inspection filter.',
+    saveMaterialsPdf: 'Save as PDF', saveMaterialsPdfHint: 'Exports all matching records, including other pages. Choose “Save as PDF” in the print dialog.',
+    printIncluded: 'Matching records', printAppendix: 'Related inspection records',
+    printAppendixNote: 'Other records for the same DOIs are included separately to preserve inspection context outside the selected filters.',
+    printLinksNote: 'DOI, web and search links are clickable. Local paths and file hashes are references only; source documents are not embedded. Previously retrieved citation metadata is included without a new lookup.',
+    printError: 'Could not open the print dialog. Please try again in a browser that supports printing.',
   },
   ja: {
     tagline: 'つながりをひとつずつ、理解を少しずつ。', openFile: 'グラフJSONを開く', demo: 'サンプルを見る',
@@ -126,6 +131,11 @@ export const translations = {
     inventoryHint: '文献の証拠記録と、文献記録のないDOI参照を表示します。件数は論文数ではなく記録数です。過去の取得記録や対象範囲の違いも残します。確認状態は読み込んだJSONに基づき、書誌情報の取得状況や手元のファイルの有無とは別です。',
     materialSearch: 'DOI・説明・対象範囲で検索', inspectionRecordCount: '件の資料記録',
     otherMaterialLinks: 'PDFなどの記録済みリンク', emptyMaterials: 'このソース・検索語・確認状態に該当する資料記録はありません。',
+    saveMaterialsPdf: 'PDFに保存', saveMaterialsPdfHint: '絞り込み結果の全件を出力します。印刷画面で「PDFに保存」を選んでください。',
+    printIncluded: '出力対象', printAppendix: '関連する確認記録',
+    printAppendixNote: '絞り込み対象外にある同じDOIの確認記録を、確認状況が分かるよう別枠で収録しています。',
+    printLinksNote: 'DOI・Web・検索リンクはクリックできます。ローカルパスやハッシュは参照情報で、資料本体は埋め込みません。取得済みの書誌情報も含めますが、新たな問い合わせは行いません。',
+    printError: '印刷画面を開けませんでした。印刷に対応したブラウザーで再試行してください。',
   },
 };
 const typesJa = { model: 'モデル', claim: '主張', evidence: '証拠', subject: '対象', context: '条件・状況', condition: '条件', assessment: '評価', follow_up: '追加調査', resolution: '完了記録', case: '計算ケース', component: '構成要素', manual_case: '手動ケース', manual_assessment: '手動評価' };

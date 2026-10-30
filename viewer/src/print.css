@@ -1,0 +1,31 @@
+.material-print { display: none; }
+.inventory-export { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 16px 0; }
+.inventory-export p { flex: 1; min-width: 200px; margin: 0; font-size: 12px; }
+
+@page { size: A4; margin: 16mm; }
+@media print {
+  body:has(> .material-print) { background: white; }
+  body:has(> .material-print) > :not(.material-print) { display: none !important; }
+  .material-print { display: block; color: #29252f; font-size: 10pt; line-height: 1.5; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .material-print * { overflow-wrap: anywhere; }
+  .material-print h1 { font-size: 22pt; margin: 0 0 6mm; color: #65467c; }
+  .material-print h2 { font-size: 13pt; margin: 0 0 3mm; color: #65467c; break-after: avoid; }
+  .material-print h3 { font-size: 10pt; margin: 5mm 0 2mm; break-after: avoid; }
+  .material-print p { margin: 2mm 0; orphans: 3; widows: 3; }
+  .material-print a { color: #61447a; text-decoration: underline; }
+  .material-print .badge { font-size: 9pt; margin-bottom: 2mm; border: 1px solid #d9cee3; }
+  .print-cover { break-after: page; }
+  .print-cover dl { display: grid; grid-template-columns: 38mm 1fr; margin: 5mm 0; }
+  .print-cover dt { font-weight: bold; }
+  .print-cover dd { margin: 0 0 2mm; }
+  .print-contents { padding-left: 8mm; margin-top: 6mm; }
+  .print-contents li { break-inside: avoid; margin-bottom: 2mm; }
+  .print-material { padding-top: 6mm; margin-bottom: 7mm; border-top: 1px solid #d8c7e5; }
+  .print-material > h2 { break-after: avoid; }
+  .print-origin, .print-citation small { font-size: 8pt; color: #645a6d; }
+  .print-locator { margin: 3mm 0; padding-left: 3mm; border-left: 2px solid #e0d2eb; break-inside: avoid; }
+  .print-locator > a { display: inline-block; }
+  .print-search { margin-top: 1mm; }
+  .print-appendix, .print-snapshots { break-before: page; }
+  .print-snapshots > div { break-inside: avoid; margin-top: 5mm; }
+}

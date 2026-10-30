@@ -36,6 +36,38 @@ export function sameDoiRecords(node, value, index) {
     n.origin.source === node.origin.source && sourceLocators(n).some(s => doiFrom(s) === doi));
 }
 
+export function doiInspection(node, value, index) {
+  const own = isLiterature(node);
+  const state = inspectionState(node);
+  const others = sameDoiRecords(node, value, index);
+  const inspected = others.some(n => inspectionState(n) === 'inspected');
+  const partial = others.some(n => inspectionState(n) === 'partial');
+  const order = { inspected: 0, partial: 1, not_inspected: 2, unknown: 3 };
+  const records = (own ? [node, ...others] : others).sort((a, b) => order[inspectionState(a)] - order[inspectionState(b)]);
+  const linkedState = inspected ? 'inspected' : partial ? 'partial' : others.some(n => inspectionState(n) === 'not_inspected') ? 'not_inspected' : 'unknown';
+  const guidance = own && state === 'inspected' ? 'inspected' : inspected || partial ? 'related' : own ? state : linkedState;
+  return { own, state, records, linkedState, guidance };
+}
+
+// A filtered report retains other reviews of its DOIs as a separate appendix,
+// so an old failed retrieval never loses the context of supplied material.
+export function materialReport(entries, index) {
+  const included = new Set(entries.map(e => e.node.id));
+  const all = [...entries];
+  // Added records may cite another DOI. Include that DOI's review context too,
+  // so their download guidance never points to an omitted inspected scope.
+  for (let i = 0; i < all.length; i++) for (const locator of all[i].locators) {
+    for (const node of sameDoiRecords(all[i].node, locator, index)) {
+      if (!included.has(node.id)) {
+        included.add(node.id);
+        all.push({ node, state: inspectionState(node), locators: sourceLocators(node) });
+      }
+    }
+  }
+  const appendix = all.slice(entries.length);
+  return { entries, appendix, all, numbers: new Map(all.map((entry, i) => [entry.node.id, i + 1])) };
+}
+
 export function materialEntries(nodes) {
   const literature = nodes.filter(isLiterature);
   const covered = new Set(literature.flatMap(n => sourceLocators(n).map(doiFrom).filter(Boolean)

@@ -193,6 +193,35 @@ supplements, historical attempts and records without inspection metadata remain
 separate. Open a record to inspect its graph; **Back** returns to the list with
 its filters and search preserved.
 
+### Save a linked materials PDF
+
+In **Materials list**, choose the source, search and inspection filter, then
+click **Save as PDF**. Select **Save as PDF** in the browser's print dialog
+(tested with Chrome). The report contains **all matching records**, including
+rows on other pages. Clear the filters to export the whole package. The report
+uses the current interface language; authored text stays in its original language.
+
+The A4 report includes a linked contents list, inspection states, scope, reading
+locations, notes, download guidance, source paths, JSON Pointers and snapshot
+hashes. DOI, PDF/web and Google/Scholar links remain clickable. Related reviews
+of the same DOI outside the selected filters appear in a separate appendix, so
+a historical failed retrieval does not hide a later inspected document. Internal
+links jump between those records within the PDF. Counts describe selected
+records; appendix records are listed separately. If an appendix record cites
+another DOI, its review context is included as well, within the same contract
+snapshot.
+
+Citation metadata already retrieved in this browser session is included. PDF
+export does not fetch metadata, download papers or upload graph data. Local paths
+and SHA-256 URNs stay plain text; referenced documents are not embedded in the
+PDF. Saving or cancelling printing preserves the list's filters and page.
+
+「資料一覧」で必要なら契約・確認状態・検索語を絞り込み、「PDFに保存」を押して、
+ブラウザーの印刷画面からPDFとして保存できます。画面の4件だけでなく、絞り込みに
+一致する全件を出力します。DOI・PDF・検索リンクと、PDF内の確認記録へのリンクを
+利用できます。取得済みの書誌情報、確認状態、読む箇所、入手案内も収録します。
+全資料を出力するときは絞り込みを解除してください。
+
 Graph snapshots often contain DOIs without full titles/authors. **Look up
 citation** fetches title, authors, publication year and journal information from
 the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/)

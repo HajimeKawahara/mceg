@@ -1,15 +1,38 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal, flushSync } from 'react-dom';
 import { doiFrom, inspectionStates, materialEntries } from './literature.js';
 import { InspectionBadge, InspectionScope } from './Inspection.jsx';
-import { Locators } from './Materials.jsx';
+import { Locators, citations } from './Materials.jsx';
+import MaterialPrint from './MaterialPrint.jsx';
 
 const PAGE = 4;
-export default function MaterialInventory({ graph, nodes, index, source, changeSource, select, state, setState, t }) {
+export default function MaterialInventory({ graph, nodes, index, source, changeSource, select, state, setState, filename, t }) {
+  const [printReport, setPrintReport] = useState(null);
+  const [printError, setPrintError] = useState(false);
+  const originalTitle = useRef(null);
+  useEffect(() => {
+    const restoreTitle = () => { if (originalTitle.current !== null) document.title = originalTitle.current; originalTitle.current = null; };
+    const afterPrint = () => { restoreTitle(); setPrintReport(null); };
+    window.addEventListener('afterprint', afterPrint);
+    return () => { window.removeEventListener('afterprint', afterPrint); restoreTitle(); };
+  }, []);
   const entries = useMemo(() => materialEntries(nodes), [nodes]);
   const searched = entries.filter(({ node, locators }) =>
     `${index.searchable.get(node.id)} ${locators.join(' ')}`.toLocaleLowerCase().includes(state.query.toLocaleLowerCase()));
   const filtered = searched.filter(entry => state.filter === 'all' || entry.state === state.filter);
   const page = Math.min(state.page, Math.max(0, Math.ceil(filtered.length / PAGE) - 1));
+  function print() {
+    originalTitle.current ??= document.title;
+    document.title = `${filename.replace(/\.json$/i, '')}-materials`;
+    setPrintError(false);
+    // Commit all matching rows before the browser takes its print snapshot.
+    flushSync(() => setPrintReport({ entries: filtered, index, filename, source, state, citations: new Map(citations), created: new Date().toISOString(), t }));
+    try { window.print(); }
+    catch {
+      document.title = originalTitle.current; originalTitle.current = null;
+      setPrintReport(null); setPrintError(true);
+    }
+  }
   return <section className="material-inventory panel" aria-label={t.materialInventory}>
     <span className="eyebrow">{t.recordedInspection}</span><h2>{t.materialInventory}</h2>
     <p className="muted">{t.inventoryHint}</p>
@@ -28,6 +51,9 @@ export default function MaterialInventory({ graph, nodes, index, source, changeS
       </button>)}
     </div>
     <p className="muted inventory-count" aria-live="polite">{filtered.length} {t.inspectionRecordCount}</p>
+    <div className="inventory-export"><button disabled={!filtered.length} onClick={print}>{t.saveMaterialsPdf}</button><p className="muted">{t.saveMaterialsPdfHint}</p></div>
+    {printError && <p role="alert">{t.printError}</p>}
+    {printReport && createPortal(<MaterialPrint {...printReport} />, document.body)}
     {!filtered.length && <p>{t.emptyMaterials}</p>}
     <div className="inventory-grid">{filtered.slice(page * PAGE, (page + 1) * PAGE).map(({ node, state: inspection, locators }) => {
       const dois = locators.filter(doiFrom);

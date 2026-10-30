@@ -3,7 +3,7 @@ import { safeUrl } from './graph.js';
 import { doiFrom, sourceLocators, relatedMaterials, parseCitation, searchLinks, isLiterature, inspectionState } from './literature.js';
 import DoiInspection, { InspectionBadge } from './Inspection.jsx';
 
-const citations = new Map();
+export const citations = new Map();
 function Locator({ value, node, index, select, t }) {
   const doi = doiFrom(value);
   const [citation, setCitation] = useState(() => citations.get(doi));

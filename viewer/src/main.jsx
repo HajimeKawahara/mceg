@@ -209,7 +209,7 @@ function App() {
       <p className="scope-note">{t.scopeNote}</p>
       {view === 'materials' ? <MaterialInventory graph={graph} nodes={sourceNodes} index={index} source={source}
         changeSource={next => { navigate(null, next, 'materials'); setMaterialsState({ ...materialsState, page: 0 }); }}
-        select={select} state={materialsState} setState={setMaterialsState} t={t} /> : <>
+        select={select} state={materialsState} setState={setMaterialsState} filename={filename || 'example-graph.json'} t={t} /> : <>
       {overview && <Overview key={overview.model.id} overview={overview} select={next => {
         select(next);
         detailPanel.current?.scrollIntoView({ block: 'start' });

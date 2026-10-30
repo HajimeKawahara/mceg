@@ -178,6 +178,20 @@ from `mceg graph`. The bundled H2 example can also be opened from the welcome
 screen. Switch between English and Japanese in the header. See the
 [viewer guide](viewer/README.md) for navigation and interpretation boundaries.
 
+To publish the viewer on a static web server, run this from the same `viewer/`
+directory:
+
+```bash
+npm run build
+```
+
+Upload **all contents of `viewer/dist/`** (`index.html`, `assets/` and
+`example-graph.json`) to the server's public directory. PHP, Node.js, Python and
+MCEG are not required on the server. Visitors open their graph JSON in the
+browser; the build does not bundle a graph previously opened in the viewer.
+See [static hosting instructions](viewer/README.md#static-hosting) for deployment
+and local preview.
+
 For a browsable model catalog and linked calculation/evidence graphs, see the
 [HTML guide](docs/en/html.md). Build it with Graphviz installed:
 

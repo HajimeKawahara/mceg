@@ -33,6 +33,52 @@ memory, not uploaded or persisted. Only the interface language is saved locally.
 Reloading the page requires opening the file again. Clicking an external HTTP(S)
 source link opens that site in a new tab; local paths remain recorded text.
 
+## Static hosting
+
+Build on your computer, starting from the MCEG repository root:
+
+```bash
+cd viewer
+npm ci
+npm run build
+```
+
+Upload **the entire contents of `viewer/dist/`** to a public directory on an
+HTTP(S) server, preserving the directory structure:
+
+```text
+mceg-viewer/
+├── index.html
+├── assets/
+│   ├── index-<hash>.js
+│   └── index-<hash>.css
+└── example-graph.json
+```
+
+Open the corresponding URL, for example `https://example.org/mceg-viewer/`.
+Relative asset paths support hosting in a subdirectory. Upload the complete
+new build when updating, including the hashed files in `assets/`.
+
+The server only serves static files; it needs no PHP, Node.js, Python or MCEG
+installation. Node.js is required on the build machine. The UI, graph inspection,
+language switching and PDF printing run in the visitor's browser. Optional
+Crossref citation lookup still uses the external API after a click.
+
+To preview the production build locally, run `npm run preview` from `viewer/`
+and open the printed URL. This is a local check; a deployed static site does
+not require a running Vite process.
+
+The build includes the H₂ example. Visitors use **Open graph JSON** to read
+their own files locally; a graph previously opened during development is not
+embedded in the build. Publishing a specific graph as the initial view would
+require a separate data-loading feature.
+
+静的サーバーで公開する場合は、`viewer/` で `npm run build` を実行し、生成された
+`dist/` の中身をすべてアップロードしてください。`index.html` だけでなく
+`assets/` と `example-graph.json` も必要です。サーバーにPHP・Node.js・Python・MCEGを
+導入する必要はありません。アクセス後に「グラフJSONを開く」から閲覧データを選べます。
+読み込んだJSONはブラウザー内で処理され、PDF保存も利用できます。
+
 ## How to investigate / 調査の進め方
 
 Every import opens **Package overview** / **全体を見る**, listing contracts and

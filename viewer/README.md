@@ -35,7 +35,25 @@ source link opens that site in a new tab; local paths remain recorded text.
 
 ## How to investigate / 調査の進め方
 
-Start with **About this contract** / **この契約について** above the graph. It
+Every import opens **Package overview** / **全体を見る**, listing contracts and
+counts of records and open/completed FollowUps. No model is selected implicitly.
+Choose a contract card or use search and the record filters; **Package overview**
+returns to the collection, and **Back** restores the prior record/source view.
+Contract cards are paged six at a time. Their counts describe the whole source
+snapshot, while search/filtering determines which cards match.
+
+Choosing a catalog source such as `index.json` also shows a collection view.
+Catalogs have selections rather than record nodes: the viewer follows their
+explicit `catalog_record` selections to the referenced contract snapshots and
+lists the corresponding records. Catalog entries remain individually inspectable
+even when multiple entries select the same contract. Index version, provider,
+distribution and hash remain accessible.
+
+JSONを開くと最初に「全体を見る」が表示されます。`index.json` は契約を束ねる
+カタログの入口として扱い、登録された契約を一覧表示します。契約カードを選ぶと
+概要とグラフへ進み、「全体を見る」で戻れます。
+
+After selecting a record, read **About this contract** / **この契約について** above the graph. It
 shows the selected record's owning Model name and authored description, including
 comparison tables and evidence links when the author supplies them. Open
 **Judgments & next steps** for one excerpt each for recorded support, unknown
@@ -122,6 +140,46 @@ catalog and export a fresh graph so the description and source hashes agree.
 たどれます。「出典のスナップショット」で契約の場所とハッシュを、
 「記録のJSON全文」で全項目を確認できます。
 
+### Find literature for pending and completed work
+
+The detail panel's **Papers & materials** / **文献・資料を探す** button jumps to
+source locators, citation lookup and Google/Google Scholar searches. FollowUp
+sources are visible without opening raw JSON. Evidence and Resolution records
+provide the same entry point, including recorded artifact locators.
+
+For pending FollowUps the viewer follows the exact target, incoming assessments
+of that target revision, their cited evidence and upstream `derived_from` links.
+For completed FollowUps and Resolutions it follows the explicit completion
+evidence and upstream sources; it does not expand the resolved target's other
+assessments. It does not expand model containment, shared Subjects/Contexts, or
+sideways from shared evidence into other investigations. A trace back to the
+selected record is available for every linked material. Related materials are
+paged three at a time.
+
+Each record retains its own inspection status, page/equation location, scope,
+retrieval notes and source URLs. An old failed retrieval and a later supplied
+paper remain distinct records. A recorded PDF URL is not a guarantee that it is
+currently accessible; a supplied-file SHA-256 URN is not a public download link.
+For supplements, inspect the record's description/location to distinguish the
+supplement from the main article. A shared DOI alone does not equate these files.
+
+Graph snapshots often contain DOIs without full titles/authors. **Look up
+citation** fetches title, authors, publication year and journal information from
+the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/)
+only after a click, sending just that DOI. Results are checked against the
+requested DOI and kept in browser memory; they are labelled external metadata,
+not source inspection or a new scientific assessment. DOI and Google/Scholar
+links remain usable if Crossref has no record or the lookup fails. Search links
+send the displayed DOI/citation to the selected search engine when clicked.
+Nothing is fetched automatically and no provider files or project text are sent
+by citation lookup. Bibliographic data is not written back into the graph.
+
+未解決・完了作業の詳細から「文献・資料を探す」で、DOI・PDF等のリンクと、
+関連記録に残された読む箇所を確認できます。「書誌情報を取得」を押すと、そのDOI
+だけをCrossrefへ送り、論文名・著者・年・掲載誌を表示します。Google／Scholar
+への検索リンクも利用できます。完了作業では、Resolutionの完了根拠をたどります。
+必要な文献自体が記録されていない場合は推測せず、提供元の追記が必要だと表示します。
+
 Record lists, connections and graph neighbors are paged in groups of eight.
 The graph shows one selected record and up to eight immediate neighbors; the
 neighbor pager exposes the rest. Search and source filters affect the list,
@@ -140,8 +198,9 @@ same question.
   visible in the original fields and searchable text; this is not an exhaustive
   scientific gap detector.
 - Completing a FollowUp does not promote a Claim or an Assessment to supported.
-  Counts describe records, not independent findings. Completed counts include
-  both resolved FollowUps and their Resolution records.
+  Counts describe records, not independent findings. The sidebar's completed
+  record count includes resolved FollowUps and Resolution records. Package and
+  contract cards count completed FollowUps once and label that distinction.
 - Historical and differently scoped Assessments remain separate. The viewer
   does not select the latest revision or combine catalog/case selections.
 - Hashes identify saved source bytes; the viewer does not reopen local files,

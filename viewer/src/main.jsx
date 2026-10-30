@@ -6,6 +6,9 @@ import './style.css';
 import { validateGraph, indexGraph, matchesCategory, excerpt, neighborhood, safeUrl, contractOverview } from './graph.js';
 import { translations, typeLabel, edgeLabel } from './i18n.js';
 import Narrative from './Narrative.jsx';
+import Materials from './Materials.jsx';
+import PackageOverview from './PackageOverview.jsx';
+import { scopedNodes } from './navigation.js';
 
 const PAGE = 8;
 const MAX_FILE = 20 * 1024 * 1024;
@@ -81,14 +84,17 @@ function Overview({ overview, select, t, lang }) {
 }
 function Detail({ node, index, graph, t, lang, select }) {
   const [relationPage, setRelationPage] = useState(0);
+  const materialSection = useRef(null);
   const primary = ['summary', 'statement', 'action', 'note', 'description', 'scope', 'reasons', 'requires', 'completion'];
   const relations = index.adjacent.get(node.id);
   const chosen = graph.selections.filter(s => [s.component, s.model, s.subject, s.context, ...(Array.isArray(s.assessments) ? s.assessments : [])].includes(node.id));
   return <article className="detail">
     <span className="eyebrow">{typeLabel(node.type, lang)}</span><h2>{node.label}</h2>
     <Badges node={node} index={index} t={t} />
+    {['follow_up', 'resolution', 'evidence'].includes(node.type) && <button className="materials-jump" onClick={() => materialSection.current?.scrollIntoView({ block: 'start' })}>{t.materials} ↓</button>}
     {primary.filter(key => node.record[key] != null).map(key => <section key={key}><h3>{t[key]}</h3><Value value={node.record[key]} /></section>)}
-    {['method', 'sources', 'provenance', 'model', 'assumptions', 'domains', 'limitations'].filter(key => node.record[key] != null).map(key =>
+    <div ref={materialSection}><Materials node={node} index={index} select={select} t={t} /></div>
+    {['method', 'provenance', 'model', 'assumptions', 'domains', 'limitations'].filter(key => node.record[key] != null).map(key =>
       <details key={key}><summary>{t[key] ?? typeLabel(key, lang)}</summary><Value value={node.record[key]} /></details>)}
     <section><h3>{t.relations} · {relations.length}</h3>
       {relations.slice(relationPage * PAGE, (relationPage + 1) * PAGE).map(edge => {
@@ -128,7 +134,18 @@ function App() {
   const request = useRef(0);
   const index = useMemo(() => graph ? indexGraph(graph) : null, [graph]);
   useEffect(() => { document.documentElement.lang = lang; try { localStorage.setItem('mceg-viewer-language', lang); } catch { /* optional preference */ } }, [lang]);
-  const select = next => { if (next !== id) { setHistory(h => [...h.slice(-49), id].filter(Boolean)); setId(next); setNearPage(0); setEdgeId(null); } };
+  const navigate = (next, nextSource = source) => {
+    if (next !== id || nextSource !== source) {
+      setHistory(h => [...h.slice(-49), { id, source }]); setId(next); setSource(nextSource); setNearPage(0); setEdgeId(null);
+    }
+  };
+  const select = next => navigate(next);
+  const openSource = sourceId => {
+    const records = graph.nodes.filter(n => n.origin.source === sourceId);
+    const entry = index.sources.get(sourceId)?.kind === 'catalog' || !sourceId ? null : records.find(n => n.type === 'model') ?? records[0];
+    navigate(entry?.id ?? null, sourceId); setPage(0); setQuery(''); setFilter('all');
+  };
+  useEffect(() => { if (detailPanel.current) detailPanel.current.scrollTop = 0; }, [id]);
   async function load(file) {
     const token = ++request.current;
     setBusy(true); setError('');
@@ -140,12 +157,13 @@ function App() {
       const value = validateGraph(JSON.parse(text));
       if (token !== request.current) return;
       setGraph(value); setFilename(file?.name ?? ''); setDemo(!file);
-      setId(value.nodes.find(n => n.type === 'model')?.id ?? value.nodes[0]?.id ?? null);
+      setId(null);
       setHistory([]); setQuery(''); setSource(''); setFilter('all'); setPage(0); setNearPage(0); setEdgeId(null);
     } catch (e) { if (token === request.current) setError(e.message === 'size' ? 'size' : 'error'); }
     finally { if (token === request.current) setBusy(false); }
   }
-  const scoped = useMemo(() => graph?.nodes.filter(n => (!source || n.origin.source === source) && (!query || index.searchable.get(n.id).includes(query.toLocaleLowerCase()))) ?? [], [graph, index, source, query]);
+  const sourceNodes = useMemo(() => graph ? scopedNodes(graph, index, source) : [], [graph, index, source]);
+  const scoped = useMemo(() => sourceNodes.filter(n => !query || index.searchable.get(n.id).includes(query.toLocaleLowerCase())), [sourceNodes, index, query]);
   const filtered = scoped.filter(n => matchesCategory(n, index, filter));
   const node = index?.nodes.get(id);
   const overview = useMemo(() => contractOverview(node, index, graph?.selections), [node, index, graph]);
@@ -173,6 +191,14 @@ function App() {
       <div className="welcome-actions"><button className="primary" disabled={busy} onClick={() => input.current.click()}>{t.openFile}</button><button disabled={busy} onClick={() => load(null)}>{t.demo} →</button></div>
       <p className="muted">{t.format}</p><code>mceg graph --package exogibbs &gt; graph.json</code><p className="muted">{t.local}</p></main> : <main className="workspace">
       <div className="dataset"><div><span className="eyebrow">{demo ? t.example : filename}</span><p>{demo ? t.exampleNote : t.local}</p></div><span className="count">{graph.nodes.length} {t.records}</span></div>
+      <nav className="view-navigation" aria-label={t.navigation}>
+        <button onClick={() => openSource('')} aria-current={!id && !source ? 'page' : undefined}>{t.packageOverview}</button>
+        {source && <span>{index.sources.get(source)?.path}</span>}
+        <button disabled={!history.length} onClick={() => {
+          const previous = history.at(-1); setId(previous.id); setSource(previous.source); setHistory(h => h.slice(0, -1));
+          setNearPage(0); setEdgeId(null); setPage(0); setQuery(''); setFilter('all');
+        }}>← {t.back}</button>
+      </nav>
       <p className="scope-note">{t.scopeNote}</p>
       {overview && <Overview key={overview.model.id} overview={overview} select={next => {
         select(next);
@@ -180,19 +206,13 @@ function App() {
         detailPanel.current?.focus({ preventScroll: true });
       }} t={t} lang={lang} />}
       <div className="panels"><aside className="browser panel"><label className="sr-only" htmlFor="search">{t.search}</label><input id="search" type="search" value={query} placeholder={t.search} onChange={e => { setQuery(e.target.value); setPage(0); }} />
-        <label htmlFor="source">{t.source}</label><select id="source" value={source} onChange={e => {
-          const sourceId = e.target.value;
-          setSource(sourceId); setPage(0);
-          if (sourceId) {
-            const records = graph.nodes.filter(n => n.origin.source === sourceId);
-            select(records.find(n => n.type === 'model')?.id ?? records[0]?.id ?? null);
-          }
-        }}><option value="">{t.allSources}</option>{graph.sources.map(s => <option key={s.id} value={s.id}>{s.provider} · {s.path}</option>)}</select>
+        <label htmlFor="source">{t.source}</label><select id="source" value={source} onChange={e => openSource(e.target.value)}><option value="">{t.allSources}</option>{graph.sources.map(s => <option key={s.id} value={s.id}>{s.provider} · {s.path}{s.kind === 'catalog' ? ` (${t.catalogIndex})` : ''}</option>)}</select>
         <div className="filters">{['all', 'assessments', 'unknown', 'open', 'completed', 'evidence'].map(key => <button key={key} aria-pressed={filter === key} onClick={() => { setFilter(key); setPage(0); }}>{t[key]}<span>{scoped.filter(n => matchesCategory(n, index, key)).length}</span></button>)}</div>
         <div className="record-list">{filtered.slice(page * PAGE, (page + 1) * PAGE).map(n => <button className={`record-card ${n.id === id ? 'active' : ''}`} key={n.id} onClick={() => select(n.id)} aria-current={n.id === id ? 'true' : undefined}><small>{typeLabel(n.type, lang)}</small><strong>{n.label}</strong><span>{excerpt(n)}</span></button>)}{!filtered.length && <p className="muted">{graph.nodes.length ? t.empty : t.noData}</p>}</div>
         <Pager page={page} total={filtered.length} setPage={setPage} t={t} />
       </aside>
-      <section className="graph-panel panel"><div className="graph-title"><div><h2>{t.graph}</h2><p>{t.graphHint}</p></div><button disabled={!history.length} onClick={() => { setId(history.at(-1)); setHistory(h => h.slice(0, -1)); setNearPage(0); setEdgeId(null); }}>← {t.back}</button></div>
+      {!node ? <PackageOverview key={source} graph={graph} index={index} sourceId={source} nodes={sourceNodes} matching={filtered} openSource={openSource} t={t} /> : <>
+      <section className="graph-panel panel"><div className="graph-title"><div><h2>{t.graph}</h2><p>{t.graphHint}</p></div></div>
         <div className="canvas" onKeyDown={event => {
           if (event.key !== 'Enter' && event.key !== ' ') return;
           const record = event.target.closest('.react-flow__node');
@@ -207,7 +227,7 @@ function App() {
         <div className="graph-footer"><span>{nearby.total} {t.nearby}</span><Pager page={nearPage} total={nearby.total} setPage={setNearPage} t={t} /></div>
         {edge && <div className="edge-detail"><h3>{t.relation}: {edgeLabel(edge.type, lang)}</h3><button onClick={() => select(edge.source)}>{index.nodes.get(edge.source).label}</button> → <button onClick={() => select(edge.target)}>{index.nodes.get(edge.target).label}</button><Value value={edge.data} /><details><summary>{t.origin}</summary><Origin origin={edge.origin} index={index} t={t} /></details></div>}
       </section>
-      <section ref={detailPanel} tabIndex={-1} className="detail-panel panel" aria-label={t.details}>{node && <Detail key={node.id} node={node} index={index} graph={graph} t={t} lang={lang} select={select} />}</section></div>
+      <section ref={detailPanel} tabIndex={-1} className="detail-panel panel" aria-label={t.details}><Detail key={node.id} node={node} index={index} graph={graph} t={t} lang={lang} select={select} /></section></>}</div>
     </main>}
     <footer><span>MCEG viewer · 0.1</span><span>{t.untranslated}</span></footer>
   </>;

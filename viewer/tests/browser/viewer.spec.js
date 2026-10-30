@@ -6,6 +6,7 @@ const exogibbs = JSON.parse(readFileSync(new URL('../fixtures/exogibbs-graph.jso
 async function openExample(page) {
   await page.goto('/');
   await page.getByRole('button', { name: 'Explore example' }).click();
+  await page.locator('.contract-card > button').first().click();
   await expect(page.locator('.react-flow__node')).toHaveCount(9);
 }
 
@@ -124,6 +125,7 @@ test('authored Markdown is local, supports evidence navigation, and cannot load 
   const externalRequests = [];
   page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:4173/')) externalRequests.push(r.url()); });
   await page.locator('input[type=file]').setInputFiles({ name: 'narrative.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(graph)) });
+  await page.locator('.contract-card > button').first().click();
   const narrative = page.locator('.narrative');
   await expect(narrative.locator('img, script')).toHaveCount(0);
   await expect(narrative.locator('.missing-reference')).toHaveCount(2);

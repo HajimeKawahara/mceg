@@ -7,6 +7,11 @@ logic, with labels and HTML links added by the documentation renderer.
 
 ## Export a graph
 
+The optional [MCEG Viewer](../../viewer/README.md) opens these exports locally
+with a Japanese/English interface, bounded neighborhood navigation and source
+inspection. It is a separate consumer under `viewer/`; the Python package has
+no viewer dependency.
+
 ```bash
 mceg graph contracts/h2_solubility.yaml
 mceg graph examples/v02/h2_solubility.yaml --provider mceg

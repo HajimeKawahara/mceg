@@ -10,6 +10,8 @@ absolute enthalpy, or entropy. These capabilities must not be conflated.
 
 ## Design principles
 
+- An LLM without the previous conversation must be able to follow recorded evidence and resume an investigation.
+- Humans must also be able to inspect the evidence and model contracts, including what remains unknown. The optional [MCEG Viewer](../../viewer/README.md) makes these records navigable without adding a viewer dependency to the core.
 - Keep MCEG independent of provider packages; add no dependencies to ExoEOS or ExoGibbs.
 - Separate scientific applicability from conditions for numerical evaluation.
 - Separate numerical verification from validation against experiments or observations.

@@ -1,0 +1,2712 @@
+{
+  "format": "mceg_graph_v1",
+  "sources": [
+    {
+      "id": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+      "provider": "mceg",
+      "path": "examples/v02/h2_solubility.yaml",
+      "sha256": "d3ff5eb3015d1b0e8e122e8293cdf0e72967ad6e1f884ecca4bcc7b59a6714a0",
+      "kind": "contract",
+      "version": "0.2"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "type": "evidence",
+      "label": "metadata_temperature",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "metadata_temperature",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/3"
+      },
+      "record": {
+        "id": "metadata_temperature",
+        "kind": "implementation",
+        "summary": "ExoGibbs metadata records a calibration temperature interval of 1673 to 1773 K.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L68-L88"
+        ],
+        "scope": "Temperature metadata associated with this callable; the metadata does not separate experimental materials.",
+        "result": null,
+        "provenance": {
+          "role": "implementation",
+          "location": "MELTYQ_SOLUBILITY_METADATA, h2_hirschmann2012, calibration_temperature_k.",
+          "inspection": "inspected",
+          "note": "Both endpoints and the recorded formulation reference were read directly.",
+          "derived_from": [
+            {
+              "evidence": "formulation_temperature",
+              "comparison": "discrepancy",
+              "note": "The lower bound and K units match, but the metadata upper bound is 1773 K while Seo reports 1723 K for basaltic silicate. This is a recorded scope/value difference, not a finding that either source has a typo. The original material-specific runs remain unchecked."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "type": "assessment",
+      "label": "imported:physical_accuracy",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "imported:physical_accuracy",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2"
+      },
+      "record": {
+        "id": "imported:physical_accuracy",
+        "subject": "imported",
+        "context": "imported:physical_accuracy",
+        "method": {
+          "id": "import_v0.1_declaration",
+          "revision": "1",
+          "description": "Preserve the original declaration; no new assessment."
+        },
+        "evidence": [
+          "literature",
+          "calibration_update"
+        ],
+        "reasons": [
+          "Imported declaration for the original implementation and prose scope; structured calculation conditions were not supplied."
+        ],
+        "kind": "evidence_support",
+        "claim": "physical_accuracy",
+        "claim_revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "status": "unknown",
+        "origin": "imported_v0.1_declaration"
+      }
+    },
+    {
+      "id": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "type": "assessment",
+      "label": "imported:formula_evaluation",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "imported:formula_evaluation",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1"
+      },
+      "record": {
+        "id": "imported:formula_evaluation",
+        "subject": "imported",
+        "context": "imported:formula_evaluation",
+        "method": {
+          "id": "import_v0.1_declaration",
+          "revision": "1",
+          "description": "Preserve the original declaration; no new assessment."
+        },
+        "evidence": [
+          "numerical_tests"
+        ],
+        "reasons": [
+          "Imported declaration for the original implementation and prose scope; structured calculation conditions were not supplied."
+        ],
+        "kind": "evidence_support",
+        "claim": "formula_evaluation",
+        "claim_revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "status": "supported",
+        "origin": "imported_v0.1_declaration"
+      }
+    },
+    {
+      "id": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "type": "assessment",
+      "label": "assessment:b0d3e816b54a446a8f9bbb913d1a6b166563fb5ec2bd357d0a92c871d73f12e4",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "assessment:b0d3e816b54a446a8f9bbb913d1a6b166563fb5ec2bd357d0a92c871d73f12e4",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4"
+      },
+      "record": {
+        "id": "assessment:b0d3e816b54a446a8f9bbb913d1a6b166563fb5ec2bd357d0a92c871d73f12e4",
+        "subject": "imported",
+        "context": "h2-1750K-7500bar",
+        "method": {
+          "id": "closed_interval",
+          "revision": "1",
+          "description": "Compare supplied coordinates only; no scientific support inference."
+        },
+        "evidence": [
+          "formulation_temperature"
+        ],
+        "reasons": [
+          "1750 K compared with closed interval 1673--1723 K; marginal coverage only."
+        ],
+        "kind": "range_membership",
+        "condition": "temperature_seo",
+        "condition_revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "classification": "outside_reported_range"
+      }
+    },
+    {
+      "id": "104305d9cad7f9bc90fc977af694b7bbdbddbaddc6bce1bb105cecd750030400",
+      "type": "evidence",
+      "label": "historical_calibration",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "historical_calibration",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/15"
+      },
+      "record": {
+        "id": "historical_calibration",
+        "kind": "literature",
+        "summary": "Chaudhari (2025) attributes the older concentration scale to a silica-glass coefficient of 0.26 L mol^-1 cm^-1 from Shelby (1994), used by Hirschmann (2012).",
+        "sources": [
+          "https://link.springer.com/article/10.1007/s00410-025-02272-y"
+        ],
+        "scope": "Secondary report of an inherited calibration. The later paper reports agreement after recalculation for comparable Fe-FeO-H2O-buffer conditions; this does not establish a correction for the pure-H2 example.",
+        "result": null,
+        "provenance": {
+          "role": "secondary",
+          "location": "Introduction; Discussion, Comparison to previous studies; Fig. 8; reference entry for Shelby (1994).",
+          "inspection": "inspected",
+          "note": "The older coefficient's original determination and its adoption in 2012 have not been directly checked.",
+          "derived_from": [
+            {
+              "evidence": "original_calibration",
+              "comparison": "not_checked",
+              "note": "The historical attribution comes from the 2025 paper; neither the original coefficient nor its transfer between glasses has been verified here."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "type": "model",
+      "label": "H2 solubility law retained for MELTYQ compatibility",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "model",
+        "id": "exogibbs.h2_hirschmann2012",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": ""
+      },
+      "record": {
+        "model": {
+          "id": "exogibbs.h2_hirschmann2012",
+          "name": "H2 solubility law retained for MELTYQ compatibility",
+          "description": "Empirical dissolved-H2 mole-fraction law with Hirschmann (2012) experimental ancestry and a later formulation recorded in upstream metadata.",
+          "implementation": {
+            "repository": "https://github.com/HajimeKawahara/exogibbs",
+            "revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+            "entry_points": [
+              "exogibbs.solubility.h2_hirschmann2012"
+            ]
+          }
+        },
+        "assumptions": [
+          {
+            "statement": "X_H2 = f_H2_bar * exp(-11.403 - 0.76 * P_melt_GPa), where X_H2 is dissolved H2 mole fraction. Fugacity and actual melt pressure are distinct inputs; the formula does not set them equal.",
+            "evidence": [
+              "implementation",
+              "equations"
+            ]
+          },
+          {
+            "statement": "The function has no temperature or melt-composition arguments. Their absence does not establish temperature or composition independence outside the source model's calibration conditions.",
+            "evidence": [
+              "implementation",
+              "reported_domain"
+            ]
+          }
+        ],
+        "domains": [
+          {
+            "kind": "scientific_applicability",
+            "status": "documented",
+            "description": "Calibration bounds recorded in upstream metadata; containment in these intervals alone is not evidence that a complete state is calibrated.",
+            "conditions": [
+              "Reported calibration temperatures span 1673 to 1773 K.",
+              "Reported calibration total pressures span 0.7 to 3.0 GPa."
+            ],
+            "evidence": [
+              "reported_domain",
+              "metadata_temperature",
+              "metadata_pressure"
+            ]
+          },
+          {
+            "kind": "scientific_applicability",
+            "status": "documented",
+            "description": "Scope reported in the secondary source Seo (2024), before Eq. 6. Original experimental tables have not been checked against this statement; these are reported bounds, not independently established calibration limits.",
+            "conditions": [
+              "Basaltic silicate; reported experimental temperatures span 1673 to 1723 K.",
+              "Reported experimental pressures span 7000 to 30000 bar (0.7 to 3.0 GPa)."
+            ],
+            "evidence": [
+              "formulation",
+              "formulation_temperature"
+            ]
+          },
+          {
+            "kind": "scientific_applicability",
+            "status": "documented",
+            "description": "Study-wide pressure envelope directly reported in the original abstract. The abstract does not resolve pressure coverage for each material or provide a joint calibration domain for the implemented basaltic law.",
+            "conditions": [
+              "Hirschmann (2012) reports experiments from 0.7 to 3 GPa overall.",
+              "Synthetic basalt plus COH and synthetic andesite plus OH are separate series."
+            ],
+            "evidence": [
+              "experimental_pressure",
+              "experimental_materials"
+            ]
+          },
+          {
+            "kind": "scientific_applicability",
+            "status": "unknown",
+            "description": "Joint temperature, pressure, H2 fugacity and melt-composition coverage, including the required redox/speciation conditions and state-specific accuracy of this implementation, are unknown in this audit.",
+            "conditions": [],
+            "evidence": [
+              "reported_domain",
+              "formulation",
+              "literature",
+              "calibration_update",
+              "experimental_fit"
+            ]
+          },
+          {
+            "kind": "numerical_evaluation",
+            "status": "documented",
+            "description": "Accepted argument domain, with no experimental-range enforcement or output clipping.",
+            "conditions": [
+              "H2 fugacity is finite and nonnegative, in bar.",
+              "Actual melt pressure is finite and nonnegative, in GPa.",
+              "Array inputs must broadcast together."
+            ],
+            "evidence": [
+              "implementation"
+            ]
+          }
+        ],
+        "limitations": [
+          {
+            "statement": "Seo is a secondary source for experimental coverage; its temperature statement has not been checked against the original experimental records.",
+            "evidence": [
+              "formulation_temperature",
+              "experimental_temperature"
+            ]
+          },
+          {
+            "statement": "Formula agreement between code and Seo does not verify the empirical coefficients against the original fit.",
+            "evidence": [
+              "implementation",
+              "formulation",
+              "experimental_fit"
+            ]
+          },
+          {
+            "statement": "The metadata upper temperature is 1773 K, whereas the Eq. 6 source states 1723 K; these source-scoped bounds must not be silently combined.",
+            "evidence": [
+              "metadata_temperature",
+              "formulation_temperature",
+              "temperature_crosscheck"
+            ]
+          },
+          {
+            "statement": "Missing temperature and composition arguments prevent the function from checking those applicability conditions.",
+            "evidence": [
+              "implementation",
+              "reported_domain"
+            ]
+          },
+          {
+            "statement": "Values above one are not clipped; a numerically returned value need not be a physically admissible mole fraction.",
+            "evidence": [
+              "implementation"
+            ]
+          },
+          {
+            "statement": "The retained calibration has a documented later caveat; no replacement law or correction factor is established here.",
+            "evidence": [
+              "calibration_update",
+              "infrared_recalibration",
+              "historical_calibration"
+            ]
+          },
+          {
+            "statement": "Reaching an original experiment does not audit inherited analytical calibration or justify transferring it between different glasses.",
+            "evidence": [
+              "historical_calibration",
+              "original_calibration",
+              "infrared_recalibration"
+            ]
+          }
+        ],
+        "migration": {
+          "from_schema": "0.1",
+          "source_sha256": "0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+          "content_sha256": "d0c601bac4b8a7d7090750ac19df638190a5dffb93c1276b81bc62aaa884a7fb",
+          "evidence_ids": [
+            "implementation",
+            "equations",
+            "reported_domain",
+            "metadata_temperature",
+            "metadata_pressure",
+            "experimental_pressure",
+            "experimental_materials",
+            "literature",
+            "formulation",
+            "experimental_fit",
+            "formulation_temperature",
+            "experimental_temperature",
+            "temperature_crosscheck",
+            "calibration_update",
+            "infrared_recalibration",
+            "historical_calibration",
+            "original_calibration",
+            "numerical_tests"
+          ]
+        }
+      }
+    },
+    {
+      "id": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "type": "subject",
+      "label": "imported",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "subject",
+        "id": "imported",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/subjects/0"
+      },
+      "record": {
+        "id": "imported",
+        "implementation": {
+          "repository": "https://github.com/HajimeKawahara/exogibbs",
+          "revision": "6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea",
+          "entry_points": [
+            "exogibbs.solubility.h2_hirschmann2012"
+          ]
+        },
+        "selected_files": {}
+      }
+    },
+    {
+      "id": "2a7087ca4111dff808f94fc066d339c7853c08231739d7f612488d61cfea8023",
+      "type": "evidence",
+      "label": "numerical_tests",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "numerical_tests",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/17"
+      },
+      "record": {
+        "id": "numerical_tests",
+        "kind": "numerical_test",
+        "summary": "test_meltyq_laws_match_independent_reference_values and test_laws_broadcast_array_inputs passed.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/tests/unittests/solubility/meltyq_test.py#L28-L91",
+          "docs/en/h2_solubility.md#verification"
+        ],
+        "scope": "Formula references at rtol = 1e-6; included in an 8-test upstream run using Python 3.12.7, JAX 0.6.2, NumPy 2.1.0, pytest 8.3.3, CPU and x64.",
+        "result": "passed",
+        "provenance": null,
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "type": "evidence",
+      "label": "implementation",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "implementation",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/0"
+      },
+      "record": {
+        "id": "implementation",
+        "kind": "implementation",
+        "summary": "Source specifies the formula, native units, mole-fraction basis and invalid-input mask.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L237-L254"
+        ],
+        "scope": "This function only; no equilibrium solver, temperature check or fraction clipping.",
+        "result": null,
+        "provenance": {
+          "role": "implementation",
+          "location": "volatile.py at the pinned revision, h2_hirschmann2012, lines 237-254.",
+          "inspection": "inspected",
+          "note": "The expression, fugacity in bar, actual melt pressure in GPa, and mole-fraction output were inspected.",
+          "derived_from": [
+            {
+              "evidence": "formulation",
+              "comparison": "consistent",
+              "note": "The expression and units match Seo Eq. 6. Seo's atmospheric pressure is supplied as actual melt pressure in this boundary calculation. This compares formula transcription, not the original experimental fit."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "2f63490eb818500e1332fda02ba78750658f265b009afa7375985fd20d1d6613",
+      "type": "evidence",
+      "label": "experimental_materials",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "experimental_materials",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/6"
+      },
+      "record": {
+        "id": "experimental_materials",
+        "kind": "literature",
+        "summary": "The original abstract distinguishes synthetic basalt plus COH from synthetic andesite plus OH, with controlled H2 fugacity.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031",
+          "https://experts.umn.edu/en/publications/solubility-of-molecular-hydrogen-in-silicate-melts-and-consequenc/"
+        ],
+        "scope": "Experimental-series identities only; exact compositions, buffers, and individual run conditions remain uninspected.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "Original article abstract, experimental-series description.",
+          "inspection": "inspected",
+          "note": "The author-institution abstract was read; it does not identify this example's unspecified melt or establish pure-H2 coverage.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "type": "evidence",
+      "label": "experimental_temperature",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "experimental_temperature",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/11"
+      },
+      "record": {
+        "id": "experimental_temperature",
+        "kind": "literature",
+        "summary": "Hirschmann et al. (2012) is the identified original experimental source; its basalt-specific temperature coverage has not been audited.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031",
+          "https://experts.umn.edu/en/publications/solubility-of-molecular-hydrogen-in-silicate-melts-and-consequenc/"
+        ],
+        "scope": "Basalt-specific experimental temperature coverage; no numeric bounds are asserted from an uninspected table.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "unknown; the original basalt-specific run table or passage has not been located.",
+          "inspection": "not_inspected",
+          "note": "The author-institution abstract identifies separate basalt and andesite experimental series. That does not constitute inspection of the original temperature data relevant to this evidence item.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "type": "assessment",
+      "label": "imported:fixed_pressure_linearity",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "imported:fixed_pressure_linearity",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0"
+      },
+      "record": {
+        "id": "imported:fixed_pressure_linearity",
+        "subject": "imported",
+        "context": "imported:fixed_pressure_linearity",
+        "method": {
+          "id": "import_v0.1_declaration",
+          "revision": "1",
+          "description": "Preserve the original declaration; no new assessment."
+        },
+        "evidence": [
+          "equations"
+        ],
+        "reasons": [
+          "Imported declaration for the original implementation and prose scope; structured calculation conditions were not supplied."
+        ],
+        "kind": "evidence_support",
+        "claim": "fixed_pressure_linearity",
+        "claim_revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "status": "supported",
+        "origin": "imported_v0.1_declaration"
+      }
+    },
+    {
+      "id": "4d7d43c1bb89839f340356e88ba39949d0f0017543b1bb7bf96f7dfc21a92a1a",
+      "type": "claim",
+      "label": "physical_accuracy",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "claim",
+        "id": "physical_accuracy",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/2"
+      },
+      "record": {
+        "id": "physical_accuracy",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "statement": "The physical accuracy of this implemented law at a specified state is unknown in this audit.",
+        "kind": "physical_validation",
+        "scope": "No experiment or observation was reproduced here. Experimental ancestry and metadata intervals do not establish the accuracy of an EOS-to-law calculation."
+      }
+    },
+    {
+      "id": "5d08972e784f4f93bc144929aee8946500bbf6b1b882abc0abe212ad90f139ef",
+      "type": "evidence",
+      "label": "infrared_recalibration",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "infrared_recalibration",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/14"
+      },
+      "record": {
+        "id": "infrared_recalibration",
+        "kind": "experiment",
+        "summary": "Chaudhari (2025) reports a new H2 infrared extinction coefficient of 2.12 +/- 0.05 L mol^-1 cm^-1 from haplogranitic glasses.",
+        "sources": [
+          "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig5"
+        ],
+        "scope": "New calibration using oxidation and Karl Fischer titration. The methods, reported regression, and limitations were read, not independently fitted. Transfer from haplogranitic to basaltic or andesitic glasses can introduce systematic error; this is not direct validation of the example's melt.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "Results, Infrared spectra and infrared extinction coefficients; Fig. 5 and Discussion, Comparison to previous studies.",
+          "inspection": "inspected",
+          "note": "This paper is primary for its new calibration, but secondary for its account of the 2012 calibration history.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "5f3904182daf3c3554b6dd6bda961c05fff87ad6a97b1bd1d9a16610159a314e",
+      "type": "context",
+      "label": "imported:fixed_pressure_linearity",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "context",
+        "id": "imported:fixed_pressure_linearity",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/0"
+      },
+      "record": {
+        "id": "imported:fixed_pressure_linearity",
+        "scope": "Algebraic property of the empirical formula; not proof of physical Henry-law behavior everywhere.",
+        "quantities": {},
+        "settings": {}
+      }
+    },
+    {
+      "id": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "type": "evidence",
+      "label": "reported_domain",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "reported_domain",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/2"
+      },
+      "record": {
+        "id": "reported_domain",
+        "kind": "implementation",
+        "summary": "SolubilityMetadata records temperature and total-pressure calibration bounds.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L68-L88"
+        ],
+        "scope": "Recorded marginal intervals; no joint fugacity or composition domain is provided.",
+        "result": null,
+        "provenance": null,
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "5f669f8f846ab14a6a56b34c02f37f1bfc992ff240fdd0a3afcf3dfd1181723d",
+      "type": "evidence",
+      "label": "original_calibration",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "original_calibration",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/16"
+      },
+      "record": {
+        "id": "original_calibration",
+        "kind": "literature",
+        "summary": "Shelby (1994), Protonic species in vitreous silica, is the candidate earlier calibration source identified by Chaudhari (2025).",
+        "sources": [
+          "Shelby JE (1994). Protonic species in vitreous silica. Journal of Non-Crystalline Solids 179:138-147.",
+          "https://link.springer.com/article/10.1007/s00410-025-02272-y"
+        ],
+        "scope": "Original determination of the older infrared coefficient; its primary-source status and derivation have not been confirmed directly.",
+        "result": null,
+        "provenance": {
+          "role": "unknown",
+          "location": "unknown; only the bibliographic entry and attribution in Chaudhari (2025) were inspected.",
+          "inspection": "not_inspected",
+          "note": "A candidate earlier source is retained without inventing an inspected passage or a verified numeric value.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "6362e047ec2cd3e513af88d36e745198d1a3f082abf5a8f88ac65af622043816",
+      "type": "condition",
+      "label": "pressure_hirschmann_abstract",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "condition",
+        "id": "pressure_hirschmann_abstract",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/2"
+      },
+      "record": {
+        "id": "pressure_hirschmann_abstract",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "kind": "range",
+        "quantity": "melt_total_pressure",
+        "interval": {
+          "lower": 0.7,
+          "upper": 3.0,
+          "unit": "GPa",
+          "closure": "closed"
+        },
+        "coverage": "marginal",
+        "scope": "Study-wide total-pressure envelope in the original abstract, including separate basalt and andesite series; not a material-specific joint domain.",
+        "evidence": [
+          "experimental_pressure"
+        ]
+      }
+    },
+    {
+      "id": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "type": "evidence",
+      "label": "experimental_pressure",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "experimental_pressure",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/5"
+      },
+      "record": {
+        "id": "experimental_pressure",
+        "kind": "literature",
+        "summary": "Hirschmann et al. (2012) reports an overall experimental pressure interval of 0.7 to 3 GPa.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031",
+          "https://experts.umn.edu/en/publications/solubility-of-molecular-hydrogen-in-silicate-melts-and-consequenc/"
+        ],
+        "scope": "Study-wide total-pressure envelope reported by the authors, not a run-table audit or a fugacity interval.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "Original article abstract, first sentence, as reproduced by Experts@Minnesota.",
+          "inspection": "inspected",
+          "note": "Read on 2026-10-15; inspection is complete for this abstract statement only.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "6c31d746e26327626fa1f6a653d9fde4d79c94b06e9a05a2416bd3a85993594d",
+      "type": "evidence",
+      "label": "temperature_crosscheck",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "temperature_crosscheck",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/12"
+      },
+      "record": {
+        "id": "temperature_crosscheck",
+        "kind": "literature",
+        "summary": "Chaudhari (2025), Fig. 8 describes selected older runs at mostly 1400 degC, with two basalt runs at 1450 degC and two andesite runs at 1500 degC.",
+        "sources": [
+          "https://link.springer.com/article/10.1007/s00410-025-02272-y#Fig8"
+        ],
+        "scope": "Secondary description of the Fe-FeO-H2O-buffer subset shown in Fig. 8, not the full original run inventory.",
+        "result": null,
+        "provenance": {
+          "role": "secondary",
+          "location": "Chaudhari et al. (2025), Fig. 8 caption.",
+          "inspection": "inspected",
+          "note": "Adding 273.15 gives 1673.15, 1723.15, and 1773.15 K. Material-specific subsets could explain the differing upper bounds, but that explanation is an inference pending the original table, not a confirmed correction.",
+          "derived_from": [
+            {
+              "evidence": "experimental_temperature",
+              "comparison": "not_checked",
+              "note": "The caption was read, but its selection of Hirschmann runs has not been checked against the original table."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "7cb5edf055f46a6c883483740c5ee1c63075e6937696d7fedcb42427d41527bb",
+      "type": "evidence",
+      "label": "literature",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "literature",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/7"
+      },
+      "record": {
+        "id": "literature",
+        "kind": "literature",
+        "summary": "Metadata traces experiments to Hirschmann (2012), formulation to Seo (2024), Eq. 6, and implementation to Ito and Changeat (2026), Eq. A3.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L68-L88",
+          "https://doi.org/10.1016/j.epsl.2012.06.031",
+          "https://doi.org/10.3847/1538-4357/ad7461",
+          "https://doi.org/10.48550/arXiv.2605.08752"
+        ],
+        "scope": "Provenance recorded by the implementation; the function name alone is not the full ancestry.",
+        "result": null,
+        "provenance": null,
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "type": "assessment",
+      "label": "assessment:77f8fd369b1813b843f84420d8d7fe15dd550e1dd2080f4dd4a1663a5d2f1427",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "assessment:77f8fd369b1813b843f84420d8d7fe15dd550e1dd2080f4dd4a1663a5d2f1427",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3"
+      },
+      "record": {
+        "id": "assessment:77f8fd369b1813b843f84420d8d7fe15dd550e1dd2080f4dd4a1663a5d2f1427",
+        "subject": "imported",
+        "context": "h2-1750K-7500bar",
+        "method": {
+          "id": "closed_interval",
+          "revision": "1",
+          "description": "Compare supplied coordinates only; no scientific support inference."
+        },
+        "evidence": [
+          "metadata_temperature"
+        ],
+        "reasons": [
+          "1750 K compared with closed interval 1673--1773 K; marginal coverage only."
+        ],
+        "kind": "range_membership",
+        "condition": "temperature_metadata",
+        "condition_revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "classification": "within_reported_range"
+      }
+    },
+    {
+      "id": "7fd772f89dd4375741962de37ae06d21f8c21c6dc641a60bad16ee1d1efc4585",
+      "type": "claim",
+      "label": "formula_evaluation",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "claim",
+        "id": "formula_evaluation",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/1"
+      },
+      "record": {
+        "id": "formula_evaluation",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "statement": "Upstream scalar and broadcast comparisons with reference formula values passed.",
+        "kind": "numerical_verification",
+        "scope": "Scalar f_H2 = 1000 bar and P_melt = 1 GPa gives approximately 0.0052200686751357186; broadcast inputs use 100 and 1000 bar with 0.7, 1 and 3 GPa. These are numerical reference values."
+      }
+    },
+    {
+      "id": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "type": "evidence",
+      "label": "formulation_temperature",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "formulation_temperature",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/10"
+      },
+      "record": {
+        "id": "formulation_temperature",
+        "kind": "literature",
+        "summary": "Seo (2024) reports 1673 to 1723 K for the basaltic H2 solubility experiments cited before Eq. 6.",
+        "sources": [
+          "https://arxiv.org/html/2408.17056v1#S2.SS3"
+        ],
+        "scope": "The temperature interval reported for basaltic H2 experiments, not the origin of the formula coefficients.",
+        "result": null,
+        "provenance": {
+          "role": "secondary",
+          "location": "arXiv:2408.17056v1, Section II.3, paragraph immediately before Eq. 6.",
+          "inspection": "inspected",
+          "note": "The paragraph and its citation to Hirschmann et al. (2012) were directly inspected.",
+          "derived_from": [
+            {
+              "evidence": "experimental_temperature",
+              "comparison": "not_checked",
+              "note": "Seo attributes the interval to Hirschmann experiments. The original experimental table and basalt-specific run selection have not been checked, so transcription accuracy and scope preservation are unknown."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "8717eeff8dce820f83d3eebc4229285acf1f71fb5fdbcba16769ba5bd73af7ca",
+      "type": "evidence",
+      "label": "equations",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "equations",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/1"
+      },
+      "record": {
+        "id": "equations",
+        "kind": "theory",
+        "summary": "Direct algebra of the implemented exponential pressure factor gives fixed-pressure linearity.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L237-L254"
+        ],
+        "scope": "Mathematical consequence of the recorded formula, not a physical validation result.",
+        "result": null,
+        "provenance": null,
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "87f2e4046b5366755eba77408473fddd24f3a57339c47fa96c8260537a19cbb9",
+      "type": "follow_up",
+      "label": "inspect-original-fit",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "follow_up",
+        "id": "inspect-original-fit",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/0"
+      },
+      "record": {
+        "id": "inspect-original-fit",
+        "target_kind": "evidence",
+        "target": "experimental_fit",
+        "revision": null,
+        "action": "Obtain Hirschmann et al. (2012) full text and inspect the fit underlying Seo Eq. 6.",
+        "requires": [
+          "Authorized full text and supporting equations/tables. The stored audit reports HTTP 403 and an authenticated full-text API; institutional library access or an author copy may be needed."
+        ],
+        "completion": "Record the original fit, concentration basis, reference state and unit/temperature transformations leading to -11.403 and 0.76. Compare the inspected scope with Seo Eq. 6; preserve unknown if the derivation remains unresolved.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031"
+        ]
+      }
+    },
+    {
+      "id": "8cb5960d4aef456e50a31064372775cb843d399d5fe3c13aa87924ac8fb62892",
+      "type": "evidence",
+      "label": "metadata_pressure",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "metadata_pressure",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/4"
+      },
+      "record": {
+        "id": "metadata_pressure",
+        "kind": "implementation",
+        "summary": "ExoGibbs metadata records total pressures of 0.7 to 3.0 GPa.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L68-L88"
+        ],
+        "scope": "Numeric total-pressure envelope only, compared with the study-wide original abstract; no material-specific applicability claim.",
+        "result": null,
+        "provenance": {
+          "role": "implementation",
+          "location": "MELTYQ_SOLUBILITY_METADATA, h2_hirschmann2012, calibration_total_pressure_gpa.",
+          "inspection": "inspected",
+          "note": "The metadata interval and experimental DOI were read directly.",
+          "derived_from": [
+            {
+              "evidence": "experimental_pressure",
+              "comparison": "consistent",
+              "note": "Both report 0.7 to 3 GPa total pressure. This agreement is limited to the study-wide numeric envelope. It does not show that every basalt run, fugacity, or composition used by the law is covered."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "93a6152a8832a9efdbebd0965d8dfc4305be74966f9d52ef56ee25f0c5491a16",
+      "type": "context",
+      "label": "imported:formula_evaluation",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "context",
+        "id": "imported:formula_evaluation",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/1"
+      },
+      "record": {
+        "id": "imported:formula_evaluation",
+        "scope": "Scalar f_H2 = 1000 bar and P_melt = 1 GPa gives approximately 0.0052200686751357186; broadcast inputs use 100 and 1000 bar with 0.7, 1 and 3 GPa. These are numerical reference values.",
+        "quantities": {},
+        "settings": {}
+      }
+    },
+    {
+      "id": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "type": "evidence",
+      "label": "formulation",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "formulation",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/8"
+      },
+      "record": {
+        "id": "formulation",
+        "kind": "literature",
+        "summary": "Seo (2024), Eq. 6 gives X_H2 = f_H2_bar * exp(-11.403 - 0.76 * P_GPa) for basaltic silicate.",
+        "sources": [
+          "https://arxiv.org/html/2408.17056v1#S2.SS3",
+          "https://doi.org/10.3847/1538-4357/ad7461"
+        ],
+        "scope": "Adopted expression, units, and mole-fraction basis; the original fit and derivation of the two numeric coefficients have not been reconstructed.",
+        "result": null,
+        "provenance": {
+          "role": "secondary",
+          "location": "arXiv:2408.17056v1, Section II.3, Eq. 6 and its variable definitions.",
+          "inspection": "inspected",
+          "note": "Directly read expression; fugacity is in bar and pressure in GPa. The preceding paragraph reports 7000 to 30000 bar and cites Hirschmann (2012).",
+          "derived_from": [
+            {
+              "evidence": "experimental_fit",
+              "comparison": "not_checked",
+              "note": "The original fit, concentration convention, reference state, and any temperature approximation needed to obtain -11.403 and 0.76 have not been inspected. Agreement with code does not close this link."
+            }
+          ]
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "a12be14399e091e47a4d16eae599969b353c62ebad32dfd2bbc507920167c48d",
+      "type": "follow_up",
+      "label": "inspect-original-runs",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "follow_up",
+        "id": "inspect-original-runs",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/1"
+      },
+      "record": {
+        "id": "inspect-original-runs",
+        "target_kind": "evidence",
+        "target": "experimental_temperature",
+        "revision": null,
+        "action": "Inspect the original basalt and andesite run tables separately.",
+        "requires": [
+          "Hirschmann et al. (2012) full text and run tables, with material and buffer labels."
+        ],
+        "completion": "Record the basalt-specific temperatures and compare the selected run inventory with Seo's interval. Do not combine material-specific upper bounds without supporting evidence.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031"
+        ]
+      }
+    },
+    {
+      "id": "ac762dbeba3d97bd59451607af6275e0f5280b1a6088bc56cf812b95ca232d9a",
+      "type": "condition",
+      "label": "temperature_seo",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "condition",
+        "id": "temperature_seo",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/1"
+      },
+      "record": {
+        "id": "temperature_seo",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "kind": "range",
+        "quantity": "temperature",
+        "interval": {
+          "lower": 1673.0,
+          "upper": 1723.0,
+          "unit": "K",
+          "closure": "closed"
+        },
+        "coverage": "marginal",
+        "scope": "Basaltic silicate interval reported by Seo before Eq. 6. Original material-specific runs and the current melt's match are unchecked.",
+        "evidence": [
+          "formulation_temperature"
+        ]
+      }
+    },
+    {
+      "id": "b1f7a4f85a0c507c64ba061d4141c906fbdc585fb901ca0f8f4a9fd006ceb309",
+      "type": "claim",
+      "label": "fixed_pressure_linearity",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "claim",
+        "id": "fixed_pressure_linearity",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/0"
+      },
+      "record": {
+        "id": "fixed_pressure_linearity",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "statement": "At fixed melt pressure the specified formula is linear in H2 fugacity and vanishes at zero fugacity.",
+        "kind": "theoretical",
+        "scope": "Algebraic property of the empirical formula; not proof of physical Henry-law behavior everywhere."
+      }
+    },
+    {
+      "id": "c60589fac98f7792815d45489fa16800fea6007428ac187cc0a83b10c911cfff",
+      "type": "context",
+      "label": "imported:physical_accuracy",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "context",
+        "id": "imported:physical_accuracy",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/2"
+      },
+      "record": {
+        "id": "imported:physical_accuracy",
+        "scope": "No experiment or observation was reproduced here. Experimental ancestry and metadata intervals do not establish the accuracy of an EOS-to-law calculation.",
+        "quantities": {},
+        "settings": {}
+      }
+    },
+    {
+      "id": "c6d482306ba71b74a54a0c727a9dd7731717c54b5d87e7ae57e9b76c93fffdc6",
+      "type": "context",
+      "label": "h2-1750K-7500bar",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "context",
+        "id": "h2-1750K-7500bar",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/3"
+      },
+      "record": {
+        "id": "h2-1750K-7500bar",
+        "scope": "Requested temperature and actual melt pressure only; composition and hydrogen fugacity are unspecified.",
+        "quantities": {
+          "temperature": {
+            "value": 1750.0,
+            "unit": "K"
+          },
+          "melt_total_pressure": {
+            "value": 7500.0,
+            "unit": "bar"
+          }
+        },
+        "settings": {}
+      }
+    },
+    {
+      "id": "cf4a8a27f411b1b05c9d669983fa9d798013b8ce05b4080caea2010b0e7e9bde",
+      "type": "follow_up",
+      "label": "define-physical-comparison",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "follow_up",
+        "id": "define-physical-comparison",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/2"
+      },
+      "record": {
+        "id": "define-physical-comparison",
+        "target_kind": "claim",
+        "target": "physical_accuracy",
+        "revision": "sha256:0737387f49933628845d6758e9c7a96ac0894b19715d0578dcc59a8c291d2eda",
+        "action": "Define a physical accuracy proposition for the intended melt and calculation conditions.",
+        "requires": [
+          "An observable and tolerance, melt composition, redox/fugacity conditions, and relevant independent measurement data."
+        ],
+        "completion": "Create an explicit Claim revision with these criteria, record the measured comparison as Evidence, and assess that revision. Reading a paper or passing a range check alone does not establish physical accuracy.",
+        "sources": []
+      }
+    },
+    {
+      "id": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "type": "assessment",
+      "label": "assessment:a6a93bc20cb6069989c968fbc68f455de3cf614148faf21331f33dfd1b58f213",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "assessment",
+        "id": "assessment:a6a93bc20cb6069989c968fbc68f455de3cf614148faf21331f33dfd1b58f213",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5"
+      },
+      "record": {
+        "id": "assessment:a6a93bc20cb6069989c968fbc68f455de3cf614148faf21331f33dfd1b58f213",
+        "subject": "imported",
+        "context": "h2-1750K-7500bar",
+        "method": {
+          "id": "closed_interval",
+          "revision": "1",
+          "description": "Compare supplied coordinates only; no scientific support inference."
+        },
+        "evidence": [
+          "experimental_pressure"
+        ],
+        "reasons": [
+          "7500 bar compared with closed interval 0.7--3 GPa; marginal coverage only."
+        ],
+        "kind": "range_membership",
+        "condition": "pressure_hirschmann_abstract",
+        "condition_revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "classification": "within_reported_range"
+      }
+    },
+    {
+      "id": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "type": "evidence",
+      "label": "experimental_fit",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "experimental_fit",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/9"
+      },
+      "record": {
+        "id": "experimental_fit",
+        "kind": "literature",
+        "summary": "The experimental ancestry is identified, but the original fit underlying Seo Eq. 6 is uninspected.",
+        "sources": [
+          "https://doi.org/10.1016/j.epsl.2012.06.031"
+        ],
+        "scope": "Origin and transformations of the empirical coefficients, including units and concentration basis; unknown here.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "unknown; the relevant original equation, fit parameters, and supporting table have not been inspected.",
+          "inspection": "not_inspected",
+          "note": "Full text was not obtained on 2026-10-15. Publisher HTML/PDF requests returned HTTP 403; the public article API returned metadata only and its FULL view required authentication. The accessible abstract is insufficient.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "e670524ea9aa196f91ae126b74e6bd55cd8c87d3438fcba8d670e118d349575b",
+      "type": "condition",
+      "label": "temperature_metadata",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "condition",
+        "id": "temperature_metadata",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d"
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/0"
+      },
+      "record": {
+        "id": "temperature_metadata",
+        "revision": "sha256:aa6812c904ae53f41cf24cbabaef641f1ccee7f8eb5511d70c1a2e5122573f1d",
+        "kind": "range",
+        "quantity": "temperature",
+        "interval": {
+          "lower": 1673.0,
+          "upper": 1773.0,
+          "unit": "K",
+          "closure": "closed"
+        },
+        "coverage": "marginal",
+        "scope": "Implementation metadata; experimental materials are not separated.",
+        "evidence": [
+          "metadata_temperature"
+        ]
+      }
+    },
+    {
+      "id": "f5dc85100d94e96e64f933720de0ded2ec8dc2927157f1abb978b50032e1845e",
+      "type": "evidence",
+      "label": "calibration_update",
+      "ref": {
+        "provider": "mceg",
+        "path": "examples/v02/h2_solubility.yaml",
+        "type": "evidence",
+        "id": "calibration_update",
+        "revision": null
+      },
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/13"
+      },
+      "record": {
+        "id": "calibration_update",
+        "kind": "literature",
+        "summary": "Upstream metadata cites Chaudhari (2025) as reporting potential overestimation from the older infrared calibration and retains this law for compatibility.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/6b4cef45d2a6f1eb1462afd6cb6d3f1c77dba8ea/src/exogibbs/solubility/volatile.py#L80-L87",
+          "https://doi.org/10.1007/s00410-025-02272-y"
+        ],
+        "scope": "A recorded calibration caveat, not a quantified correction to any specific computed result.",
+        "result": null,
+        "provenance": null,
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "0556876461ecff49a2f8cfb63c073bdd97401fe361bd3e9ab5a4db4be5d27d3f",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assumptions/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "091c4c751f360fb5aca266241680196bad2f437e599eb3514fef0828c786869f",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "0a174693328dae3ab8f03fed32fc623716cd0cb4070ffd2784df068bc5beaade",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "103a2645d3ae0a5818a53fd4226c97d268a9463ca966e255e64881fc02a5ee6a",
+      "type": "has_context",
+      "source": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "target": "93a6152a8832a9efdbebd0965d8dfc4305be74966f9d52ef56ee25f0c5491a16",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "119356baef15e1e4dcd0ebcef5f1cd3c21929c5fe7f67ae2ef04d0f07a140936",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2f63490eb818500e1332fda02ba78750658f265b009afa7375985fd20d1d6613",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "124dad01ed94616cd65a368a3bc69845cf0c9d4f4dbe1b3649ad6e22e109700a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "8717eeff8dce820f83d3eebc4229285acf1f71fb5fdbcba16769ba5bd73af7ca",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "197afa4b233bfa11ccc2b4fcbf51aabe33f5484ffa5c1061b48a12a9faf53a8a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3904182daf3c3554b6dd6bda961c05fff87ad6a97b1bd1d9a16610159a314e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "1e8f0209802e713b87bf41b8b07577699ab735ba7c612953d84c2c934d3a14c9",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5d08972e784f4f93bc144929aee8946500bbf6b1b882abc0abe212ad90f139ef",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/5/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "201f4be2d658b32e3d81adcc1fd6f76a7086e7e9d8d04f83b6185032456f1915",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "8cb5960d4aef456e50a31064372775cb843d399d5fe3c13aa87924ac8fb62892",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/0/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "2442f2b3ce44675cfe4f52a7de9be615119d5a8dda4c2b27dff7ce3061eb1838",
+      "type": "uses_evidence",
+      "source": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "target": "f5dc85100d94e96e64f933720de0ded2ec8dc2927157f1abb978b50032e1845e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "2c6daa61c84f2ca701cb8ca22bcb3f32ed7f4e62a7d4c3a65b51d8cf505337f3",
+      "type": "derived_from",
+      "source": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "target": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/10/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "not_checked",
+        "note": "Seo attributes the interval to Hirschmann experiments. The original experimental table and basalt-specific run selection have not been checked, so transcription accuracy and scope preservation are unknown."
+      }
+    },
+    {
+      "id": "2c9f8bd6a7b44db26dd7e2bf7afa9f0bc66d1d70b4d17eaa9943b6c7a3cb4f8d",
+      "type": "derived_from",
+      "source": "8cb5960d4aef456e50a31064372775cb843d399d5fe3c13aa87924ac8fb62892",
+      "target": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/4/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "consistent",
+        "note": "Both report 0.7 to 3 GPa total pressure. This agreement is limited to the study-wide numeric envelope. It does not show that every basalt run, fugacity, or composition used by the law is covered."
+      }
+    },
+    {
+      "id": "2f20193e4a1e89cdb341ddec59f78263627ddb7631d29cdba682db36ac1d6011",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "b1f7a4f85a0c507c64ba061d4141c906fbdc585fb901ca0f8f4a9fd006ceb309",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "30b139e533c8c69d635c8b5a2c29347af8cdf4d8670eb8b5b912582bd901d7a5",
+      "type": "has_subject",
+      "source": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "34ba9bebee0017c111f19f1af1cb2e3a84ac5faef23bdb374c25f63712fdf178",
+      "type": "uses_evidence",
+      "source": "ac762dbeba3d97bd59451607af6275e0f5280b1a6088bc56cf812b95ca232d9a",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "368a2164f77474a70e36a0c63e8c89defd6395db9a1074de625e97527116b28f",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "378134289be6ad21eac3d9f0c9112ff671e1e38b2fe104a09e74036373d235d0",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5"
+      },
+      "data": {}
+    },
+    {
+      "id": "3f63c546ee3956840790026a7f9ecf78b49e1f7930eeb10ad9a6677980e9fb0c",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/5"
+      },
+      "data": {}
+    },
+    {
+      "id": "3faef4b4fd981ee61e3d9bce996dc2e1ab0d07d7956d427014baf7f529a74413",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/4/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "41de10094c2fafff7fbbb16122485981c013104a39dc47d908734348c9611e4a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "42388517bf184e02feadbff003786528917f139bb05403a877693fca7316e775",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/3/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "45abd484bc4e01f9d0c29c45ad628cbfc265fb35eae3291ca950d7f90645ec13",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "7cb5edf055f46a6c883483740c5ee1c63075e6937696d7fedcb42427d41527bb",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/3/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "46be899c93985161e99e65ced75c5271c18c4c55dca07c2197434b6b94300743",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4"
+      },
+      "data": {}
+    },
+    {
+      "id": "497a702b8d2af730e09679710427692273f8de12ce8497927cb113eb6340bc6b",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "4d7d43c1bb89839f340356e88ba39949d0f0017543b1bb7bf96f7dfc21a92a1a",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "49902ff1851f89e8e90d70890fb4327aee330aeeeb0907bce9209b5e8a773f59",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "f5dc85100d94e96e64f933720de0ded2ec8dc2927157f1abb978b50032e1845e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/3/evidence/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "4bf77e9004253abe765c7b47e6132982f7b49073ab1866e48235f1c860896959",
+      "type": "assesses",
+      "source": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "target": "b1f7a4f85a0c507c64ba061d4141c906fbdc585fb901ca0f8f4a9fd006ceb309",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "4ce791c4428eda7c6b1209a27644047a9a0f6ad98821807e5af364017b4a4c5d",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2a7087ca4111dff808f94fc066d339c7853c08231739d7f612488d61cfea8023",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/17"
+      },
+      "data": {}
+    },
+    {
+      "id": "4e6823c41bbc0fe393c7c025b7bc87846791abc579d3f5022f02b113282b9c60",
+      "type": "uses_evidence",
+      "source": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "target": "8717eeff8dce820f83d3eebc4229285acf1f71fb5fdbcba16769ba5bd73af7ca",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "5328eb90ab838b26a3d1c1d7ce6f1bbd271412a9eb5ec4eac58ea1af919decd8",
+      "type": "assesses",
+      "source": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "target": "7fd772f89dd4375741962de37ae06d21f8c21c6dc641a60bad16ee1d1efc4585",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "551f7141f24cc0ffe71755ad09e978f9df97ca4fe278febc2878449183dba88f",
+      "type": "derived_from",
+      "source": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "target": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/0/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "consistent",
+        "note": "The expression and units match Seo Eq. 6. Seo's atmospheric pressure is supplied as actual melt pressure in this boundary calculation. This compares formula transcription, not the original experimental fit."
+      }
+    },
+    {
+      "id": "5af246bcf533225bffcea1d45778e863560c4011af8639a51a72aff8d377d7bd",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/8"
+      },
+      "data": {}
+    },
+    {
+      "id": "5befbe2ceaa902534aef4de36451177f64daf957647565316854683ef38804a0",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "f5dc85100d94e96e64f933720de0ded2ec8dc2927157f1abb978b50032e1845e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/13"
+      },
+      "data": {}
+    },
+    {
+      "id": "5d203b62d05dc3d1d958639083e16e37cf2c547ee99cb053ff1aa09f8b5b8d42",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f669f8f846ab14a6a56b34c02f37f1bfc992ff240fdd0a3afcf3dfd1181723d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/6/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "6048e95a5aa28816d649048eed85a269100fbd486f5a0a68bf367ab68c25c31b",
+      "type": "has_subject",
+      "source": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "6085e06f66ed790babc22a61d15da0d14a3b61888d52e41e7e149dabe6d5a513",
+      "type": "has_context",
+      "source": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "target": "c6d482306ba71b74a54a0c727a9dd7731717c54b5d87e7ae57e9b76c93fffdc6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "610342111b0ed33896189e5c413638215eea8dda4007605b4030bb08c3452437",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "614c36045e9e7bc005dcd81d0527918511df33cf677baf96d192291d45b823f1",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "61f77a37cdc25641dc94c32211ccdd03f06ddac9dbf6b69d86f4fba66113645c",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "635ff508b759abd14c5abd82a39e84dcd7aff01a60a2ad6bde770cc4345101cf",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2f63490eb818500e1332fda02ba78750658f265b009afa7375985fd20d1d6613",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/6"
+      },
+      "data": {}
+    },
+    {
+      "id": "638cd1ac4a6ec008f53b5e67b4ad82a3e7ab0ec3ded403febb3dd30b4ee410a9",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "93a6152a8832a9efdbebd0965d8dfc4305be74966f9d52ef56ee25f0c5491a16",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "63d9814c36358f4f694e9553941b7b1d9ad1e49cbb6cfe96fc8de83ef11b8c5b",
+      "type": "has_context",
+      "source": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "target": "5f3904182daf3c3554b6dd6bda961c05fff87ad6a97b1bd1d9a16610159a314e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "65af1319e925a90301ef2fb048e3e431e4d20390e2d6f3b93431028a951d1bfc",
+      "type": "assesses",
+      "source": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "target": "4d7d43c1bb89839f340356e88ba39949d0f0017543b1bb7bf96f7dfc21a92a1a",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "66d6584bc2cb6a42da67716a4a576b734bd1820ce6a26bf1dae14158562576ce",
+      "type": "derived_from",
+      "source": "104305d9cad7f9bc90fc977af694b7bbdbddbaddc6bce1bb105cecd750030400",
+      "target": "5f669f8f846ab14a6a56b34c02f37f1bfc992ff240fdd0a3afcf3dfd1181723d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/15/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "not_checked",
+        "note": "The historical attribution comes from the 2025 paper; neither the original coefficient nor its transfer between glasses has been verified here."
+      }
+    },
+    {
+      "id": "6889cfb1836fd9ddc0e14e1108126f84e6db31bf8c95f1b247aa5b61de17a9fb",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/4/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "6bd7cc4a370a6a8192e075fce7ca06fa9ca42dfa3a445042baa4bdb95ebe16da",
+      "type": "uses_evidence",
+      "source": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "target": "7cb5edf055f46a6c883483740c5ee1c63075e6937696d7fedcb42427d41527bb",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "6be5b130d8efc99a60fb4e0c4d797643907d31f27286a144e34510b4b05c7b22",
+      "type": "uses_evidence",
+      "source": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "target": "2a7087ca4111dff808f94fc066d339c7853c08231739d7f612488d61cfea8023",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "6e12c5328b1bf37df3d75ea84129806fc1f11d7c4aef831b823bae49e59a0ba7",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "70281b634493d2b105f09aeddbf76593e736d5fb893b6e6c07266c21fc05381a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "104305d9cad7f9bc90fc977af694b7bbdbddbaddc6bce1bb105cecd750030400",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/15"
+      },
+      "data": {}
+    },
+    {
+      "id": "710d020b18897825894d7074dd5d58506dbcb0675b54ef88d3283fe06a18fd07",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5d08972e784f4f93bc144929aee8946500bbf6b1b882abc0abe212ad90f139ef",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/14"
+      },
+      "data": {}
+    },
+    {
+      "id": "745bd5c19c0d6a547c03f40134a49b07119ea551673e194d8a419a9eb7a4587b",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "6c31d746e26327626fa1f6a653d9fde4d79c94b06e9a05a2416bd3a85993594d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/2/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "7b102b4547d8eab6148a0a8293f9e0300a124459510ceb9d124aa7f56f0de8b0",
+      "type": "targets",
+      "source": "87f2e4046b5366755eba77408473fddd24f3a57339c47fa96c8260537a19cbb9",
+      "target": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/0/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "7b4d64c064f32ec8bb79fd8c5d3bcb316494b49608ece6008c7ca03750d3dcf4",
+      "type": "uses_evidence",
+      "source": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "7d9e54744be08b690cd7c0c92cacc7d48731a8a4d881d00542e068d322a83fcb",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "87f2e4046b5366755eba77408473fddd24f3a57339c47fa96c8260537a19cbb9",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "81edc09264f4362cdc4fe65708156096108d8a343c4532e1481b91fd3287edc8",
+      "type": "has_context",
+      "source": "01ada9ceec96cece297d13913a45fba0553b88257ea720fc60ef436e50302aea",
+      "target": "c60589fac98f7792815d45489fa16800fea6007428ac187cc0a83b10c911cfff",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/2/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "81f280d9dc26b94fb966442bcbbf2387555e10223c5f3401ff494a1d2bc1a804",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assumptions/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "85c2cdf82655f4ba08a23c4ecb62ba240972558fedcb968cedcba5d4a98290d7",
+      "type": "uses_evidence",
+      "source": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "target": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "88691ec28d0e82e9fcf767dfe72479aab864d9456f20e7fb2feae6bd77405041",
+      "type": "uses_evidence",
+      "source": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "target": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "8dbd84dea9850344d6b1b07393c77824742fbad8a71498dca6f97a578ab0dd98",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "8cb5960d4aef456e50a31064372775cb843d399d5fe3c13aa87924ac8fb62892",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/4"
+      },
+      "data": {}
+    },
+    {
+      "id": "8dd03287c902c8f842ecfec840adcd23804fc08fbd2027540f83c8b0fc24d4b7",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/subjects/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "8e2e47f96373c8e3bdfb9e7542b879ad30537e861ed2359e37443e687f2c310f",
+      "type": "has_subject",
+      "source": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "91add8588cde645c15552dc0f8f580421932377021405530712960ecdf6b24c0",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/3/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "93710b083fb21ad24d03fd7614f6cda0d9fa33f737212cecea491db87aa6e921",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "a12be14399e091e47a4d16eae599969b353c62ebad32dfd2bbc507920167c48d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "9417a8d5183c53351aa8aa91a6c3afbdcfb28c30575cceab2828326232b94ed3",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "7fd772f89dd4375741962de37ae06d21f8c21c6dc641a60bad16ee1d1efc4585",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/claims/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "94a6265bc0c5e2f2d15bdbb2f3f73aaccaaf3c9521d97adf35a787d8a65d58f1",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "988ba273514fa1c159db022cfade7bd13802d6ec3929ef34867d8d155e84bb76",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "c6d482306ba71b74a54a0c727a9dd7731717c54b5d87e7ae57e9b76c93fffdc6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "9b5bd6a33b4a209e4086f7c00d5a272ddf773792000c0713c58be763638974c1",
+      "type": "assesses",
+      "source": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "target": "e670524ea9aa196f91ae126b74e6bd55cd8c87d3438fcba8d670e118d349575b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3/condition"
+      },
+      "data": {}
+    },
+    {
+      "id": "9b8cab7f69dcb98932e6e112261449990786dc3418c85fd12b7d644fca46c5ca",
+      "type": "derived_from",
+      "source": "6c31d746e26327626fa1f6a653d9fde4d79c94b06e9a05a2416bd3a85993594d",
+      "target": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/12/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "not_checked",
+        "note": "The caption was read, but its selection of Hirschmann runs has not been checked against the original table."
+      }
+    },
+    {
+      "id": "9c7cc05b09e7763fd831dbe093bbbee76d1d11298b9bc645e81678650870d11c",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/3/evidence/4"
+      },
+      "data": {}
+    },
+    {
+      "id": "9fcbac3fc9eaf7a42959884af3d97e98990df4fb744b252be45a6e5b3071520a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "7cb5edf055f46a6c883483740c5ee1c63075e6937696d7fedcb42427d41527bb",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/7"
+      },
+      "data": {}
+    },
+    {
+      "id": "a66ac91bb169fb54781a5d3a18bf3cec5f26da108914c3ece83d6a492546f82b",
+      "type": "has_subject",
+      "source": "3a14bd4c10e1b0d151399ccb45a493e2c5bdf835a5964d532a795101d9e31ff9",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/0/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "a6b0f1a34bf2bfeda7e01cbaf1168f03dfe27f6198d1fc04ae343323cde16c59",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "a9c81438fc79072b85b3afba7833c6959bc012988458f97400ac9fbe2004b6ad",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "af5facf6791a01e4bfb5d4d00f7127f2ab0c6b03136df8e5cfda839134418067",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/3/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "af91dd09da7d137879577097eedb4a92fed4b5a00d125ad2a712ce0246f22338",
+      "type": "has_subject",
+      "source": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "af9a00b88b0c517b2a52f8d956fc61c341305b2f1fb37c795f4a66dc099d5797",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f669f8f846ab14a6a56b34c02f37f1bfc992ff240fdd0a3afcf3dfd1181723d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/16"
+      },
+      "data": {}
+    },
+    {
+      "id": "b4c1980e8686a10d1bd9de29166a96931d5904a5f31755a6f48926085b5c034e",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "ba6216a852dcc3516c7431b184dc2493b68eaa8a374505850a6cc92dc4d86c25",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "f5dc85100d94e96e64f933720de0ded2ec8dc2927157f1abb978b50032e1845e",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/5/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "c0b4a1210c10b7a36b4bff28167d3dbd018803d9a570e8418bf42f0fa394d9da",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "8717eeff8dce820f83d3eebc4229285acf1f71fb5fdbcba16769ba5bd73af7ca",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assumptions/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "c34bb865bb930bb589506c188ff73bfdbc7ab03e1f94506ca16d80cffb4e8767",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "c37142e4a51017dcf7ad140daff9f3027e21aa165f4a29df48a47c49fe5fd4f8",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "c37f3df97823fb835c96e906fd95c1a9a282549b20377eb6ff48f85e81f0cb32",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "c3d6f220ae521a06b063310834f57c353aedbb7b5a758cd666e5c8463d254d27",
+      "type": "has_context",
+      "source": "7e769869bfcc41274846e4a2fd2f5657bb7c1bcb01a989fb672e491f03b46b69",
+      "target": "c6d482306ba71b74a54a0c727a9dd7731717c54b5d87e7ae57e9b76c93fffdc6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/3/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "c553a00cc808579ccd449f152c7527360fd930269df1ac5795840fb222334664",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "c59ec48e6bcfb05f14f67c8c2154415eb993bef98636724e76b678e48873d004",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "e670524ea9aa196f91ae126b74e6bd55cd8c87d3438fcba8d670e118d349575b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "cb7724b7875eb26d08f80bb392d8a2a0f54c0f0f89ba56fd0d331c72dee4a019",
+      "type": "assesses",
+      "source": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "target": "ac762dbeba3d97bd59451607af6275e0f5280b1a6088bc56cf812b95ca232d9a",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4/condition"
+      },
+      "data": {}
+    },
+    {
+      "id": "cca5cfcc5672400393bbc6cc0c0c421ee1f1430d63dcc72753cfc79c499ea250",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/11"
+      },
+      "data": {}
+    },
+    {
+      "id": "cd32b624dad57d2df16f3cf31f4c87323c1450ccdb70fd2fc8b615e0e2bcade3",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "104305d9cad7f9bc90fc977af694b7bbdbddbaddc6bce1bb105cecd750030400",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/5/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "cd58118d2d55624b431f904311d9c68d40086619b5e135debcfbbda2bfa1db78",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/1/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "d03539c9e1907d743ab371527c542a84889bbcdb5384d2c52ae36d2ab94f5c85",
+      "type": "derived_from",
+      "source": "9da71a0b820c1947650aa67e80b54bfad640ed526c3a1352965340f7675d1ef8",
+      "target": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/8/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "not_checked",
+        "note": "The original fit, concentration convention, reference state, and any temperature approximation needed to obtain -11.403 and 0.76 have not been inspected. Agreement with code does not close this link."
+      }
+    },
+    {
+      "id": "d41ab3e15cf5867245c100718bf9a6c14e0c4187248615186d48909c1ed74f49",
+      "type": "targets",
+      "source": "a12be14399e091e47a4d16eae599969b353c62ebad32dfd2bbc507920167c48d",
+      "target": "398cbd2d0c475f0fd646ad215d797d37d76e7074df9fcc63485b6ef2a4bdfe99",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/1/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "d7837d2d8bc1d7d6660e1812af7a83440beb87925107c310349a7563ab16bac8",
+      "type": "targets",
+      "source": "cf4a8a27f411b1b05c9d669983fa9d798013b8ce05b4080caea2010b0e7e9bde",
+      "target": "4d7d43c1bb89839f340356e88ba39949d0f0017543b1bb7bf96f7dfc21a92a1a",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/2/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "d95afbab6628580af95fedf02856372b2c501662f6c518f52a48b66d30fe4e3d",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "6c31d746e26327626fa1f6a653d9fde4d79c94b06e9a05a2416bd3a85993594d",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/12"
+      },
+      "data": {}
+    },
+    {
+      "id": "d9c63e3bf40abbe612ebfbeb85e1b9c42e3f7356906b3c812d2868761740143d",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5d08972e784f4f93bc144929aee8946500bbf6b1b882abc0abe212ad90f139ef",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/6/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "daf228d36cc21c6fa856c7cdfcb18a5df1d25499079807b392d831714b473167",
+      "type": "uses_evidence",
+      "source": "e670524ea9aa196f91ae126b74e6bd55cd8c87d3438fcba8d670e118d349575b",
+      "target": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "daf2cca503de819d7f29fb2b8afd23a1ee59f178431022333c3ac9c7d622c290",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "ddeb493690d71ad1e3f851db3855df8afd0103a86a28e155d9629a5fd6873764",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "de3bf66d3e766c148fc50cf5f55163a009300d99a0855cf413e08f0375bba595",
+      "type": "has_context",
+      "source": "064af7d058e94f0be5be827b5813b573b0d89c7c2c68dcd34bfbafe89edf04b3",
+      "target": "c6d482306ba71b74a54a0c727a9dd7731717c54b5d87e7ae57e9b76c93fffdc6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/4/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "e2492e11f3fdadd4571a2dbb9d5287aba44ca04763611e6b78c5f9a31f54a321",
+      "type": "assesses",
+      "source": "de76450d26471fe2aa82af79ffc1cef35911ae8a09dc198d1157a31b2e2b74c4",
+      "target": "6362e047ec2cd3e513af88d36e745198d1a3f082abf5a8f88ac65af622043816",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/5/condition"
+      },
+      "data": {}
+    },
+    {
+      "id": "e7ca982aa7f33415b06d8774a2bd7119089c556cc43177f81d60afc1b4928341",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "104305d9cad7f9bc90fc977af694b7bbdbddbaddc6bce1bb105cecd750030400",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/limitations/6/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "e7ea35aaccf3dac70cba933d9eb1cfc81ab0cba391a7d32f80191773b0af1ce3",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "2db58652a2665cefb8f317535fbdcc21aed78c25676a3bf09de6f0a1b2011b57",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assumptions/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "eb1f686b335a301271d1985da11edb20e306f6e79af953a0fe1b37aa524d5c67",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "cf4a8a27f411b1b05c9d669983fa9d798013b8ce05b4080caea2010b0e7e9bde",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/follow_ups/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "ece6a0e43277e4e7d368a818f6ccd2bd65b9f8d18c6193beef618af13098de4a",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "6362e047ec2cd3e513af88d36e745198d1a3f082abf5a8f88ac65af622043816",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "eeff6a4c92e04263a4e5caea8b243a11a7cfb1bdd521665bc894fd60813bd3e6",
+      "type": "derived_from",
+      "source": "00a20140dddb2a382f23c23b649ed1b2016e50d618c84058def07ad3512eb756",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/3/provenance/derived_from/0"
+      },
+      "data": {
+        "comparison": "discrepancy",
+        "note": "The lower bound and K units match, but the metadata upper bound is 1773 K while Seo reports 1723 K for basaltic silicate. This is a recorded scope/value difference, not a finding that either source has a typo. The original material-specific runs remain unchecked."
+      }
+    },
+    {
+      "id": "f27e1626a95348c32ad323c2596a48709ac7cc086881fc108cbfb35ff85900ea",
+      "type": "uses_evidence",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "5f3998356f97c4a831cc4b98fad3d89bb9136493bde36b2ac0a9c77e1fc06c94",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/domains/3/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "f3bb08297f29200fa3bec0d9da7d54203ada698bc0402a1996a3f2ad51982882",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "c60589fac98f7792815d45489fa16800fea6007428ac187cc0a83b10c911cfff",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/contexts/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "f577be90f5a5ff4f8dadea808fac04d64dc284c49a75d73cb5be105f0b42824e",
+      "type": "uses_evidence",
+      "source": "6362e047ec2cd3e513af88d36e745198d1a3f082abf5a8f88ac65af622043816",
+      "target": "645207c2007dd52930143bfc79f20d8a0239ac8e12b8c0b746852230308d30f6",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "f6dbe378d63fa007ccfea29fd58d452e12dbecc5d0a6879e345ad7ad6276bb2e",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "828921144d9d20ce59c14c9814b6dac0c5b3cec3f1b8430c98b9c8235811bca0",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/10"
+      },
+      "data": {}
+    },
+    {
+      "id": "f736bcaa8b4bdf0bf793661f8e1355ced9b1a62711b10d69603ea941dfa1b8dc",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "ac762dbeba3d97bd59451607af6275e0f5280b1a6088bc56cf812b95ca232d9a",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/conditions/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "f842dac889436a4df9ddcb287eadc4188712f2c0f946df0c2a9201bb554ee164",
+      "type": "contains",
+      "source": "10b5c261e21f367e40630de646231e0ab7a9f80fc339a1bb6f79d87ba8299ad9",
+      "target": "e49250797797af78801177b5d62877fa04a9ecb153de65578823b4d5b8c88b1b",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/evidence/9"
+      },
+      "data": {}
+    },
+    {
+      "id": "fb344fef2bef08cf4cff9844b3cb0339ef8205ed971fae45d90cae1bfd37b06e",
+      "type": "has_subject",
+      "source": "04b490ee5af789a080aba049425c9b93ae453e3429de8188b4f509c9bff6a9f9",
+      "target": "14063719954ea7b8652491574514ce8964f47957c870b6765db314831de51dba",
+      "origin": {
+        "source": "522f59bd37c384a8418ecc7f5ba153d0f9dc10cc3f8c07a4eb6e93bb64c96a3c",
+        "pointer": "/assessments/1/subject"
+      },
+      "data": {}
+    }
+  ],
+  "selections": []
+}

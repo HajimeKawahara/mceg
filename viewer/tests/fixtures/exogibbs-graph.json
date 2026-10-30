@@ -1,0 +1,2887 @@
+{
+  "format": "mceg_graph_v1",
+  "sources": [
+    {
+      "id": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+      "provider": "exogibbs",
+      "path": "contracts/fastchem_hcn_followup.yaml",
+      "sha256": "9be615efc070ff5c450a9c242082bffe0138dc877d341bb1a86f79498cd3d9f8",
+      "kind": "contract",
+      "version": "0.2"
+    },
+    {
+      "id": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+      "provider": "exogibbs",
+      "path": "contracts/curated_gas.yaml",
+      "sha256": "17a2c7656bf7aaf1048b5bc7340c5d07d0043057eec1e807f035ea12392d44b5",
+      "kind": "contract",
+      "version": "0.1"
+    },
+    {
+      "id": "c9d595ca534c71dc809585b5df1cff67c80fd00680bfb47367326bf17cae1370",
+      "provider": "exogibbs",
+      "path": "index.json",
+      "sha256": "c91651750d46f2ce1adab5245ca148e3a5411a7b8157314caf3c11c849391d0c",
+      "kind": "catalog",
+      "version": "1",
+      "record_version": "2026-10-30",
+      "distribution": null
+    }
+  ],
+  "nodes": [
+    {
+      "id": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "type": "evidence",
+      "label": "comparison_execution",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "evidence",
+        "id": "comparison_execution",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/2"
+      },
+      "record": {
+        "id": "comparison_execution",
+        "kind": "benchmark",
+        "summary": "Three input audits and 966 layer/model cases pass; maximum HCN factorization residual is 1.81355e-13.",
+        "sources": [
+          "mceg/reviews/fastchem_hcn_20261028.py",
+          "tests/data/validation/new_fastchem_hcn/summary.json",
+          "tests/data/validation/new_fastchem_hcn/logK_hcn.zip"
+        ],
+        "scope": "Current default versus previous and revised preliminary coefficients. All curves use one solver; this does not independently validate the source data.",
+        "result": "passed",
+        "provenance": {
+          "role": "primary",
+          "location": "Executed comparison summary, explicit identifier mapping, closure residuals and input hashes.",
+          "inspection": "inspected",
+          "note": "Numerical evidence and artifact identity, not reconstruction of the producer's fit.",
+          "derived_from": []
+        },
+        "subject": "hcn_comparison_snapshot",
+        "context": "prescribed_columns",
+        "artifacts": [
+          {
+            "source": "tests/data/validation/new_fastchem_hcn/summary.json",
+            "sha256": "86ecb4a9d827d24fb29ebdd23ecc038184a15bc6073e76063491bb929c9841a6"
+          },
+          {
+            "source": "tests/data/validation/new_fastchem_hcn/logK_hcn.zip",
+            "sha256": "1eb830a1f3e1fa9b4034c6ed2e2c63652c324a709f63665c2e029df10d28159f"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "type": "subject",
+      "label": "hcn_comparison_snapshot",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "subject",
+        "id": "hcn_comparison_snapshot",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/subjects/0"
+      },
+      "record": {
+        "id": "hcn_comparison_snapshot",
+        "implementation": {
+          "repository": "https://github.com/HajimeKawahara/exogibbs",
+          "revision": "sha256:996b36aa6cfffab5a1640ac5d2467f076a62c11f443262847f5f32b33ae7a861",
+          "entry_points": [
+            "mceg/reviews/fastchem_hcn_20261028.py"
+          ]
+        },
+        "selected_files": {
+          "mceg/reviews/fastchem_hcn_20261028.py": "996b36aa6cfffab5a1640ac5d2467f076a62c11f443262847f5f32b33ae7a861",
+          "tests/data/validation/new_fastchem_logk/logK.zip": "f128fd758765fa1d19b6cd9056ce38f52a364294203bfcd4334563f5ad80ab7c",
+          "tests/data/validation/new_fastchem_hcn/logK_hcn.zip": "1eb830a1f3e1fa9b4034c6ed2e2c63652c324a709f63665c2e029df10d28159f",
+          "examples/comparisons/compare_new_fastchem_logk.py": "72323f7f6eaf9cbcda3cb8721ca22a13f80a677bfbf216da5f9336d0b35ba81f",
+          "examples/comparisons/demo_curated_atmosphere.py": "d58be2c4e87a2f5b37a6d58fb4eae04a5d7e4e96d84f4785511de56adb33664e",
+          "src/exogibbs/presets/curated.py": "0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+          "src/exogibbs/presets/fastchem.py": "c1e70bc930536467a95397e40ab288e2b8ce81bb2109aaddaa774d98ba4a81d3",
+          "src/exogibbs/data/curated/gas_v1.json": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "src/exogibbs/data/FastChem4/logK/logK.dat": "eda9b9d7e62ccf7398036ee84349bd0a721b779acdc9d191cbf9fe1dd01f619c",
+          "src/exogibbs/data/FastChem4/element_abundances/asplund_2021.dat": "06d13aad90e576147bececd1210e27b4fd525ee17ddb1721a0ec9e8755d407ef",
+          "src/exogibbs/equilibrium/gas/kernel/solver.py": "aa45cda12204f3ee354a0277b1933f6c1eed8f099a957a8162e73c2c7060d6d0"
+        }
+      }
+    },
+    {
+      "id": "317e199eefb6afef99ed68be7bf7bf39debb7be870d81612b32349f76585278f",
+      "type": "claim",
+      "label": "prescribed_atmosphere_sensitivity",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "claim",
+        "id": "prescribed_atmosphere_sensitivity",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/4"
+      },
+      "record": {
+        "id": "prescribed_atmosphere_sensitivity",
+        "statement": "Two 161-layer prescribed columns compare curated, FastChem 4 and legacy FastChem 3 thermochemistry, with all 966 layer/model cases passing independent elemental, charge and mass-action closure gates.",
+        "kind": "numerical_verification",
+        "status": "supported",
+        "scope": "Solar Asplund 2021 budget, 1e-6--100 bar, one 4000 K isothermal column and one prescribed 2500--4000 K temperature inversion. FastChem 4 shares the exact 537-species catalog; the legacy FastChem 3 comparison retains its 523 species and therefore includes catalog effects. All models use the same relative-charge mode and tolerance. No atmospheric, opacity or whole-mixture physical validation, or global maximum search, is claimed.",
+        "evidence": [
+          "atmosphere_demo"
+        ]
+      }
+    },
+    {
+      "id": "331c63bd32d8eb02223c2d6f24f1fe150edb32ba8dc790d05639989f0b789771",
+      "type": "claim",
+      "label": "equilibrium_verification",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "claim",
+        "id": "equilibrium_verification",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/1"
+      },
+      "record": {
+        "id": "equilibrium_verification",
+        "statement": "Both fixed networks pass numerical closure and independent FastChem comparisons at all 70 sampled conditions, including new temperatures.",
+        "kind": "numerical_verification",
+        "status": "supported",
+        "scope": "All-species abundance differences are below 1e-3 dex; explicit element, charge and mass-action gates apply. The independent solver receives the same constants and composition but never supplies initialization to ExoGibbs.",
+        "evidence": [
+          "verification",
+          "fastchem_build",
+          "tests"
+        ]
+      }
+    },
+    {
+      "id": "3ed1923dc4b534b420145979ffab2f884fcfc962f3e6e0b8b2260da78543ae69",
+      "type": "evidence",
+      "label": "atmosphere_demo",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "atmosphere_demo",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/6"
+      },
+      "record": {
+        "id": "atmosphere_demo",
+        "kind": "benchmark",
+        "summary": "Offline prescribed atmosphere columns show large neutral Cu/Ni changes together with absolute abundances and electron/H- responses.",
+        "sources": [
+          "examples/comparisons/demo_curated_atmosphere.py",
+          "tests/unittests/examples/curated_atmosphere_test.py",
+          "tests/data/validation/curated_atmosphere/receipt.json",
+          "tests/data/validation/curated_atmosphere/summary.csv",
+          "tests/data/validation/curated_atmosphere/isothermal.png",
+          "tests/data/validation/curated_atmosphere/inverted.png"
+        ],
+        "scope": "Source sensitivity under fixed numerical conditions. Ranking requires mole fraction at least 1e-12 in either model; trace-species ratios do not measure opacity changes or experimental accuracy.",
+        "result": "passed",
+        "provenance": null
+      }
+    },
+    {
+      "id": "3f0e4ad0cfbb1d20ae730836463a2ffac41699dc7e9122a28cc26b2553d26f18",
+      "type": "claim",
+      "label": "column_closure_and_hcn_factorization",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "claim",
+        "id": "column_closure_and_hcn_factorization",
+        "revision": "1"
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/1"
+      },
+      "record": {
+        "id": "column_closure_and_hcn_factorization",
+        "revision": "1",
+        "statement": "All 966 cases satisfy the declared closure gates and HCN abundance ratios factor into formation-Kp and constituent-atom ratios.",
+        "kind": "numerical_verification",
+        "scope": "Element residual <=1e-5, charge residual <=1e-12, mass-action and HCN factorization absolute ln residual <=1e-8 on the recorded profiles."
+      }
+    },
+    {
+      "id": "48a63a55e77664463690e841bfdf2d7ed085542589609a1659a8c7b3f87fe2ed",
+      "type": "resolution",
+      "label": "compare_revised_hcn",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "resolution",
+        "id": "compare_revised_hcn",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_up_resolutions/0"
+      },
+      "record": {
+        "follow_up": "compare_revised_hcn",
+        "evidence": [
+          "comparison_execution"
+        ],
+        "note": "The coefficient audit and numerical comparison are complete; exact fit reconstruction, default adoption and physical validation are separate decisions."
+      }
+    },
+    {
+      "id": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "type": "evidence",
+      "label": "verification",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "verification",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/3"
+      },
+      "record": {
+        "id": "verification",
+        "kind": "benchmark",
+        "summary": "Two networks, 70 equilibrium cases and 70 independent FastChem comparisons.",
+        "sources": [
+          "examples/comparisons/validate_curated_preset.py",
+          "tests/data/validation/curated_gas_validation/receipt.json",
+          "tests/data/validation/curated_gas_validation/diagnostics.csv",
+          "tests/data/validation/curated_gas_validation/default_charge.csv",
+          "tests/data/validation/curated_gas_validation/fastchem_parity.csv",
+          "tests/data/validation/curated_gas_validation/ions.npz",
+          "tests/data/validation/curated_gas_validation/neutral.npz"
+        ],
+        "scope": "CPU float64, identical numerical inputs and independent initialization. Artifact, implementation and input hashes are recorded.",
+        "result": "passed",
+        "provenance": null
+      }
+    },
+    {
+      "id": "4c2e1d1b123ae289ebc0a4114c293c5122428f2d6947e0546d3617a08fa4bf18",
+      "type": "follow_up",
+      "label": "reconstruct_hcn_refit",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "follow_up",
+        "id": "reconstruct_hcn_refit",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/1"
+      },
+      "record": {
+        "id": "reconstruct_hcn_refit",
+        "target_kind": "evidence",
+        "target": "producer_report",
+        "revision": null,
+        "action": "Identify the exact Goos/Burcat source snapshot and reproduce the HCN fitting procedure.",
+        "requires": [
+          "Source file and version",
+          "molecular and atomic reference conventions",
+          "fitting interval and weights",
+          "coefficient generation recipe"
+        ],
+        "completion": "Separate source-version changes from thermal-function and fitting residuals using the documented inputs; add inspected evidence and a new assessment.",
+        "sources": [
+          "https://github.com/NewStrangeWorlds/FastChem/issues/10#issuecomment-6439534232"
+        ]
+      }
+    },
+    {
+      "id": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "type": "assessment",
+      "label": "whole_mixture_accuracy_review",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "assessment",
+        "id": "whole_mixture_accuracy_review",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2"
+      },
+      "record": {
+        "id": "whole_mixture_accuracy_review",
+        "subject": "hcn_comparison_snapshot",
+        "context": "prescribed_columns",
+        "method": {
+          "id": "review_hcn_comparison",
+          "revision": "1",
+          "description": "Inspect the pinned input audit and numerical gates separately from source adoption and physical accuracy."
+        },
+        "evidence": [
+          "producer_report",
+          "comparison_execution",
+          "source_audit"
+        ],
+        "reasons": [
+          "Closer HCN agreement and solver closure supply no independent whole-mixture physical constraint or calibrated correlated uncertainty."
+        ],
+        "kind": "evidence_support",
+        "claim": "whole_mixture_accuracy",
+        "claim_revision": "1",
+        "status": "unknown",
+        "origin": "reviewed"
+      }
+    },
+    {
+      "id": "707919762be0625748c247ab2dbdf2d4812c45aa12b78469811f66833457626f",
+      "type": "evidence",
+      "label": "representation",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "representation",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/2"
+      },
+      "record": {
+        "id": "representation",
+        "kind": "benchmark",
+        "summary": "Offline thermodynamically consistent JANAF fits and positive partition representations with withheld-point checks.",
+        "sources": [
+          "examples/comparisons/build_curated_preset.py",
+          "examples/comparisons/data/curated_continuous_reference.json",
+          "tests/data/validation/curated_gas_validation/thermal_checks.json"
+        ],
+        "scope": "C2 JANAF free energy and smooth partition sums; fit terms and leave-one-out stability are not new spectroscopy.",
+        "result": "passed",
+        "provenance": null
+      }
+    },
+    {
+      "id": "80c267e0ffa540d64d8737fbb32fd469408bba04df57f331628c34346f8b2900",
+      "type": "follow_up",
+      "label": "compare_revised_hcn",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "follow_up",
+        "id": "compare_revised_hcn",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/0"
+      },
+      "record": {
+        "id": "compare_revised_hcn",
+        "target_kind": "claim",
+        "target": "hcn_refit_scope",
+        "revision": "1",
+        "action": "Audit the revised archive and compare the earlier and revised tables against the current default.",
+        "requires": [],
+        "completion": "Record identity mapping, coefficient changes, numerical closure and HCN abundance attribution in a new execution.",
+        "sources": [
+          "https://github.com/HajimeKawahara/exogibbs/pull/298"
+        ]
+      }
+    },
+    {
+      "id": "8e393859819873ff6527a89a696c6dfab4e944d5976531b3d6bf5995d9619fb7",
+      "type": "evidence",
+      "label": "fastchem_build",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "fastchem_build",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/4"
+      },
+      "record": {
+        "id": "fastchem_build",
+        "kind": "implementation",
+        "summary": "The existing unmodified FastChem v4.0.3 standalone build is reused as an optional comparator.",
+        "sources": [
+          "tests/data/validation/gas_thermochemistry_impact/fastchem_build.json",
+          "tests/data/validation/curated_gas_validation/receipt.json"
+        ],
+        "scope": "Executable hashes match; FastChem and its source checkout are not packaged runtime dependencies.",
+        "result": null,
+        "provenance": null
+      }
+    },
+    {
+      "id": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "type": "evidence",
+      "label": "source_choices",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "source_choices",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/1"
+      },
+      "record": {
+        "id": "source_choices",
+        "kind": "implementation",
+        "summary": "Approved atomic and molecular adoption decisions and prior controlled composition comparison.",
+        "sources": [
+          "mceg/contracts/atomic_ion_adoption.yaml",
+          "mceg/contracts/major_molecule_adoption.yaml",
+          "mceg/contracts/gas_thermochemistry_impact.yaml"
+        ],
+        "scope": "Prior contracts and archives retain their historical study scope; the new preset does not rewrite their results.",
+        "result": null,
+        "provenance": null
+      }
+    },
+    {
+      "id": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "type": "model",
+      "label": "Curated gas thermochemistry version 1",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "model",
+        "id": "exogibbs.curated_gas.v1",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": ""
+      },
+      "record": {
+        "model": {
+          "id": "exogibbs.curated_gas.v1",
+          "name": "Curated gas thermochemistry version 1",
+          "description": "Continuous native gas preset implementing the approved atomic-ion and major-molecule source choices, with explicit ion-inclusive and neutral networks and a restricted 1500--4000 K evaluation domain.",
+          "implementation": {
+            "repository": "https://github.com/HajimeKawahara/exogibbs",
+            "revision": "sha256:0d84d900747386e31a75e05574e5d64c5192a444a90fa01518477fd9183bf546",
+            "entry_points": [
+              "src/exogibbs/presets/curated.py:chemsetup"
+            ]
+          }
+        },
+        "assumptions": [
+          {
+            "statement": "Ideal gas-only equilibrium uses dimensionless formation constants at 1 bar, with zero neutral-atom/electron h and signed electron stoichiometry.",
+            "evidence": [
+              "implementation",
+              "source_choices",
+              "verification"
+            ]
+          },
+          {
+            "statement": "The 537-species network includes 27 nuclear elements and charge. The neutral option retains exactly 421 neutral species and removes charge. N- and Zn- are excluded under the adopted stable-bound-state policy.",
+            "evidence": [
+              "implementation",
+              "source_choices",
+              "tests"
+            ]
+          },
+          {
+            "statement": "Positive fitted partition sums approximate the adopted BC tables; their excitation terms are numerical basis functions, not measured levels. Electron spin two and unit heavy-particle translational mass ratios follow the approved atomic reference convention.",
+            "evidence": [
+              "representation",
+              "source_choices"
+            ]
+          },
+          {
+            "statement": "The supplied reference budget explicitly reads the packaged Asplund 2021 file, including Ge, and normalizes the nuclear abundances to one. Other elemental compositions do not inherit this numerical validation.",
+            "evidence": [
+              "implementation",
+              "verification"
+            ]
+          }
+        ],
+        "domains": [
+          {
+            "kind": "numerical_evaluation",
+            "status": "documented",
+            "description": "Continuous h on 1500--4000 K with scalar/array JAX evaluation.",
+            "conditions": [
+              "Values outside the interval or at nonfinite temperatures return NaN.",
+              "Validation uses float64 and epsilon_crit 1e-13 at seven temperatures and five pressures per network.",
+              "The seven temperatures are 1500, 1735, 2000, 2517, 3000, 3973 and 4000 K.",
+              "The five pressures are 1e-6, 1e-4, 0.01, 1 and 100 bar."
+            ],
+            "evidence": [
+              "implementation",
+              "verification",
+              "tests"
+            ]
+          },
+          {
+            "kind": "scientific_applicability",
+            "status": "unknown",
+            "description": "No whole-mixture physical validation or universal atmospheric domain is claimed.",
+            "conditions": [],
+            "evidence": [
+              "source_choices",
+              "implementation"
+            ]
+          }
+        ],
+        "limitations": [
+          {
+            "statement": "Conditional and provisional molecule choices retain their documented physical limitations. 427 species retain pinned FastChem constants without independent source-adoption audits.",
+            "evidence": [
+              "source_choices",
+              "implementation"
+            ]
+          },
+          {
+            "statement": "Condensation, rainout, external ionization, density-dependent state dissolution and isotope resolution are omitted.",
+            "evidence": [
+              "source_choices"
+            ]
+          },
+          {
+            "statement": "Source agreement, positive fitted partition weights and independent numerical solver agreement do not establish whole-mixture physical accuracy.",
+            "evidence": [
+              "representation",
+              "verification"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "type": "evidence",
+      "label": "implementation",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "implementation",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/0"
+      },
+      "record": {
+        "id": "implementation",
+        "kind": "implementation",
+        "summary": "Native ChemicalSetup construction, pinned packaged numerical data and gas convergence corrections.",
+        "sources": [
+          "src/exogibbs/presets/curated.py",
+          "src/exogibbs/data/curated/gas_v1.json",
+          "src/exogibbs/data/curated/README.rst",
+          "src/exogibbs/equilibrium/gas/kernel/solver.py",
+          "documents/presets/curated.rst"
+        ],
+        "scope": "MCEG remains optional development documentation, with no runtime or test import.",
+        "result": null,
+        "provenance": null
+      }
+    },
+    {
+      "id": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "type": "assessment",
+      "label": "hcn_refit_scope_review",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "assessment",
+        "id": "hcn_refit_scope_review",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0"
+      },
+      "record": {
+        "id": "hcn_refit_scope_review",
+        "subject": "hcn_comparison_snapshot",
+        "context": "prescribed_columns",
+        "method": {
+          "id": "review_hcn_comparison",
+          "revision": "1",
+          "description": "Inspect the pinned input audit and numerical gates separately from source adoption and physical accuracy."
+        },
+        "evidence": [
+          "comparison_execution",
+          "source_audit"
+        ],
+        "reasons": [
+          "The parsed three-file audit isolates HCN after the explicit identity mapping; no other coefficient or composition changes occur."
+        ],
+        "kind": "evidence_support",
+        "claim": "hcn_refit_scope",
+        "claim_revision": "1",
+        "status": "supported",
+        "origin": "reviewed"
+      }
+    },
+    {
+      "id": "c7c9a5fbdc142b5a39a7044698aefceef707bae21f96f4ae08f39d683041c70d",
+      "type": "evidence",
+      "label": "source_audit",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "evidence",
+        "id": "source_audit",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/1"
+      },
+      "record": {
+        "id": "source_audit",
+        "kind": "literature",
+        "summary": "A public Burcat HCN entry uses Hf298=129.799 kJ/mol, while curated uses ATcT 1.172 with Hf298=129.293 kJ/mol.",
+        "sources": [
+          "mceg/reviews/fastchem_hcn_sources_20261028.json",
+          "https://respecth.elte.hu/burcat/BURCAT.THR.txt",
+          "https://doi.org/10.17038/CSE/2440254"
+        ],
+        "scope": "Inspected public entries, archive identities and an explicit HCN/HNC distinction. The public Burcat copy is not established as the producer's exact input; its energy difference is a hypothesis for part of the residual.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "Authored source review, with public-file and molecular-entry locations.",
+          "inspection": "inspected",
+          "note": "Inspection applies to the stated records; underlying historical measurements and the exact producer fitting recipe were not reconstructed.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": [
+          {
+            "source": "mceg/reviews/fastchem_hcn_sources_20261028.json",
+            "sha256": "e81d67d7fdc2eca27bfaf18e27cce32296c969d8aa8441bb8d6e9e015820f369"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c895a04a39737ee01b572c4b18470a4e3e3e92663fd229a8b1b93d573666f793",
+      "type": "claim",
+      "label": "whole_mixture_accuracy",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "claim",
+        "id": "whole_mixture_accuracy",
+        "revision": "1"
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/2"
+      },
+      "record": {
+        "id": "whole_mixture_accuracy",
+        "revision": "1",
+        "statement": "The complete gas model has quantified physical accuracy under the declared atmospheric conditions.",
+        "kind": "physical_validation",
+        "scope": "Requires independent physical evidence and error criteria; database agreement is not a calibrated uncertainty distribution."
+      }
+    },
+    {
+      "id": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "type": "assessment",
+      "label": "column_closure_and_hcn_factorization_review",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "assessment",
+        "id": "column_closure_and_hcn_factorization_review",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1"
+      },
+      "record": {
+        "id": "column_closure_and_hcn_factorization_review",
+        "subject": "hcn_comparison_snapshot",
+        "context": "prescribed_columns",
+        "method": {
+          "id": "review_hcn_comparison",
+          "revision": "1",
+          "description": "Inspect the pinned input audit and numerical gates separately from source adoption and physical accuracy."
+        },
+        "evidence": [
+          "comparison_execution"
+        ],
+        "reasons": [
+          "All recorded numerical gates pass; coverage is limited to these prescribed profiles and the shared species network."
+        ],
+        "kind": "evidence_support",
+        "claim": "column_closure_and_hcn_factorization",
+        "claim_revision": "1",
+        "status": "supported",
+        "origin": "reviewed"
+      }
+    },
+    {
+      "id": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "type": "context",
+      "label": "prescribed_columns",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "context",
+        "id": "prescribed_columns",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/contexts/0"
+      },
+      "record": {
+        "id": "prescribed_columns",
+        "scope": "Fresh execution on the exact profiles in the comparison report; physical accuracy and retrieval are not evaluated.",
+        "quantities": {},
+        "settings": {
+          "backend": "cpu",
+          "dtype": "float64",
+          "python": "3.10.9",
+          "jax": "0.6.2",
+          "numpy": "2.0.2",
+          "species": 537,
+          "composition": "normalized Asplund 2021, including Ge",
+          "baseline_revision": "4258624c1b015eeaae4967e8e84e8af25f15c116"
+        }
+      }
+    },
+    {
+      "id": "ddcf0edbe4f51ccf08012a1d179a7c3a7a089f5c36f04107c35dd8321965887a",
+      "type": "claim",
+      "label": "hybrid_physical_accuracy",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "claim",
+        "id": "hybrid_physical_accuracy",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/3"
+      },
+      "record": {
+        "id": "hybrid_physical_accuracy",
+        "statement": "The physical accuracy of the complete adopted mixture remains unestablished.",
+        "kind": "physical_validation",
+        "status": "unknown",
+        "scope": "Source-adoption evidence is inherited with its limitations. No independent whole-mixture observation, opacity calculation or experimental composition measurement is introduced by continuous interpolation or FastChem agreement.",
+        "evidence": [
+          "source_choices"
+        ]
+      }
+    },
+    {
+      "id": "e3588334dcc6afb0f4ac6791605278d2f6ca93c773d3a547b4950672bff85447",
+      "type": "claim",
+      "label": "continuous_representation",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "claim",
+        "id": "continuous_representation",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/0"
+      },
+      "record": {
+        "id": "continuous_representation",
+        "statement": "The source choices have continuous representations with tested temperature derivatives. JANAF withheld-node constant errors are below 6e-5 dex and heat-capacity errors below 0.04 J mol^-1 K^-1.",
+        "kind": "numerical_verification",
+        "status": "supported",
+        "scope": "Four JANAF molecules, 22 unused table rows each. Five partition fits reproduce adopted table values within 4e-6 relative; leave-one-out log10-Q errors are below 6e-5. These are representation checks, not independent physical validation. The three anion sums use evaluated bound levels.",
+        "evidence": [
+          "representation",
+          "tests"
+        ]
+      }
+    },
+    {
+      "id": "e639136f82333f07b25dc4166c35046ed6eb8f10679a6884540976d8dc4fa645",
+      "type": "claim",
+      "label": "hcn_refit_scope",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "claim",
+        "id": "hcn_refit_scope",
+        "revision": "1"
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/0"
+      },
+      "record": {
+        "id": "hcn_refit_scope",
+        "revision": "1",
+        "statement": "Relative to the preceding preliminary archive, only the HCN coefficients change after the explicit Hoeijmakers identifier mapping.",
+        "kind": "numerical_verification",
+        "scope": "Three supplied files; C1H1N1_1 maps to C1H1N1_hcn only in the Hoeijmakers file, with equal composition and catalog size."
+      }
+    },
+    {
+      "id": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "type": "evidence",
+      "label": "producer_report",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "evidence",
+        "id": "producer_report",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/0"
+      },
+      "record": {
+        "id": "producer_report",
+        "kind": "literature",
+        "summary": "Daniel reports an HCN refit using Goos and Burcat data and discusses limitations in the older thermochemical inputs.",
+        "sources": [
+          "https://github.com/NewStrangeWorlds/FastChem/issues/10#issuecomment-6439534232"
+        ],
+        "scope": "Records the producer's explanation and preliminary-release status; underlying measurements and the exact input/fit procedure have not been independently reconstructed.",
+        "result": null,
+        "provenance": {
+          "role": "primary",
+          "location": "Producer comment dated 2026-10-27.",
+          "inspection": "partial",
+          "note": "The comment was read; its underlying source and fitting claims remain only partially verified.",
+          "derived_from": []
+        },
+        "subject": null,
+        "context": null,
+        "artifacts": []
+      }
+    },
+    {
+      "id": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "type": "evidence",
+      "label": "tests",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "evidence",
+        "id": "tests",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/5"
+      },
+      "record": {
+        "id": "tests",
+        "kind": "implementation",
+        "summary": "Deterministic tests cover approved nodes, withheld JANAF values and derivatives, network membership, source provenance, bounds, charge closure and archived solver agreement.",
+        "sources": [
+          "tests/unittests/presets/curated_test.py",
+          "tests/unittests/equilibrium/gas/kernel/charge_test.py",
+          "tests/data/validation/curated_gas_validation/tests.json",
+          "tests/data/validation/curated_gas_validation/pr_tests.json"
+        ],
+        "scope": "Source comparison and implementation verification; external MCEG and FastChem installations are unnecessary.",
+        "result": null,
+        "provenance": null
+      }
+    },
+    {
+      "id": "f3d1c068fc79acc20452473ecaa1c5012a65b6045d35a3050996195b4a7fb683",
+      "type": "follow_up",
+      "label": "physical_covariance_review",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "follow_up",
+        "id": "physical_covariance_review",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/2"
+      },
+      "record": {
+        "id": "physical_covariance_review",
+        "target_kind": "claim",
+        "target": "whole_mixture_accuracy",
+        "revision": "1",
+        "action": "Review independent physical constraints and the correlated uncertainties of energy anchors and thermal functions for a declared application.",
+        "requires": [
+          "Independent experimental or observational evidence",
+          "Relevant covariance and source ancestry",
+          "A stated physical error criterion"
+        ],
+        "completion": "Record a scoped physical assessment; retain unknown where independent constraints remain absent. Retrieval is outside this task.",
+        "sources": []
+      }
+    },
+    {
+      "id": "fd4a6586a88d20499758867bf0b3c8b765a0286344519e530d054c3559d248c6",
+      "type": "claim",
+      "label": "trace_charge_closure",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/curated_gas.yaml",
+        "type": "claim",
+        "id": "trace_charge_closure",
+        "revision": null
+      },
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/2"
+      },
+      "record": {
+        "id": "trace_charge_closure",
+        "statement": "The ion-inclusive curated setup enables a gas stopping criterion with relative signed-constraint closure, and diagonal regularization scaled for signed constraints resolves weak-ionization cases previously hidden by an absolute residual.",
+        "kind": "numerical_verification",
+        "status": "supported",
+        "scope": "The numerical mode is opt-in through setup metadata; existing presets and condensate initializers retain their prior path. Analytic three-species regressions and the original 20 ion-inclusive solar conditions pass at the default tolerance in float64. The broader abundance validation explicitly uses epsilon_crit 1e-13 for trace elements.",
+        "evidence": [
+          "implementation",
+          "tests",
+          "verification"
+        ]
+      }
+    },
+    {
+      "id": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "type": "model",
+      "label": "Preliminary FastChem HCN refit and database discrepancy follow-up",
+      "ref": {
+        "provider": "exogibbs",
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "type": "model",
+        "id": "exogibbs.fastchem_hcn_followup.v1",
+        "revision": null
+      },
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": ""
+      },
+      "record": {
+        "model": {
+          "id": "exogibbs.fastchem_hcn_followup.v1",
+          "name": "Preliminary FastChem HCN refit and database discrepancy follow-up",
+          "description": "Why did preliminary FastChem HCN predictions differ from ExoGibbs curated, how much did the HCN refit change them, and what remains unexplained?\n\n### Compared HCN inputs\n\n| Input | HCN representation and source |\n| --- | --- |\n| FastChem preliminary tables | Previous and revised HCN formation-Kp fits. The 2026-10-27 producer report describes a Goos/Burcat-based refit; the exact source snapshot and fitting recipe have not been independently reconstructed. This is a preliminary update, not an adopted release. [Producer report](#evidence/producer_report). |\n| ExoGibbs curated-gas-v1 | HCN (not HNC): CEA thermal functions with an ATcT 1.172 balanced atomization-energy anchor; Hf(298 K) = 129.293 kJ/mol. This pinned curated dataset is the comparison baseline, not an assumed physical truth. [Source audit](#evidence/source_audit). |\n\nAll abundance calculations use the **same ExoGibbs solver**, 537-species network and normalized Asplund 2021 composition. The comparison changes thermochemical inputs, not solver implementations; formation Kp is dimensionless at a 1-bar standard pressure.\n\n### Recorded discrepancy\n\nAt the same 2500 K, 0.01 bar sample on the inverted profile (differences relative to curated):\n\n| Quantity | Previous preliminary / curated | Revised preliminary / curated |\n| --- | --- | --- |\n| HCN formation Kp at 2500 K | 0.753006 (-24.70%) | 0.967363 (-3.26%) |\n| HCN mole fraction at 2500 K, 0.01 bar | 0.744527 (-25.55%) | 0.956471 (-4.35%) |\n\nThe remaining abundance difference includes coupled atomic abundances, not only the HCN formation constant. The largest absolute log-ratio deviations for revised/curated are -4.38% at 4000 K, 100 bar (isothermal) and -4.67% at 3400 K, 39.8107 bar (inverted). These extrema cover only the two recorded 161-layer profiles and points with mole fraction at least 1e-12 in either table. [Comparison execution and pinned numerical summary](#evidence/comparison_execution).\n\n### Sources and unresolved questions\n\n- **Source identity and fit:** the producer cites Goos/Burcat. An inspected public Burcat HCN entry uses Hf(298 K) = 129.799 kJ/mol, 0.506 kJ/mol above the curated ATcT anchor, but this public copy is not established as the producer's actual input. [Producer report](#evidence/producer_report) and [Burcat / ATcT source audit](#evidence/source_audit).\n- **Cause of the residual:** the energy-anchor difference is a candidate contribution. The exact source version, atomic references, thermal functions, fit interval and weights must be reconstructed before attributing the residual. [Source audit](#evidence/source_audit).\n- **Physical accuracy:** closer database agreement is not independent physical validation or a calibrated uncertainty. Whole-mixture accuracy and retrieval effects remain unknown; no spectrum or retrieval was run. [Recorded comparison scope](#evidence/comparison_execution).",
+          "implementation": {
+            "repository": "https://github.com/HajimeKawahara/exogibbs",
+            "revision": "sha256:996b36aa6cfffab5a1640ac5d2467f076a62c11f443262847f5f32b33ae7a861",
+            "entry_points": [
+              "mceg/reviews/fastchem_hcn_20261028.py"
+            ]
+          }
+        },
+        "assumptions": [
+          {
+            "statement": "All equilibria use ExoGibbs, a common 537-species network, normalized Asplund 2021 abundances and dimensionless formation Kp at 1 bar.",
+            "evidence": [
+              "comparison_execution"
+            ]
+          }
+        ],
+        "domains": [
+          {
+            "kind": "numerical_evaluation",
+            "status": "documented",
+            "description": "Two prescribed columns; no rectangular-domain or other-composition coverage is inferred.",
+            "conditions": [
+              "161 pressures from 1e-6 to 100 bar; 4000 K isotherm and prescribed 2500-4000 K inversion from PRs 284 and 298.",
+              "Curated, previous preliminary and revised preliminary tables; only standard logK.dat is used for atmospheric solves."
+            ],
+            "evidence": [
+              "comparison_execution"
+            ]
+          },
+          {
+            "kind": "scientific_applicability",
+            "status": "unknown",
+            "description": "Independent whole-mixture physical accuracy and downstream retrieval effects remain unestablished.",
+            "conditions": [],
+            "evidence": [
+              "producer_report",
+              "comparison_execution"
+            ]
+          }
+        ],
+        "limitations": [
+          {
+            "statement": "HCN agreement improves but other molecular differences remain. Fitting and source-version differences are not resolved by closeness to curated alone.",
+            "evidence": [
+              "comparison_execution",
+              "producer_report"
+            ]
+          },
+          {
+            "statement": "The archived summary identifies generated arrays by hash; regenerating full arrays requires running the provider comparison. No spectrum or retrieval was run.",
+            "evidence": [
+              "comparison_execution"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "00b19d8e7d9360f9a6da9e1fb93d7691f6e0021e34ce26cec45aca411552cbbf",
+      "type": "uses_evidence",
+      "source": "fd4a6586a88d20499758867bf0b3c8b765a0286344519e530d054c3559d248c6",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "0148af0038e6bf801eaca32eabb9ab794d14d9f8e6d7eda1885d11bd45d96cbe",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/5"
+      },
+      "data": {}
+    },
+    {
+      "id": "04f502fcd7331353f036f5b2ac0e5cae1b4569a581a6981e1507467b9a501523",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "085c9beb3b6ec08c45677b6de7b399fef6550d852e05572fb07b08b19d442ccc",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "091a9f736c01e911d7134d919a617fe4615d3011994c8946bd2a814c55a9922a",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/contexts/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "0b63f1618182d23627aa317c97821caed2880462f9567388517417f463a89396",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "e3588334dcc6afb0f4ac6791605278d2f6ca93c773d3a547b4950672bff85447",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "0bb754b6d6f16aef53ec7729e51e425082cde1f44e3a1987fcd212d79c7fcce7",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "107545b710a045364b71c79b0aff9b44a0f2a2682f81cf3ad8a85b9a13f329de",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "707919762be0625748c247ab2dbdf2d4812c45aa12b78469811f66833457626f",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/limitations/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "10ef0d78bc7f6b11347adb72341b67d5850cd24d2a04fd927d09cdb0479d4df9",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/domains/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "11ef116e871d204612aef6fff0ec5719887272cd10c7f5a6a5cb5baf56a98cea",
+      "type": "has_context",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "131ffa7b274000c4bdd80b82edaa6d001f3a2defae006a6b524a6316249133d5",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "317e199eefb6afef99ed68be7bf7bf39debb7be870d81612b32349f76585278f",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/4"
+      },
+      "data": {}
+    },
+    {
+      "id": "159db0ab1e41b87668c979e34bffd44d4f56e9a4af4145db4675409caf1d0b18",
+      "type": "has_subject",
+      "source": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "target": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/2/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "15d22dae92d651fbe7979551df265c9753e41153e6fe3fb949c1828246f53cc0",
+      "type": "uses_evidence",
+      "source": "48a63a55e77664463690e841bfdf2d7ed085542589609a1659a8c7b3f87fe2ed",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_up_resolutions/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "194b72badcff8f8891c3ce477a039f5f9b520dfeee0b61ceee5b152ef6af9d72",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "c895a04a39737ee01b572c4b18470a4e3e3e92663fd229a8b1b93d573666f793",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "19bf52aa71b316737e025a6dde8977749382618272db0f306fc7e133b02f8651",
+      "type": "uses_evidence",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "1ba6da93f535f6708d4e20e885f8074b01d40c3669f74dda589a53213047dc2a",
+      "type": "uses_evidence",
+      "source": "fd4a6586a88d20499758867bf0b3c8b765a0286344519e530d054c3559d248c6",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "1fb5858bdeabe33d86724e12decea682d74696ba846337e6e9a8a7ea6d5bbb4f",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/domains/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "2047b7441f117e9875c89a7f946bb74391c6966c03f06ee0e88385bf465a7078",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "222a2cd55adcb2e4aa43b8ef7b1a3d6a3b86e91b871540f7e1bf19366e50192c",
+      "type": "targets",
+      "source": "80c267e0ffa540d64d8737fbb32fd469408bba04df57f331628c34346f8b2900",
+      "target": "e639136f82333f07b25dc4166c35046ed6eb8f10679a6884540976d8dc4fa645",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/0/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "259be204cfefc8d27eed8a1f6709c36e67bc451213a293272007254254be2c4e",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "27363fc714d3c7f0e46229abe8bb83f2d4349690ab3a3bc42d6fe0f573c4f2de",
+      "type": "assesses",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "c895a04a39737ee01b572c4b18470a4e3e3e92663fd229a8b1b93d573666f793",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "286cf9ea68c6811c070a61beedad7d7bc18e7c64c801be2782782440115df467",
+      "type": "assesses",
+      "source": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "target": "3f0e4ad0cfbb1d20ae730836463a2ffac41699dc7e9122a28cc26b2553d26f18",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "2f83be5034668e05ab6ba762ecdd85cfdb12f643e4f8eb0f34bb2d539325d9dc",
+      "type": "uses_evidence",
+      "source": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "target": "c7c9a5fbdc142b5a39a7044698aefceef707bae21f96f4ae08f39d683041c70d",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "2fc619c2aca1ec095511eca93920df06c0250f2899340ece3b27af06d769dde5",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/1/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "3256d99905d3e4e15fb5fa104baa0e62dd62875a540d0206c601d7c71585425e",
+      "type": "uses_evidence",
+      "source": "e3588334dcc6afb0f4ac6791605278d2f6ca93c773d3a547b4950672bff85447",
+      "target": "707919762be0625748c247ab2dbdf2d4812c45aa12b78469811f66833457626f",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "366af6ccebd2caee34dbd2e97ad2ff72a75e15f3016d6f3f4aaf7ac3b113b97e",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "3f0e4ad0cfbb1d20ae730836463a2ffac41699dc7e9122a28cc26b2553d26f18",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "397864d2c7a9408b45c43d73828ac6825136472139a6aba558f45775ee14dd3a",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "3b7e960044ee3b91f144bef637f2f496794c65c040faaf3207f0a5faeb0f290b",
+      "type": "resolves",
+      "source": "48a63a55e77664463690e841bfdf2d7ed085542589609a1659a8c7b3f87fe2ed",
+      "target": "80c267e0ffa540d64d8737fbb32fd469408bba04df57f331628c34346f8b2900",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_up_resolutions/0/follow_up"
+      },
+      "data": {}
+    },
+    {
+      "id": "3c307245b593199f825b1a8cc996416453e7ae4125daceac33a668edc2d3d5c1",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "707919762be0625748c247ab2dbdf2d4812c45aa12b78469811f66833457626f",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/2/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "45066bd714ef00c2724e39c6b0842f393fe97a48d1d9006ddea546ecd60ee95b",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "4c2e1d1b123ae289ebc0a4114c293c5122428f2d6947e0546d3617a08fa4bf18",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "458de13190fe9a1677d69a61035270298af86bd2e1ae5d3a708ecc2796db81e6",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/domains/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "46ddcb74cd986711c1b73b5f684278f41e92b2ea3b4f030abaee8d4f3612cd63",
+      "type": "has_context",
+      "source": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "target": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "46e971544e9c1248d474c4b097466382e7232a4901e7d633297d722e62c7e1ea",
+      "type": "uses_evidence",
+      "source": "331c63bd32d8eb02223c2d6f24f1fe150edb32ba8dc790d05639989f0b789771",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "496f5bf35081ae5615e97637deb3dd2a3284ad31b8bc36a925a12f903fe35933",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "4b727dc12b43f29a1b716ec91853351cd7e2c9f2ae7d7dc0c1561f0368f9fd1d",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "48a63a55e77664463690e841bfdf2d7ed085542589609a1659a8c7b3f87fe2ed",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_up_resolutions/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "4e62134793a7fb22f57a182ccb0c215b8f3736f63df678861324009387b1bef2",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "f3d1c068fc79acc20452473ecaa1c5012a65b6045d35a3050996195b4a7fb683",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "5ad176ceafdecd3578403a11d2c95df7c70e490642ffc82cb1a450bd282c6797",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/3/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "5d5b7bd5d69454e22003f094be916dc0761964be0519f7f98b2543f9a246d4c6",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/domains/0/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "60064864d878d9e4a6fb92e1da738f8d334d38b2057001b0233fbb930e887081",
+      "type": "has_subject",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "6061a93c8d2ad30ad16491f28d5e5b70f0a975a043d4114373f9807575cf11a2",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/domains/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "6673f71140814c51479c08eada292e9c3cc063f2ce153a119446ef702c801274",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/0/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "6733b92bd9269373badf3f152a3e274f54cd82e910eb28fd68f23272090c365c",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "68efd51deb93a0469a07741feb6b18262e02688a2b65546e2c7af7b3e1e43a8e",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "80c267e0ffa540d64d8737fbb32fd469408bba04df57f331628c34346f8b2900",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "6b8faff927bbc3c0658af5363ea5a211feee534cd020fa769858cab6057a20f5",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "ddcf0edbe4f51ccf08012a1d179a7c3a7a089f5c36f04107c35dd8321965887a",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/3"
+      },
+      "data": {}
+    },
+    {
+      "id": "6ce1a343753cd9bf235cfbcbd1f0f6245e1ab4f13e34318d9c1f65ea016f5b46",
+      "type": "uses_evidence",
+      "source": "331c63bd32d8eb02223c2d6f24f1fe150edb32ba8dc790d05639989f0b789771",
+      "target": "8e393859819873ff6527a89a696c6dfab4e944d5976531b3d6bf5995d9619fb7",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "6f565ca26fffb777a27803c2505fcc886011a2f68cf636a845996fb37763c472",
+      "type": "has_subject",
+      "source": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "target": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "743402bae47d941f023118bd87de2174a8645f1114f2801fbd304d5648ee653e",
+      "type": "uses_evidence",
+      "source": "ddcf0edbe4f51ccf08012a1d179a7c3a7a089f5c36f04107c35dd8321965887a",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/3/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "7bf4d516a5f556e474d9726e1390d13f9f278f73d7630df82c43ef2c4a414e7b",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "7f84686e0b464ef6fd9236b665e154f3e3ed3ee51202762c4a8687b672d7e929",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "833d0791e1f24be60cdc38f327c17a77b787f9512af388b2e7fbbae2ccc8c99d",
+      "type": "assesses",
+      "source": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "target": "e639136f82333f07b25dc4166c35046ed6eb8f10679a6884540976d8dc4fa645",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0/claim"
+      },
+      "data": {}
+    },
+    {
+      "id": "836637aac60d8967ee3ab4caa1b625b323d4229cbe69ef3488f1369c247eaeb7",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "8e393859819873ff6527a89a696c6dfab4e944d5976531b3d6bf5995d9619fb7",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/4"
+      },
+      "data": {}
+    },
+    {
+      "id": "858f67365d3b34fd8f129b2909f1ee3d1a0acd9d2186c208eb00fabe8469501f",
+      "type": "targets",
+      "source": "f3d1c068fc79acc20452473ecaa1c5012a65b6045d35a3050996195b4a7fb683",
+      "target": "c895a04a39737ee01b572c4b18470a4e3e3e92663fd229a8b1b93d573666f793",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/2/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "8a3454ef2b07f7f19d2c01e23543b62590525f559bd6cfd4181151fa22be1541",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "8aec91b2f5a6a1903c182fed362ce9e5f7e43742d5bbf6be6e565adf153cff01",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "fd4a6586a88d20499758867bf0b3c8b765a0286344519e530d054c3559d248c6",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "91a663a60c1880a2870978911f93b6306c922724b3407b6d0d2c87d9f37762e7",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/domains/1/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "926ac7a901579f95f41332cdc2c6f3d9a5f044cc65a387ca3971677ab8ce7cf3",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/domains/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "93abf54ff3f7bf40a8b4e484d8e0a9b488a180cdf44874333f03cf9922c287af",
+      "type": "has_context",
+      "source": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "target": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "94778e94587a1c10e6fcdef4b5f1b8ccac298f065a85afe88a2797b2dc1cabb0",
+      "type": "uses_evidence",
+      "source": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "94e6038cccedab2a6e0b8e36c05cdeadfd8b08504773134f38aaf47c653096cb",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "e639136f82333f07b25dc4166c35046ed6eb8f10679a6884540976d8dc4fa645",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/claims/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "95641dc711a233ca59de39d255cf4851308bb5fa7eff28aa3b39b1fb90071f4b",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "9a0485c23160765aa4824af6ac1760ea1c4df5e0f1d2db486405b62b457ebd26",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/limitations/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "9e2126768f66a2db022e102d5e7e624c85d2f648fa5e3cef127d566560804feb",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "c7c9a5fbdc142b5a39a7044698aefceef707bae21f96f4ae08f39d683041c70d",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "9f95c7d3c291f69c5cf2ff6a9d5a3bfb7b102f91c892f8af03f24e9bd9e683b7",
+      "type": "has_subject",
+      "source": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "target": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1/subject"
+      },
+      "data": {}
+    },
+    {
+      "id": "a4fed932bea2c45d53b3c2a7eaff819247b4a04621bd19773526b4a41e889651",
+      "type": "uses_evidence",
+      "source": "fd4a6586a88d20499758867bf0b3c8b765a0286344519e530d054c3559d248c6",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/2/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "abd2912d29ef54f73107106e65aa3d6adf59df5fb7a1dd47e10ad57b2c035f41",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assumptions/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "b6bf7984f080989a34b3f6851f9387c23912bba91939b7f44b8ef3ae5dd83405",
+      "type": "contains",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "2f382bed7e461d95737ee0fb61d5d1ee580fc97ac1d43c69de3d46340c4c9a0a",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/subjects/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "b74a4eb118b820d988cf64f42d184e6de11c57ebb8a4c7fc88180904b183ebcd",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "3ed1923dc4b534b420145979ffab2f884fcfc962f3e6e0b8b2260da78543ae69",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/6"
+      },
+      "data": {}
+    },
+    {
+      "id": "bca22c80e48160f9ba9f1cff0c404f669fbc2227c86fb2719bbc0e5982b0e929",
+      "type": "uses_evidence",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "c7c9a5fbdc142b5a39a7044698aefceef707bae21f96f4ae08f39d683041c70d",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "be52390e8d07ab893d44f6108d896324928707977f0965dd92a512fd503bc6a5",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/3/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "c9adc00a03ad8b677bff7888b19fa689b1ad4aa43ea8e5c4cc34499dbf04be6a",
+      "type": "uses_evidence",
+      "source": "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "ca851ec6dfb42a4c6c1c59832fb348d4aaed699315fd0e982fd448f6a3e2c32d",
+      "type": "uses_evidence",
+      "source": "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/assessments/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "cc2ffe4a6a9a65adf2759ec6462cd12bb9b845ba5bb21b0b55cd408471b3d6d9",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "9a57b193989497da687b5d32cdf69da4f2fe00bcc551159392d9bf2589b46e9c",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/limitations/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "cdf9ac49231b890ee894a885917e0df7094f4afe7a6c3fec482ae5ea60d147ca",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/limitations/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "cf217ba7d84385e48245691467ff3af940412551b4d3a0c478c0db864c1c674e",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/limitations/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "cf2da234e984a573ba4fcaf2ed0344d2413bbcb7863a55919897dc912a9a424e",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "707919762be0625748c247ab2dbdf2d4812c45aa12b78469811f66833457626f",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "d1954b7e9b8ec4cded83a350ab84d31362e4a6713e09539bfd0385b99cfcb350",
+      "type": "uses_evidence",
+      "source": "317e199eefb6afef99ed68be7bf7bf39debb7be870d81612b32349f76585278f",
+      "target": "3ed1923dc4b534b420145979ffab2f884fcfc962f3e6e0b8b2260da78543ae69",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/4/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "d3812733817a3c92580522df25f40625784554d5a2d4457641d839135d3ad53e",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/domains/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "d87a0c588f8f40aec5e79cd58ed870a8a3137a8854cd1cd940ca6e1a9ba5c638",
+      "type": "uses_evidence",
+      "source": "331c63bd32d8eb02223c2d6f24f1fe150edb32ba8dc790d05639989f0b789771",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/1/evidence/2"
+      },
+      "data": {}
+    },
+    {
+      "id": "dbae17df9dbe96cc0df45428b7f1723f30ead8a8b79a7c057e800ccf547f726c",
+      "type": "uses_evidence",
+      "source": "e3588334dcc6afb0f4ac6791605278d2f6ca93c773d3a547b4950672bff85447",
+      "target": "ee8dcd72c9fe41e54f1243d4d978bdf7b237bd5a36b9a7a757d15e81e5aac2ea",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "dc7ee8cbc69b2a028dcfa673732b49516d6b4c07cab6820dca7be95d62f6c6cf",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/limitations/0/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "dee6d52d500ce43d114e58369eb3ba54305eb10b9557850276e705e5aa67a308",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "b2014a561ee03230b0c248769552aade03cdc1dc814142cfd2e34397b0abd1cd",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/assumptions/1/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "e1611c761e17ce5477796e450ac8498ccd3c02308865e6ec577ee8d33e5a2992",
+      "type": "has_context",
+      "source": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "target": "d460389db2d30ed168cca573199f3af9e74d1a8693fe94befda20d60d3c640ab",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/evidence/2/context"
+      },
+      "data": {}
+    },
+    {
+      "id": "e24846585f2416674c6275ffae29a91591db06489a87a2a87aea220906aca3e6",
+      "type": "targets",
+      "source": "4c2e1d1b123ae289ebc0a4114c293c5122428f2d6947e0546d3617a08fa4bf18",
+      "target": "e93f7b3602b9cf816b67d6799f6074c7a5b462bacbc3991efe5cd20c63f3c4b4",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/follow_ups/1/target"
+      },
+      "data": {}
+    },
+    {
+      "id": "eb3f3edfcc8d612bba8d8f3691129d9873ae9f4d505bc76fa05985e2ba1a389b",
+      "type": "uses_evidence",
+      "source": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "target": "1681e3385efb44bcfaba4598ede3adc8dabba10b5e1663006c2d0fe246a9e736",
+      "origin": {
+        "source": "5bd6d8a55792de670f7d34bc3f13cfacbe4b9f15cec6f8e25da91b4af5a8d538",
+        "pointer": "/limitations/0/evidence/0"
+      },
+      "data": {}
+    },
+    {
+      "id": "f1233dd2146d89430e0f0fbacceab20f833a8f942b761b59820182e59af8d59c",
+      "type": "uses_evidence",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "49f2ca830299c62a7c50151f18367a66867479f2258f50b4ff6518bde2cb9d37",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/limitations/2/evidence/1"
+      },
+      "data": {}
+    },
+    {
+      "id": "f89ffab1f638ea0aa62666705d8eac4bba572348a003bad937bc3a27dedd0961",
+      "type": "contains",
+      "source": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "target": "331c63bd32d8eb02223c2d6f24f1fe150edb32ba8dc790d05639989f0b789771",
+      "origin": {
+        "source": "9d03efd9234d1c0f631b2458c4cd39a1ea3033b9edabb8fd1fba7921ce424430",
+        "pointer": "/claims/1"
+      },
+      "data": {}
+    }
+  ],
+  "selections": [
+    {
+      "kind": "catalog_record",
+      "origin": {
+        "source": "c9d595ca534c71dc809585b5df1cff67c80fd00680bfb47367326bf17cae1370",
+        "pointer": "/models/0/records/1"
+      },
+      "catalog_model": {
+        "id": "exogibbs.curated_gas.v1",
+        "label": "Curated gas thermochemistry (ion-inclusive comparison)",
+        "dataset": "curated-gas-v1",
+        "identity": {
+          "data_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "settings": {
+            "ions": true
+          }
+        },
+        "species": [
+          {
+            "id": "Al1+",
+            "aliases": []
+          },
+          {
+            "id": "Al1-",
+            "aliases": []
+          },
+          {
+            "id": "Al1H1",
+            "aliases": [
+              "AlH"
+            ]
+          },
+          {
+            "id": "Ar1+",
+            "aliases": []
+          },
+          {
+            "id": "C1+",
+            "aliases": []
+          },
+          {
+            "id": "C1-",
+            "aliases": []
+          },
+          {
+            "id": "C1H1N1_hcn",
+            "aliases": [
+              "HCN"
+            ]
+          },
+          {
+            "id": "C1H1N1_hnc",
+            "aliases": [
+              "HNC"
+            ]
+          },
+          {
+            "id": "C1H4",
+            "aliases": [
+              "CH4"
+            ]
+          },
+          {
+            "id": "C1O1",
+            "aliases": [
+              "CO"
+            ]
+          },
+          {
+            "id": "C1O1S1",
+            "aliases": [
+              "COS"
+            ]
+          },
+          {
+            "id": "C1O2",
+            "aliases": [
+              "CO2"
+            ]
+          },
+          {
+            "id": "C1S1",
+            "aliases": [
+              "CS"
+            ]
+          },
+          {
+            "id": "C1S2",
+            "aliases": [
+              "CS2"
+            ]
+          },
+          {
+            "id": "Ca1+",
+            "aliases": []
+          },
+          {
+            "id": "Ca1-",
+            "aliases": []
+          },
+          {
+            "id": "Ca1H1",
+            "aliases": [
+              "CaH"
+            ]
+          },
+          {
+            "id": "Cl1+",
+            "aliases": []
+          },
+          {
+            "id": "Cl1-",
+            "aliases": []
+          },
+          {
+            "id": "Co1+",
+            "aliases": []
+          },
+          {
+            "id": "Co1-",
+            "aliases": []
+          },
+          {
+            "id": "Co1H1",
+            "aliases": [
+              "CoH"
+            ]
+          },
+          {
+            "id": "Cr1+",
+            "aliases": []
+          },
+          {
+            "id": "Cr1-",
+            "aliases": []
+          },
+          {
+            "id": "Cr1H1",
+            "aliases": [
+              "CrH"
+            ]
+          },
+          {
+            "id": "Cu1+",
+            "aliases": []
+          },
+          {
+            "id": "Cu1-",
+            "aliases": []
+          },
+          {
+            "id": "Cu1H1",
+            "aliases": [
+              "CuH"
+            ]
+          },
+          {
+            "id": "F1+",
+            "aliases": []
+          },
+          {
+            "id": "F1-",
+            "aliases": []
+          },
+          {
+            "id": "Fe1+",
+            "aliases": []
+          },
+          {
+            "id": "Fe1-",
+            "aliases": []
+          },
+          {
+            "id": "Fe1H1",
+            "aliases": [
+              "FeH"
+            ]
+          },
+          {
+            "id": "Ge1+",
+            "aliases": []
+          },
+          {
+            "id": "Ge1-",
+            "aliases": []
+          },
+          {
+            "id": "Ge1H1",
+            "aliases": [
+              "GeH"
+            ]
+          },
+          {
+            "id": "H1+",
+            "aliases": []
+          },
+          {
+            "id": "H1-",
+            "aliases": []
+          },
+          {
+            "id": "H1K1",
+            "aliases": [
+              "KH"
+            ]
+          },
+          {
+            "id": "H1Mg1",
+            "aliases": [
+              "MgH"
+            ]
+          },
+          {
+            "id": "H1Mn1",
+            "aliases": [
+              "MnH"
+            ]
+          },
+          {
+            "id": "H1Na1",
+            "aliases": [
+              "NaH"
+            ]
+          },
+          {
+            "id": "H1Ni1",
+            "aliases": [
+              "NiH"
+            ]
+          },
+          {
+            "id": "H1S1",
+            "aliases": [
+              "SH"
+            ]
+          },
+          {
+            "id": "H1Ti1",
+            "aliases": [
+              "TiH"
+            ]
+          },
+          {
+            "id": "H1Zn1",
+            "aliases": [
+              "ZnH"
+            ]
+          },
+          {
+            "id": "H2",
+            "aliases": []
+          },
+          {
+            "id": "H2O1",
+            "aliases": [
+              "H2O"
+            ]
+          },
+          {
+            "id": "H2S1",
+            "aliases": [
+              "H2S"
+            ]
+          },
+          {
+            "id": "H3N1",
+            "aliases": [
+              "NH3"
+            ]
+          },
+          {
+            "id": "He1+",
+            "aliases": []
+          },
+          {
+            "id": "K1+",
+            "aliases": []
+          },
+          {
+            "id": "K1-",
+            "aliases": []
+          },
+          {
+            "id": "Mg1+",
+            "aliases": []
+          },
+          {
+            "id": "Mn1+",
+            "aliases": []
+          },
+          {
+            "id": "N1+",
+            "aliases": []
+          },
+          {
+            "id": "N2",
+            "aliases": []
+          },
+          {
+            "id": "Na1+",
+            "aliases": []
+          },
+          {
+            "id": "Na1-",
+            "aliases": []
+          },
+          {
+            "id": "Ne1+",
+            "aliases": []
+          },
+          {
+            "id": "Ni1+",
+            "aliases": []
+          },
+          {
+            "id": "Ni1-",
+            "aliases": []
+          },
+          {
+            "id": "O1+",
+            "aliases": []
+          },
+          {
+            "id": "O1-",
+            "aliases": []
+          },
+          {
+            "id": "O1S1",
+            "aliases": [
+              "SO"
+            ]
+          },
+          {
+            "id": "O1Si1",
+            "aliases": [
+              "SiO"
+            ]
+          },
+          {
+            "id": "O1Ti1",
+            "aliases": [
+              "TiO"
+            ]
+          },
+          {
+            "id": "O1V1",
+            "aliases": [
+              "VO"
+            ]
+          },
+          {
+            "id": "O2S1",
+            "aliases": [
+              "SO2"
+            ]
+          },
+          {
+            "id": "O3S1",
+            "aliases": [
+              "SO3"
+            ]
+          },
+          {
+            "id": "P1+",
+            "aliases": []
+          },
+          {
+            "id": "P1-",
+            "aliases": []
+          },
+          {
+            "id": "S1+",
+            "aliases": []
+          },
+          {
+            "id": "S1-",
+            "aliases": []
+          },
+          {
+            "id": "S2",
+            "aliases": []
+          },
+          {
+            "id": "Si1+",
+            "aliases": []
+          },
+          {
+            "id": "Si1-",
+            "aliases": []
+          },
+          {
+            "id": "Ti1+",
+            "aliases": []
+          },
+          {
+            "id": "Ti1-",
+            "aliases": []
+          },
+          {
+            "id": "V1+",
+            "aliases": []
+          },
+          {
+            "id": "V1-",
+            "aliases": []
+          },
+          {
+            "id": "Zn1+",
+            "aliases": []
+          }
+        ]
+      },
+      "record": {
+        "path": "contracts/fastchem_hcn_followup.yaml",
+        "sha256": "9be615efc070ff5c450a9c242082bffe0138dc877d341bb1a86f79498cd3d9f8",
+        "id": "hcn_followup",
+        "species": [
+          "C1H1N1_hcn"
+        ],
+        "assessments": [
+          "hcn_refit_scope_review",
+          "column_closure_and_hcn_factorization_review",
+          "whole_mixture_accuracy_review"
+        ],
+        "summary": "Revised preliminary FastChem / curated HCN mole-fraction differences at the largest absolute log-ratio points on each sampled profile: isothermal: -4.38% at 4000 K and 100 bar; inverted: -4.67% at 3400 K and 39.8107 bar. Two 161-layer profiles from #284/#298; fixed 537-species network and solar budget. Only standard logK.dat solved; other archives audited. No spectra or retrieval. Normalized Asplund 2021 composition; the same ExoGibbs solver for all tables. Extrema include only points with mole fraction >=1e-12 in either table. Differences include coupled atomic abundances. These are recorded model sensitivities, not accuracy rankings, error bounds or a calibrated uncertainty distribution. Your conditions have not been evaluated.",
+        "links": [
+          "https://github.com/NewStrangeWorlds/FastChem/issues/10#issuecomment-6439534232",
+          "https://github.com/HajimeKawahara/exogibbs/issues/297#issuecomment-6457152016",
+          "https://github.com/HajimeKawahara/exogibbs/blob/d09e8e16275db5151158b884a53a3ff2c3cd31b6/documents/mceg/fastchem_hcn_followup.rst"
+        ],
+        "artifacts": [
+          {
+            "path": "artifacts/hcn_summary.json",
+            "sha256": "86ecb4a9d827d24fb29ebdd23ecc038184a15bc6073e76063491bb929c9841a6"
+          },
+          {
+            "path": "artifacts/hcn_sources.json",
+            "sha256": "e81d67d7fdc2eca27bfaf18e27cce32296c969d8aa8441bb8d6e9e015820f369"
+          }
+        ]
+      },
+      "model": "fdb89fb6724a62e57168bdeb07d9955341f652f746bcafe5cb64b4ad4e945a9d",
+      "assessments": [
+        "c5719e1e58616c0aee3e42273061b83b00b51d9e337e1c4d83066a58887c61b9",
+        "ccf75b5d34bb84678ffd7a91553b3730dba4c604ec78ebcf6596d57f74544d8f",
+        "65dbee168a3aa76db472e3730625cf5ff69c4f49581ec253c15aa83dbb89f1b1"
+      ]
+    },
+    {
+      "kind": "catalog_record",
+      "origin": {
+        "source": "c9d595ca534c71dc809585b5df1cff67c80fd00680bfb47367326bf17cae1370",
+        "pointer": "/models/0/records/0"
+      },
+      "catalog_model": {
+        "id": "exogibbs.curated_gas.v1",
+        "label": "Curated gas thermochemistry (ion-inclusive comparison)",
+        "dataset": "curated-gas-v1",
+        "identity": {
+          "data_sha256": "7ff5818ed9fd5dd0ab7787a4137893ef2a72cacc7b249df5b640950e93b00a38",
+          "settings": {
+            "ions": true
+          }
+        },
+        "species": [
+          {
+            "id": "Al1+",
+            "aliases": []
+          },
+          {
+            "id": "Al1-",
+            "aliases": []
+          },
+          {
+            "id": "Al1H1",
+            "aliases": [
+              "AlH"
+            ]
+          },
+          {
+            "id": "Ar1+",
+            "aliases": []
+          },
+          {
+            "id": "C1+",
+            "aliases": []
+          },
+          {
+            "id": "C1-",
+            "aliases": []
+          },
+          {
+            "id": "C1H1N1_hcn",
+            "aliases": [
+              "HCN"
+            ]
+          },
+          {
+            "id": "C1H1N1_hnc",
+            "aliases": [
+              "HNC"
+            ]
+          },
+          {
+            "id": "C1H4",
+            "aliases": [
+              "CH4"
+            ]
+          },
+          {
+            "id": "C1O1",
+            "aliases": [
+              "CO"
+            ]
+          },
+          {
+            "id": "C1O1S1",
+            "aliases": [
+              "COS"
+            ]
+          },
+          {
+            "id": "C1O2",
+            "aliases": [
+              "CO2"
+            ]
+          },
+          {
+            "id": "C1S1",
+            "aliases": [
+              "CS"
+            ]
+          },
+          {
+            "id": "C1S2",
+            "aliases": [
+              "CS2"
+            ]
+          },
+          {
+            "id": "Ca1+",
+            "aliases": []
+          },
+          {
+            "id": "Ca1-",
+            "aliases": []
+          },
+          {
+            "id": "Ca1H1",
+            "aliases": [
+              "CaH"
+            ]
+          },
+          {
+            "id": "Cl1+",
+            "aliases": []
+          },
+          {
+            "id": "Cl1-",
+            "aliases": []
+          },
+          {
+            "id": "Co1+",
+            "aliases": []
+          },
+          {
+            "id": "Co1-",
+            "aliases": []
+          },
+          {
+            "id": "Co1H1",
+            "aliases": [
+              "CoH"
+            ]
+          },
+          {
+            "id": "Cr1+",
+            "aliases": []
+          },
+          {
+            "id": "Cr1-",
+            "aliases": []
+          },
+          {
+            "id": "Cr1H1",
+            "aliases": [
+              "CrH"
+            ]
+          },
+          {
+            "id": "Cu1+",
+            "aliases": []
+          },
+          {
+            "id": "Cu1-",
+            "aliases": []
+          },
+          {
+            "id": "Cu1H1",
+            "aliases": [
+              "CuH"
+            ]
+          },
+          {
+            "id": "F1+",
+            "aliases": []
+          },
+          {
+            "id": "F1-",
+            "aliases": []
+          },
+          {
+            "id": "Fe1+",
+            "aliases": []
+          },
+          {
+            "id": "Fe1-",
+            "aliases": []
+          },
+          {
+            "id": "Fe1H1",
+            "aliases": [
+              "FeH"
+            ]
+          },
+          {
+            "id": "Ge1+",
+            "aliases": []
+          },
+          {
+            "id": "Ge1-",
+            "aliases": []
+          },
+          {
+            "id": "Ge1H1",
+            "aliases": [
+              "GeH"
+            ]
+          },
+          {
+            "id": "H1+",
+            "aliases": []
+          },
+          {
+            "id": "H1-",
+            "aliases": []
+          },
+          {
+            "id": "H1K1",
+            "aliases": [
+              "KH"
+            ]
+          },
+          {
+            "id": "H1Mg1",
+            "aliases": [
+              "MgH"
+            ]
+          },
+          {
+            "id": "H1Mn1",
+            "aliases": [
+              "MnH"
+            ]
+          },
+          {
+            "id": "H1Na1",
+            "aliases": [
+              "NaH"
+            ]
+          },
+          {
+            "id": "H1Ni1",
+            "aliases": [
+              "NiH"
+            ]
+          },
+          {
+            "id": "H1S1",
+            "aliases": [
+              "SH"
+            ]
+          },
+          {
+            "id": "H1Ti1",
+            "aliases": [
+              "TiH"
+            ]
+          },
+          {
+            "id": "H1Zn1",
+            "aliases": [
+              "ZnH"
+            ]
+          },
+          {
+            "id": "H2",
+            "aliases": []
+          },
+          {
+            "id": "H2O1",
+            "aliases": [
+              "H2O"
+            ]
+          },
+          {
+            "id": "H2S1",
+            "aliases": [
+              "H2S"
+            ]
+          },
+          {
+            "id": "H3N1",
+            "aliases": [
+              "NH3"
+            ]
+          },
+          {
+            "id": "He1+",
+            "aliases": []
+          },
+          {
+            "id": "K1+",
+            "aliases": []
+          },
+          {
+            "id": "K1-",
+            "aliases": []
+          },
+          {
+            "id": "Mg1+",
+            "aliases": []
+          },
+          {
+            "id": "Mn1+",
+            "aliases": []
+          },
+          {
+            "id": "N1+",
+            "aliases": []
+          },
+          {
+            "id": "N2",
+            "aliases": []
+          },
+          {
+            "id": "Na1+",
+            "aliases": []
+          },
+          {
+            "id": "Na1-",
+            "aliases": []
+          },
+          {
+            "id": "Ne1+",
+            "aliases": []
+          },
+          {
+            "id": "Ni1+",
+            "aliases": []
+          },
+          {
+            "id": "Ni1-",
+            "aliases": []
+          },
+          {
+            "id": "O1+",
+            "aliases": []
+          },
+          {
+            "id": "O1-",
+            "aliases": []
+          },
+          {
+            "id": "O1S1",
+            "aliases": [
+              "SO"
+            ]
+          },
+          {
+            "id": "O1Si1",
+            "aliases": [
+              "SiO"
+            ]
+          },
+          {
+            "id": "O1Ti1",
+            "aliases": [
+              "TiO"
+            ]
+          },
+          {
+            "id": "O1V1",
+            "aliases": [
+              "VO"
+            ]
+          },
+          {
+            "id": "O2S1",
+            "aliases": [
+              "SO2"
+            ]
+          },
+          {
+            "id": "O3S1",
+            "aliases": [
+              "SO3"
+            ]
+          },
+          {
+            "id": "P1+",
+            "aliases": []
+          },
+          {
+            "id": "P1-",
+            "aliases": []
+          },
+          {
+            "id": "S1+",
+            "aliases": []
+          },
+          {
+            "id": "S1-",
+            "aliases": []
+          },
+          {
+            "id": "S2",
+            "aliases": []
+          },
+          {
+            "id": "Si1+",
+            "aliases": []
+          },
+          {
+            "id": "Si1-",
+            "aliases": []
+          },
+          {
+            "id": "Ti1+",
+            "aliases": []
+          },
+          {
+            "id": "Ti1-",
+            "aliases": []
+          },
+          {
+            "id": "V1+",
+            "aliases": []
+          },
+          {
+            "id": "V1-",
+            "aliases": []
+          },
+          {
+            "id": "Zn1+",
+            "aliases": []
+          }
+        ]
+      },
+      "record": {
+        "path": "contracts/curated_gas.yaml",
+        "sha256": "17a2c7656bf7aaf1048b5bc7340c5d07d0043057eec1e807f035ea12392d44b5",
+        "id": "curated_gas",
+        "species": [
+          "*"
+        ],
+        "assessments": [],
+        "summary": "A versioned source-adoption model, not a whole-mixture physical validation. Unreviewed species retain their pinned FastChem fits. Atomic translation uses unit heavy-particle mass ratios and electron spin two, as in the approved audit. Partition fit terms are numerical basis functions, not measured new levels.",
+        "links": [
+          "https://github.com/HajimeKawahara/exogibbs/blob/4258624c1b015eeaae4967e8e84e8af25f15c116/documents/presets/curated.rst"
+        ],
+        "artifacts": []
+      },
+      "model": "a9ba66b03e142cea9d85472ee3b15b894837652f800815e273e1fb5ae997839e",
+      "assessments": []
+    }
+  ]
+}

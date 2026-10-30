@@ -10,6 +10,12 @@ Human and LLM reviewers also use these records to resume investigations, compare
 sources and justify model changes. The [investigation design](docs/en/design_questions.md#investigations-by-human-and-llm-reviewers)
 describes this workflow and the proposed next improvements.
 
+Two design commitments guide that workflow: an LLM without the previous
+conversation must be able to follow the evidence and resume an investigation;
+humans must also be able to inspect the evidence and model contracts themselves.
+[MCEG Viewer](viewer/README.md) provides a small bilingual interface for that
+inspection. It consumes exported Graph JSON; MCEG itself does not depend on it.
+
 ## Start with the package you use
 
 After [installing MCEG](#install), start by inspecting your scientific package:
@@ -158,6 +164,19 @@ judgments and explicit selections for viewers and LLM tools. See the
 [Graph JSON API](docs/en/graph.md) for Python examples and relationship meanings.
 
 ## Documentation and examples
+
+For interactive inspection, run the standalone viewer (Node.js 22.12+):
+
+```bash
+cd viewer
+npm ci
+npm run dev
+```
+
+Open the printed local URL, choose **Open graph JSON**, and select an export
+from `mceg graph`. The bundled H2 example can also be opened from the welcome
+screen. Switch between English and Japanese in the header. See the
+[viewer guide](viewer/README.md) for navigation and interpretation boundaries.
 
 For a browsable model catalog and linked calculation/evidence graphs, see the
 [HTML guide](docs/en/html.md). Build it with Graphviz installed:

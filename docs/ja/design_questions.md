@@ -10,6 +10,8 @@ ExoEOSの残差Helmholtzモデル `IdealEOS`、`SecondVirialEOS`、
 
 ## 設計原則
 
+- 前の会話を知らないLLMでも、記録された根拠をたどって調査を再開できること。
+- 人間も証拠やモデルの契約を確認でき、何が分かっていて何がまだ分からないかを把握できること。任意の独立した [MCEG Viewer](../../viewer/README.md) で記録をたどれるようにし、MCEG本体はViewerに依存させない。
 - MCEGは提供元パッケージから独立させ、ExoEOSやExoGibbsに依存関係を追加しない。
 - 科学的な適用可能性と、数値評価のための条件を分ける。
 - 数値的なVerificationと、実験・観測に基づくValidationを分ける。

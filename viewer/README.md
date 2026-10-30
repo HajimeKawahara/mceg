@@ -163,6 +163,36 @@ currently accessible; a supplied-file SHA-256 URN is not a public download link.
 For supplements, inspect the record's description/location to distinguish the
 supplement from the main article. A shared DOI alone does not equate these files.
 
+Every DOI shows **Inspection recorded in MCEG**, with download guidance:
+
+- **Not inspected**: obtain the specified article or supplement if needed and
+  not already available, then inspect the recorded scope.
+- **Partially inspected**: inspect the remaining scope; obtain missing material.
+- **Inspected (recorded scope)**: no new download is required for that recorded
+  inspection. Obtain it to verify the document yourself or extend the inquiry.
+- **Inspection not recorded**: check whether the material has been read before
+  deciding what to obtain. A citation or inspected implementation is not itself
+  a literature inspection.
+
+These states come from literature Evidence `provenance.inspection`. DOI entries
+also link to other literature records for the same DOI **within the same source
+snapshot**. For a FollowUp citation this is labelled as related inspection, not
+as the task's own status. If inspected or partially inspected scopes exist,
+download guidance asks the reader to compare those scopes first. This discovery
+does not imply a provenance edge, a shared scope, or completion of a task. Older
+not-inspected records keep their original state, including when a later supplied
+document has been inspected. The viewer cannot determine which PDFs are on the
+reader's computer.
+
+Open **Materials list** / **資料一覧** in the top navigation to browse these
+states across the package or a selected contract/catalog. The list includes
+literature Evidence and otherwise uncovered DOI citations. Filter by inspection
+state or search DOI, description and scope; four records appear per page. Counts
+refer to records, not unique papers or outstanding downloads. Main articles,
+supplements, historical attempts and records without inspection metadata remain
+separate. Open a record to inspect its graph; **Back** returns to the list with
+its filters and search preserved.
+
 Graph snapshots often contain DOIs without full titles/authors. **Look up
 citation** fetches title, authors, publication year and journal information from
 the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/)
@@ -179,6 +209,13 @@ by citation lookup. Bibliographic data is not written back into the graph.
 だけをCrossrefへ送り、論文名・著者・年・掲載誌を表示します。Google／Scholar
 への検索リンクも利用できます。完了作業では、Resolutionの完了根拠をたどります。
 必要な文献自体が記録されていない場合は推測せず、提供元の追記が必要だと表示します。
+
+上部の「資料一覧」から「未確認」「一部確認」「確認済み」「確認状態の記録なし」で
+絞り込めます。各DOIのそばにはMCEGの記録に基づく確認状態と、入手・再ダウンロードの
+案内を表示します。「確認記録と対象範囲を見る」で、同じ契約内の同一DOIについて
+本文・補足資料のどの箇所を確認したかたどれます。過去の未確認記録が残っていても、
+確認済み範囲が見つかれば、追加で必要な資料かを先に確認するよう案内します。
+書誌情報の取得だけで「確認済み」にはなりません。
 
 Record lists, connections and graph neighbors are paged in groups of eight.
 The graph shows one selected record and up to eight immediate neighbors; the

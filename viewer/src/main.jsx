@@ -7,6 +7,9 @@ import { validateGraph, indexGraph, matchesCategory, excerpt, neighborhood, safe
 import { translations, typeLabel, edgeLabel } from './i18n.js';
 import Narrative from './Narrative.jsx';
 import Materials from './Materials.jsx';
+import MaterialInventory from './MaterialInventory.jsx';
+import { InspectionBadge } from './Inspection.jsx';
+import { inspectionState, isLiterature } from './literature.js';
 import PackageOverview from './PackageOverview.jsx';
 import { scopedNodes } from './navigation.js';
 
@@ -42,7 +45,8 @@ function Badges({ node, index, t }) {
   const r = node.record;
   return <div className="badges">
     {['status', 'classification', 'result'].map(key => typeof r[key] === 'string' && <span className="badge" key={key}>{t[key]}: {r[key]}</span>)}
-    {typeof r.provenance?.inspection === 'string' && <span className="badge">{t.inspection}: {r.provenance.inspection}</span>}
+    {isLiterature(node) ? <InspectionBadge state={inspectionState(node)} t={t} /> :
+      typeof r.provenance?.inspection === 'string' && <span className="badge">{t.inspection}: {r.provenance.inspection}</span>}
     {node.type === 'follow_up' && <span className="badge">{index.completed.has(node.id) ? t.done : t.pending}</span>}
   </div>;
 }
@@ -126,6 +130,8 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [page, setPage] = useState(0);
   const [id, setId] = useState(null);
+  const [view, setView] = useState('records');
+  const [materialsState, setMaterialsState] = useState({ filter: 'all', query: '', page: 0 });
   const [history, setHistory] = useState([]);
   const [nearPage, setNearPage] = useState(0);
   const [edgeId, setEdgeId] = useState(null);
@@ -134,9 +140,9 @@ function App() {
   const request = useRef(0);
   const index = useMemo(() => graph ? indexGraph(graph) : null, [graph]);
   useEffect(() => { document.documentElement.lang = lang; try { localStorage.setItem('mceg-viewer-language', lang); } catch { /* optional preference */ } }, [lang]);
-  const navigate = (next, nextSource = source) => {
-    if (next !== id || nextSource !== source) {
-      setHistory(h => [...h.slice(-49), { id, source }]); setId(next); setSource(nextSource); setNearPage(0); setEdgeId(null);
+  const navigate = (next, nextSource = source, nextView = 'records') => {
+    if (next !== id || nextSource !== source || nextView !== view) {
+      setHistory(h => [...h.slice(-49), { id, source, view }]); setId(next); setSource(nextSource); setView(nextView); setNearPage(0); setEdgeId(null);
     }
   };
   const select = next => navigate(next);
@@ -157,7 +163,7 @@ function App() {
       const value = validateGraph(JSON.parse(text));
       if (token !== request.current) return;
       setGraph(value); setFilename(file?.name ?? ''); setDemo(!file);
-      setId(null);
+      setId(null); setView('records'); setMaterialsState({ filter: 'all', query: '', page: 0 });
       setHistory([]); setQuery(''); setSource(''); setFilter('all'); setPage(0); setNearPage(0); setEdgeId(null);
     } catch (e) { if (token === request.current) setError(e.message === 'size' ? 'size' : 'error'); }
     finally { if (token === request.current) setBusy(false); }
@@ -192,14 +198,18 @@ function App() {
       <p className="muted">{t.format}</p><code>mceg graph --package exogibbs &gt; graph.json</code><p className="muted">{t.local}</p></main> : <main className="workspace">
       <div className="dataset"><div><span className="eyebrow">{demo ? t.example : filename}</span><p>{demo ? t.exampleNote : t.local}</p></div><span className="count">{graph.nodes.length} {t.records}</span></div>
       <nav className="view-navigation" aria-label={t.navigation}>
-        <button onClick={() => openSource('')} aria-current={!id && !source ? 'page' : undefined}>{t.packageOverview}</button>
+        <button onClick={() => openSource('')} aria-current={view === 'records' && !id && !source ? 'page' : undefined}>{t.packageOverview}</button>
+        <button onClick={() => navigate(null, source, 'materials')} aria-current={view === 'materials' ? 'page' : undefined}>{t.materialInventory}</button>
         {source && <span>{index.sources.get(source)?.path}</span>}
         <button disabled={!history.length} onClick={() => {
-          const previous = history.at(-1); setId(previous.id); setSource(previous.source); setHistory(h => h.slice(0, -1));
+          const previous = history.at(-1); setId(previous.id); setSource(previous.source); setView(previous.view); setHistory(h => h.slice(0, -1));
           setNearPage(0); setEdgeId(null); setPage(0); setQuery(''); setFilter('all');
         }}>← {t.back}</button>
       </nav>
       <p className="scope-note">{t.scopeNote}</p>
+      {view === 'materials' ? <MaterialInventory graph={graph} nodes={sourceNodes} index={index} source={source}
+        changeSource={next => { navigate(null, next, 'materials'); setMaterialsState({ ...materialsState, page: 0 }); }}
+        select={select} state={materialsState} setState={setMaterialsState} t={t} /> : <>
       {overview && <Overview key={overview.model.id} overview={overview} select={next => {
         select(next);
         detailPanel.current?.scrollIntoView({ block: 'start' });
@@ -227,7 +237,7 @@ function App() {
         <div className="graph-footer"><span>{nearby.total} {t.nearby}</span><Pager page={nearPage} total={nearby.total} setPage={setNearPage} t={t} /></div>
         {edge && <div className="edge-detail"><h3>{t.relation}: {edgeLabel(edge.type, lang)}</h3><button onClick={() => select(edge.source)}>{index.nodes.get(edge.source).label}</button> → <button onClick={() => select(edge.target)}>{index.nodes.get(edge.target).label}</button><Value value={edge.data} /><details><summary>{t.origin}</summary><Origin origin={edge.origin} index={index} t={t} /></details></div>}
       </section>
-      <section ref={detailPanel} tabIndex={-1} className="detail-panel panel" aria-label={t.details}><Detail key={node.id} node={node} index={index} graph={graph} t={t} lang={lang} select={select} /></section></>}</div>
+      <section ref={detailPanel} tabIndex={-1} className="detail-panel panel" aria-label={t.details}><Detail key={node.id} node={node} index={index} graph={graph} t={t} lang={lang} select={select} /></section></>}</div></>}
     </main>}
     <footer><span>MCEG viewer · 0.1</span><span>{t.untranslated}</span></footer>
   </>;

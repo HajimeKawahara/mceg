@@ -17,6 +17,42 @@ export function sourceLocators(node) {
     .filter(value => typeof value === 'string' && value.trim()))];
 }
 
+export const inspectionStates = ['not_inspected', 'partial', 'inspected', 'unknown'];
+export function isLiterature(node) {
+  return node.type === 'evidence' && node.record.kind === 'literature';
+}
+
+// Inspection describes an Evidence record's scope, never a DOI as a whole.
+// In particular, inspecting implementation code is not inspecting its citations.
+export function inspectionState(node) {
+  const state = isLiterature(node) ? node.record.provenance?.inspection : null;
+  return inspectionStates.includes(state) ? state : 'unknown';
+}
+
+export function sameDoiRecords(node, value, index) {
+  const doi = doiFrom(value);
+  if (!doi) return [];
+  return [...index.nodes.values()].filter(n => n.id !== node.id && isLiterature(n) &&
+    n.origin.source === node.origin.source && sourceLocators(n).some(s => doiFrom(s) === doi));
+}
+
+export function materialEntries(nodes) {
+  const literature = nodes.filter(isLiterature);
+  const covered = new Set(literature.flatMap(n => sourceLocators(n).map(doiFrom).filter(Boolean)
+    .map(doi => JSON.stringify([n.origin.source, doi]))));
+  const entries = literature.map(node => ({ node, state: inspectionState(node), locators: sourceLocators(node) }));
+  // Keep otherwise unaccounted-for DOI citations visible as unrecorded, rather
+  // than assuming that a citation, completed task or numerical test is a review.
+  for (const node of nodes.filter(n => !isLiterature(n))) {
+    const locators = sourceLocators(node).filter(value => {
+      const doi = doiFrom(value);
+      return doi && !covered.has(JSON.stringify([node.origin.source, doi]));
+    });
+    if (locators.length) entries.push({ node, state: 'unknown', locators });
+  }
+  return entries;
+}
+
 // Directed, scoped traversal: target revision -> its assessments -> their
 // declared evidence -> upstream provenance. Never follow evidence sideways to
 // other investigations, or expand contains/subject/context edges.

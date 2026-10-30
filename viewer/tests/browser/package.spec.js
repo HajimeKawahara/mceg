@@ -42,6 +42,8 @@ test('empirical_scope provides sources and search, with DOI-only citation lookup
   await page.locator('.record-card').filter({ hasText: 'empirical_scope' }).click();
   await page.getByRole('button', { name: 'Papers & materials' }).click();
   const own = page.locator('.direct-materials');
+  await expect(own.locator('.doi-inspection > div > .badge').first()).toHaveText('Inspected scopes available');
+  await expect(own.locator('.download-guidance').first()).toContainText('before downloading');
   await expect(own.getByRole('link', { name: 'DOI: 10.1007/s11663-001-0011-0' })).toBeVisible();
   await expect(own.getByRole('link', { name: 'Google Scholar', exact: false }).first()).toHaveAttribute('href', /scholar.*10\.1007/);
   expect(requests).toEqual([]);
@@ -62,9 +64,11 @@ test('completed work exposes completion literature, locations, and lookup failur
   await page.locator('#search').fill('inspect_ma_original');
   const card = page.locator('.record-card').filter({ has: page.locator('small', { hasText: /^resolution$/ }) });
   await card.click();
-  const supplied = page.locator('.material-card').filter({ hasText: 'ma_original_supplied_20261029' });
+  const supplied = page.locator('.material-card').filter({ has: page.locator(':scope > button', { hasText: 'ma_original_supplied_20261029' }) });
   await expect(supplied).toContainText('Completion evidence');
   await expect(supplied).toContainText('Eqs. 10-12');
+  await expect(supplied.locator('.doi-inspection > div > .badge')).toHaveText('Inspected (recorded scope)');
+  await expect(supplied.locator('.download-guidance')).toContainText('No new download is needed');
   await expect(supplied.getByRole('link', { name: 'DOI: 10.1007/s11663-001-0011-0' })).toBeVisible();
   await supplied.getByRole('button', { name: 'Look up citation' }).click();
   await expect(supplied.getByRole('status')).toContainText('Could not retrieve');

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { safeUrl } from './graph.js';
-import { doiFrom, sourceLocators, relatedMaterials, parseCitation, searchLinks } from './literature.js';
+import { doiFrom, sourceLocators, relatedMaterials, parseCitation, searchLinks, isLiterature, inspectionState } from './literature.js';
+import DoiInspection, { InspectionBadge } from './Inspection.jsx';
 
 const citations = new Map();
-function Locator({ value, t }) {
+function Locator({ value, node, index, select, t }) {
   const doi = doiFrom(value);
   const [citation, setCitation] = useState(() => citations.get(doi));
   const [status, setStatus] = useState('');
@@ -29,6 +30,7 @@ function Locator({ value, t }) {
     {citation && <div className="citation"><strong>{citation.title}</strong><p>{citation.authors.join(', ')}{citation.year && ` (${citation.year})`}</p>
       <p>{[citation.journal, citation.volume, citation.pages].filter(Boolean).join(', ')}</p><small>{t.metadataFrom}</small></div>}
     {url ? <a href={url} target="_blank" rel="noopener noreferrer">{doi ? `DOI: ${doi}` : value} ↗</a> : <span className="prose">{value}</span>}
+    {doi && <DoiInspection node={node} value={value} index={index} select={select} t={t} />}
     <div className="locator-actions">
       {doi && !citation && <button disabled={status === 'loading'} onClick={lookup}>{status === 'loading' ? t.lookupLoading : t.lookupCitation}</button>}
       {(doi || (!url && !/^(?:urn:|[./]|.*\.(?:json|yaml|py|xml|log)$)/i.test(value))) && <>
@@ -39,8 +41,8 @@ function Locator({ value, t }) {
   </div>;
 }
 
-function Locators({ node, t }) {
-  return <div>{sourceLocators(node).map(value => <Locator key={value} value={value} t={t} />)}</div>;
+export function Locators({ node, index, select, t, values = sourceLocators(node) }) {
+  return <div>{values.map(value => <Locator key={value} value={value} node={node} index={index} select={select} t={t} />)}</div>;
 }
 
 export default function Materials({ node, index, select, t }) {
@@ -50,16 +52,17 @@ export default function Materials({ node, index, select, t }) {
   if (!hasOwn && !related.length && !['follow_up', 'resolution', 'evidence'].includes(node.type)) return null;
   return <section className="materials" aria-label={t.materials}>
     <h3>{t.materials}</h3><p className="muted">{t.materialsHint}</p>
-    {hasOwn && <div className="direct-materials"><h4>{t.directMaterials}</h4><Locators node={node} t={t} /></div>}
+    {hasOwn && <div className="direct-materials"><h4>{t.directMaterials}</h4><Locators node={node} index={index} select={select} t={t} /></div>}
     {!hasOwn && !related.length && <p>{t.noMaterials}</p>}
     {!!related.length && <><h4>{t.relatedMaterials} · {related.length}</h4><p className="muted">{t.materialsScope}</p>
       {related.slice(page * 3, (page + 1) * 3).map(item => <article className="material-card" key={item.node.id}>
         <span className="eyebrow">{item.viaCompletion ? t.completionEvidence : t.linkedEvidence}</span>
         <button className="record-link" onClick={() => select(item.node.id)}><strong>{item.node.label}</strong></button>
         <p>{item.node.record.summary ?? item.node.record.action}</p>
-        {item.node.record.provenance?.inspection && <span className="badge">{t.inspection}: {item.node.record.provenance.inspection}</span>}
+        {isLiterature(item.node) ? <InspectionBadge state={inspectionState(item.node)} t={t} /> :
+          item.node.record.provenance?.inspection && <span className="badge">{t.inspection}: {item.node.record.provenance.inspection}</span>}
         {item.node.record.provenance?.location && <p><b>{t.readLocation}: </b>{item.node.record.provenance.location}</p>}
-        <Locators node={item.node} t={t} />
+        <Locators node={item.node} index={index} select={select} t={t} />
         <details><summary>{t.scopeAndPath}</summary><p>{item.node.record.scope}</p><p>{item.node.record.provenance?.note}</p>
           <nav aria-label={t.tracePath}>{item.path.map((id, i) => <React.Fragment key={id}>{i > 0 && ' › '}<button onClick={() => select(id)}>{index.nodes.get(id).label}</button></React.Fragment>)}</nav></details>
       </article>)}

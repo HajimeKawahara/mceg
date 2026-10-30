@@ -161,6 +161,34 @@ footer { display: flex; justify-content: space-between; padding: 20px 32px; font
 .material-card p { margin: 8px 0; }
 .material-card nav button { border: 0; background: transparent; padding: 2px; font-size: 10px; max-width: 100%; overflow-wrap: anywhere; text-align: left; }
 .direct-materials { background: #f6faf7; border-radius: 12px; padding: 0 12px 10px; }
+.doi-inspection { margin-top: 8px; }
+.doi-inspection small { display: block; color: #776680; margin-bottom: 4px; }
+.inspection-badge { display: inline-block; }
+.inspection-badge.inspected { background: #e1f1e8; color: #285c46; }
+.inspection-badge.partial { background: #fff0d2; color: #78531b; }
+.inspection-badge.not_inspected { background: #fae4ec; color: #86415c; }
+.inspection-badge.unknown, .inspection-badge.linked { background: #eee8f6; color: #66507c; }
+.download-guidance { font-size: 12px; line-height: 1.6; }
+.inspection-record { border-top: 1px solid #e4dce9; padding: 10px 0; }
+.inspection-record .record-link { margin-top: 6px; }
+.material-inventory { padding: 24px; max-width: 1150px; margin: 0 auto; }
+.material-inventory h2 { margin: 8px 0; }
+.material-inventory > p { font-size: 13px; }
+.inventory-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px 0 16px; }
+.inventory-controls > div { min-width: 0; }
+.inventory-controls label { display: block; font-size: 12px; margin-bottom: 6px; }
+.inventory-controls input, .inventory-controls select { width: 100%; }
+.inspection-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.inspection-filters button { font-size: 12px; }
+.inspection-filters [aria-pressed=true], .view-navigation [aria-current=page] { background: #eee5f6; color: #684581; border-color: #bca2cf; }
+.inspection-filters span { margin-left: 5px; }
+.inventory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.inventory-card { padding: 18px; background: #fcf9fd; border: 1px solid #e9e0ef; border-radius: 14px; overflow-wrap: anywhere; font-size: 13px; }
+.inventory-card h3 { margin: 10px 0 4px; }
+.inventory-card h3 button { padding: 0; }
+.inventory-card > small { color: #776680; }
+.inventory-card details { font-size: 12px; }
+@media (max-width: 700px) { .inventory-grid, .inventory-controls { grid-template-columns: 1fr; } .material-inventory { padding: 16px; } }
 @media (max-width: 700px) { .contract-grid { grid-template-columns: 1fr; } .package-overview { padding: 16px; } }
 @media (min-width: 1600px) { .workspace { max-width: 1800px; margin: auto; } .canvas { height: 600px; } }
 @media (max-width: 1150px) { .panels { grid-template-columns: 240px minmax(0, 1fr); } .detail-panel { grid-column: 2; max-height: none; } .browser { grid-row: span 2; } }

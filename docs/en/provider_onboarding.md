@@ -4,6 +4,10 @@ Use a provider-owned `mceg/contracts/<model>.yaml` to describe one model family,
 its conventions, and the evidence actually reviewed. Start with v0.2 for new
 records. Keep MCEG outside the provider's runtime dependencies.
 
+For a package with no MCEG records yet, follow the
+[LLM or manual setup guide](initialization.md) first. The workflow below covers
+the detailed model and evidence review after initialization.
+
 This procedure was exercised on 2026-10-20 with six ExoGibbs solubility laws and
 eight ExoEOS liquid, fluid, alloy and solute constructions. Each provider has
 `mceg/model_inventory.md`, the new contracts, and

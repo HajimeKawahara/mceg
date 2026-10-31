@@ -51,6 +51,9 @@ files, see [packaged evidence catalogs](docs/en/package_evidence.md).
 The report describes recorded evidence, not an evaluation of your calculation's
 conditions. ExoGibbs itself works without MCEG installed.
 
+If your package has no MCEG records yet, start with
+[LLM or manual setup](#add-mceg-to-an-existing-package).
+
 ## Main commands
 
 The package command above reads an installed distribution. Run the repository
@@ -96,33 +99,63 @@ python -m pip install -e .
 Runtime dependencies are Pydantic 2 and PyYAML 6. The `mceg` command is equivalent
 to `python -m mceg`.
 
-## Start your first model
+## Add MCEG to an existing package
 
-Choose the model boundary and a local Python definition. Different model choices
-may share one function; record the selected choice explicitly.
+Work in the scientific package's source checkout (the **provider**), with the
+[MCEG environment](#install) active. Keep MCEG as an optional authoring tool,
+outside the provider's runtime dependencies. Start with one model.
+
+### With an LLM
+
+Give a coding assistant access to both checkouts and replace the placeholders:
+
+```text
+Add MCEG to <provider checkout>, starting with <model or module>.
+Follow <MCEG checkout>/docs/en/initialization.md and provider_onboarding.md
+in the same directory. Inspect code, data, docs and tests to identify model
+boundaries and choices, then use mceg init to create a v0.2 draft and inventory.
+Document model conventions and evidence from inspected sources; record only
+tests actually run. Keep missing support unknown and list concrete follow-ups.
+Expand source_roots to the intended package scope and keep review_pending true
+until human review. Preserve numerical behavior and keep MCEG optional.
+Run mceg check, mceg explain and mceg coverage . from the provider root.
+Summarize changed files, checks, remaining gaps and required human review.
+```
+
+### Manually
+
+Choose the model boundary and its local Python definition after reading the code,
+data, docs and tests. Replace the example names and choices with your own:
 
 ```bash
 cd /path/to/provider
 mceg init mypkg.water.power_law \
   --source src/mypkg/water.py --symbol gibbs_j \
   --setting water_model=power_law
+```
 
+`init` creates a v0.2 draft under `mceg/contracts/` and adds its code/contract
+mapping to `mceg/models.yaml`. Edit the draft's `TODO` fields to describe units,
+assumptions, model choices and inspected evidence. Run relevant provider tests
+separately and retain their results before recording numerical support; leave
+missing scientific support `unknown` with follow-ups.
+
+The initial inventory scans the selected file only. Expand `source_roots` to
+cover the intended package, classify and hash reviewed files, and clear
+`review_pending` only after human review of model boundaries and links. Then run:
+
+```bash
 mceg check mceg/contracts/mypkg.water.power_law.yaml
 mceg explain mceg/contracts/mypkg.water.power_law.yaml --evidence implementation
 mceg coverage .
 ```
 
-`init` creates a v0.2 draft under `mceg/contracts/` and adds its code/contract
-mapping to `mceg/models.yaml`. Existing contracts, inventory records and comments
-are preserved. Review the draft's `TODO` fields and evidence before adding
-assessments. A new model has `review_pending: true`, unknown applicability and no
-recorded test results or file-review hashes.
-
-The initial inventory scans the selected file only. Expand `source_roots` to
-cover the intended package, classify its files and review model boundaries.
-`coverage` returns **1** while review or registration gaps remain; clearing the
-model's pending flag is a human review step. See the [init guide](docs/en/initialization.md)
-and [provider authoring workflow](docs/en/provider_onboarding.md).
+`coverage` returns **1** while review or registration gaps remain. Structural
+validation does not establish scientific support. Save the records and link them
+from the provider's docs. See the [setup guide](docs/en/initialization.md) for both
+workflows and the [provider workflow](docs/en/provider_onboarding.md) for evidence
+review. Installed-package discovery additionally needs a
+[packaged catalog](docs/en/package_evidence.md).
 
 ## Inspect existing contracts
 
@@ -207,7 +240,7 @@ Each repository builds HTML with its own Sphinx configuration and update script.
 
 | Topic | Guides |
 | --- | --- |
-| Model registration | [Init](docs/en/initialization.md), [inventory coverage](docs/en/coverage.md), [provider workflow](docs/en/provider_onboarding.md) |
+| Model registration | [LLM and manual setup](docs/en/initialization.md), [inventory coverage](docs/en/coverage.md), [provider workflow](docs/en/provider_onboarding.md) |
 | Checks and source review | [CLI checks](docs/en/checks.md), [provenance](docs/en/provenance.md), [evidence audit](docs/en/evidence_audit.md) |
 | Relationship graphs | [Graph JSON API](docs/en/graph.md), [HTML documentation](docs/en/html.md) |
 | Contract formats | [v0.2](docs/en/v02.md), [v0.1](docs/en/schema.md), [compatibility](docs/en/versioning.md) |

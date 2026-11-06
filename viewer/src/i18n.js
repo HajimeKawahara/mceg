@@ -1,5 +1,7 @@
 export const translations = {
   en: {
+    saveHtml: 'Save as HTML', exportingHtml: 'Preparing HTML…', exportError: 'Could not save HTML. Please try again.',
+    exportHint: 'Save the viewer and all graph records in one HTML file.',
     tagline: 'A little clarity, one connection at a time.', openFile: 'Open graph JSON', demo: 'Explore example',
     intro: 'Follow the evidence.', introText: 'Explore model contracts, recorded judgments and the questions still waiting for answers.',
     local: 'Your JSON stays in this browser. No upload or account required.', format: 'Open a mceg_graph_v1 export from the Graph JSON API.',
@@ -69,6 +71,8 @@ export const translations = {
     printError: 'Could not open the print dialog. Please try again in a browser that supports printing.',
   },
   ja: {
+    saveHtml: 'Save as HTML', exportingHtml: 'Preparing HTML…', exportError: 'Could not save HTML. Please try again.',
+    exportHint: 'Save the viewer and all graph records in one HTML file.',
     tagline: 'つながりをひとつずつ、理解を少しずつ。', openFile: 'グラフJSONを開く', demo: 'サンプルを見る',
     intro: '根拠をたどろう。', introText: 'モデルの契約、記録された判断、まだ答えの出ていない問いを、ひとつずつ確認できます。',
     local: 'JSONはブラウザー内で読み込みます。アップロードやアカウントは不要です。', format: 'Graph JSON APIの mceg_graph_v1 形式を読み込めます。',

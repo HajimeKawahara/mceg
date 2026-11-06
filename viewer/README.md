@@ -33,6 +33,25 @@ memory, not uploaded or persisted. Only the interface language is saved locally.
 Reloading the page requires opening the file again. Clicking an external HTTP(S)
 source link opens that site in a new tab; local paths remain recorded text.
 
+## Save a graph as a standalone HTML page
+
+Open a graph (or the example), then choose **Save as HTML** in the header.
+Upload the downloaded `.html` file to your static web server and share its URL.
+Visitors see the saved graph immediately, without choosing a JSON file or
+installing MCEG. The file also opens directly in a browser without a server.
+
+The HTML includes the viewer, its styles, **all records in the loaded graph**
+and the current interface language. It opens on Package overview; search,
+filters and the selected record are not saved. Graph navigation, materials,
+language switching and PDF printing remain available. External links and
+optional citation lookup still require an internet connection; linked papers
+and previously fetched citation metadata are not embedded.
+
+Saving creates a local snapshot without uploading data. Uploading that HTML
+makes its complete graph available to everyone who can access the file.
+Load a fresh graph and export again to publish updates. An exported page can
+also open another graph JSON and save a new HTML file.
+
 ## Static hosting
 
 Build on your computer, starting from the MCEG repository root:
@@ -49,9 +68,10 @@ HTTP(S) server, preserving the directory structure:
 ```text
 mceg-viewer/
 ├── index.html
+├── viewer-export.json
 ├── assets/
 │   ├── index-<hash>.js
-│   └── index-<hash>.css
+│   └── style-<hash>.css
 └── example-graph.json
 ```
 
@@ -70,8 +90,9 @@ not require a running Vite process.
 
 The build includes the H₂ example. Visitors use **Open graph JSON** to read
 their own files locally; a graph previously opened during development is not
-embedded in the build. Publishing a specific graph as the initial view would
-require a separate data-loading feature.
+embedded in the build. To publish a specific graph as the initial view, use
+**Save as HTML** as described above. `viewer-export.json` contains the bundled
+viewer code and styles used by this button; include it when hosting `dist/`.
 
 静的サーバーで公開する場合は、`viewer/` で `npm run build` を実行し、生成された
 `dist/` の中身をすべてアップロードしてください。`index.html` だけでなく

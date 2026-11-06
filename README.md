@@ -233,12 +233,17 @@ directory:
 npm run build
 ```
 
-Upload **all contents of `viewer/dist/`** (`index.html`, `assets/` and
-`example-graph.json`) to the server's public directory. PHP, Node.js, Python and
-MCEG are not required on the server. Visitors open their graph JSON in the
+Upload **all contents of `viewer/dist/`** (`index.html`, `assets/`,
+`viewer-export.json` and `example-graph.json`) to the server's public directory.
+PHP, Node.js, Python and MCEG are not required on the server. Visitors open their graph JSON in the
 browser; the build does not bundle a graph previously opened in the viewer.
 See [static hosting instructions](viewer/README.md#static-hosting) for deployment
 and local preview.
+
+To publish a specific graph, open it in the viewer and click **Save as HTML**.
+Upload the downloaded file to the server; it includes the complete graph and
+interactive viewer, so visitors do not need to select a JSON file. See the
+[HTML export guide](viewer/README.md#save-a-graph-as-a-standalone-html-page).
 
 For a browsable model catalog and linked calculation/evidence graphs, see the
 [HTML guide](docs/en/html.md). Build it with Graphviz installed:

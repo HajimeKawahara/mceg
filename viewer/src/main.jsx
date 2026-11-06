@@ -12,6 +12,7 @@ import { InspectionBadge } from './Inspection.jsx';
 import { inspectionState, isLiterature } from './literature.js';
 import PackageOverview from './PackageOverview.jsx';
 import { scopedNodes } from './navigation.js';
+import { readSnapshot, saveHtml } from './html.js';
 
 const PAGE = 8;
 const MAX_FILE = 20 * 1024 * 1024;
@@ -116,15 +117,18 @@ function Detail({ node, index, graph, t, lang, select }) {
 }
 
 function App() {
+  const [snapshot] = useState(readSnapshot);
   const [lang, setLang] = useState(() => {
+    if (snapshot.lang) return snapshot.lang;
     try { return localStorage.getItem('mceg-viewer-language') === 'ja' ? 'ja' : 'en'; } catch { return 'en'; }
   });
   const t = translations[lang];
-  const [graph, setGraph] = useState(null);
-  const [filename, setFilename] = useState('');
-  const [demo, setDemo] = useState(false);
+  const [graph, setGraph] = useState(snapshot.graph ?? null);
+  const [filename, setFilename] = useState(snapshot.filename ?? '');
+  const [demo, setDemo] = useState(snapshot.demo ?? false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState(snapshot.error ?? '');
   const [query, setQuery] = useState('');
   const [source, setSource] = useState('');
   const [filter, setFilter] = useState('all');
@@ -168,6 +172,12 @@ function App() {
     } catch (e) { if (token === request.current) setError(e.message === 'size' ? 'size' : 'error'); }
     finally { if (token === request.current) setBusy(false); }
   }
+  async function exportHtml() {
+    setExporting(true); setError('');
+    try { await saveHtml({ graph, filename, demo, lang }); }
+    catch { setError('exportError'); }
+    finally { setExporting(false); }
+  }
   const sourceNodes = useMemo(() => graph ? scopedNodes(graph, index, source) : [], [graph, index, source]);
   const scoped = useMemo(() => sourceNodes.filter(n => !query || index.searchable.get(n.id).includes(query.toLocaleLowerCase())), [sourceNodes, index, query]);
   const filtered = scoped.filter(n => matchesCategory(n, index, filter));
@@ -187,8 +197,9 @@ function App() {
     ariaLabel: `${edgeLabel(e.type, lang)}: ${index.nodes.get(e.source).label} → ${index.nodes.get(e.target).label}`,
   })), [nearby, lang, index]);
   return <>
-    <header><a className="brand" href="./"><span className="brand-icon">✿</span><span>MCEG <b>viewer</b><small>{t.tagline}</small></span></a>
+    <header><a className="brand" href={snapshot.graph ? '' : './'}><span className="brand-icon">✿</span><span>MCEG <b>viewer</b><small>{t.tagline}</small></span></a>
       <div className="header-actions"><div className="language" aria-label="Language / 言語"><button aria-pressed={lang === 'en'} onClick={() => setLang('en')}>EN</button><button aria-pressed={lang === 'ja'} onClick={() => setLang('ja')}>日本語</button></div>
+        {graph && <button disabled={busy || exporting} title={t.exportHint} onClick={exportHtml}>{exporting ? t.exportingHtml : t.saveHtml}</button>}
         <button className="primary" disabled={busy} onClick={() => input.current.click()}>{t.openFile}</button></div>
       <input ref={input} type="file" accept=".json,application/json" hidden onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; if (file) load(file); }} />
     </header>

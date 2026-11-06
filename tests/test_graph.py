@@ -14,7 +14,7 @@ from mceg import load_contract
 from mceg.__main__ import main
 from mceg.graph import build_graph
 from mceg.validator import read_document
-from test_catalog import catalog
+from test_catalog import catalog, installed_catalog
 from test_html_docs import case_copy
 from test_investigation import investigation
 
@@ -212,18 +212,18 @@ def test_catalog_retains_history_and_per_record_selections(catalog):
         build_graph(catalog=path)
 
 
-def test_package_reads_metadata_without_importing_provider(catalog, monkeypatch):
-    path, data = catalog
-    site = path.parents[3]
-    (site / "fixture_provider/__init__.py").write_text("raise RuntimeError('Must not be imported')\n")
-    metadata = site / "fixture_provider-1.0.dist-info"
-    metadata.mkdir()
-    (metadata / "METADATA").write_text("Metadata-Version: 2.1\nName: fixture-provider\nVersion: 1.0\n")
-    (metadata / "RECORD").write_text("fixture_provider/data/mceg/index.json,,\n")
-    monkeypatch.syspath_prepend(str(site))
+def test_package_reads_metadata_without_importing_provider(installed_catalog, monkeypatch, tmp_path, capsys):
+    path, data, _ = installed_catalog
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
     result = build_graph(package="fixture-provider")
     source = next(s for s in result["sources"] if s["kind"] == "catalog")
     assert source["distribution"] == {"name": "fixture-provider", "version": "1.0"}
+    assert main(["graph", "--package", "fixture-provider"]) == 0
+    output = capsys.readouterr()
+    assert not output.err
+    assert json.loads(output.out) == result
     assert "fixture_provider" not in sys.modules
     data["provider"] = "another"
     path.write_text(json.dumps(data))

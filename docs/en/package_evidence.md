@@ -24,7 +24,9 @@ or run calculations. Installing MCEG does not update a provider's scientific
 records. The report identifies the evidence snapshot and its SHA-256 separately
 from the installed package version.
 
-For a repository checkout or an editable installation, supply the catalog:
+Legacy editable installs with `egg-info/SOURCES.txt` are supported, including
+`src` layouts whose manifest paths are relative to the checkout root.
+For a checkout without discoverable catalog metadata, supply the catalog:
 
 ```bash
 mceg explain --catalog /path/to/exogibbs/src/exogibbs/data/mceg/index.json --species HCN

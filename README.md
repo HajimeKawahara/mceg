@@ -190,10 +190,25 @@ For an installed provider with an evidence catalog:
 mceg graph --package exogibbs > package-graph.json
 ```
 
-Use `mceg graph --catalog PATH` for an explicit catalog, including editable
-provider checkouts. Local contract and case paths resolve from `--root`, which
-defaults to the current directory. JSON retains source identities, scoped
-judgments and explicit selections for viewers and LLM tools. See the
+To select the catalog directly from an ExoGibbs checkout:
+
+```bash
+mceg graph --catalog /path/to/exogibbs/src/exogibbs/data/mceg/index.json > package-graph.json
+```
+
+To run MCEG directly from its checkout, prepend its `src` directory to
+`PYTHONPATH`, keeping any existing entries:
+
+```bash
+PYTHONPATH="/path/to/mceg/src${PYTHONPATH:+:$PYTHONPATH}" \
+  python -m mceg graph --package exogibbs > package-graph.json
+```
+
+Package lookup also handles source-manifest paths in legacy `src`-layout editable
+installs. Use `mceg graph --catalog PATH` for an explicit catalog or editable
+installs whose metadata does not list the catalog. Local contract and case paths
+resolve from `--root`, which defaults to the current directory. JSON retains
+source identities, scoped judgments and explicit selections for viewers and LLM tools. See the
 [Graph JSON API](docs/en/graph.md) for Python examples and relationship meanings.
 
 ## Documentation and examples

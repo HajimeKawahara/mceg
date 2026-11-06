@@ -89,7 +89,17 @@ def package_catalog(package: str) -> tuple[Path, dict]:
     if len(paths) != 1:
         raise ValueError(f"Expected one packaged mceg/index.json in {package!r}, found {len(paths)}; "
                          "use --catalog PATH for a checkout or editable install")
-    return Path(distribution.locate_file(paths[0])), {
+    candidates = [Path(distribution.locate_file(paths[0]))]
+    if (not candidates[0].is_file() and not distribution.read_text("RECORD")
+            and distribution.read_text("SOURCES.txt")):
+        # Legacy src-layout manifests are relative to the checkout, not src/.
+        candidates.append(Path(distribution.locate_file("")).parent / paths[0])
+    catalog = next((path for path in candidates if path.is_file()), None)
+    if catalog is None:
+        raise ValueError(f"Catalog for {package!r} is missing; checked: "
+                         + ", ".join(str(path) for path in candidates)
+                         + "; use --catalog PATH to select it explicitly")
+    return catalog, {
         "name": distribution.metadata["Name"], "version": distribution.version,
     }
 

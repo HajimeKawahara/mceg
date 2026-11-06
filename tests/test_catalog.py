@@ -49,6 +49,27 @@ def catalog(tmp_path):
     return path, data
 
 
+@pytest.fixture(params=["wheel", "egg-info", "src-egg-info"])
+def installed_catalog(catalog, monkeypatch, request):
+    path, data = catalog
+    root = site = path.parents[3]
+    if request.param == "src-egg-info":
+        site = root / "src"
+        site.mkdir()
+        (root / "fixture_provider").rename(site / "fixture_provider")
+        path = site / path.relative_to(root)
+    (site / "fixture_provider/__init__.py").write_text("raise RuntimeError('Provider must not be imported')\n")
+    wheel = request.param == "wheel"
+    metadata = site / ("fixture_provider-1.0.dist-info" if wheel else "fixture_provider.egg-info")
+    metadata.mkdir()
+    (metadata / ("METADATA" if wheel else "PKG-INFO")).write_text(
+        "Metadata-Version: 2.1\nName: fixture-provider\nVersion: 1.0\n")
+    (metadata / ("RECORD" if wheel else "SOURCES.txt")).write_text(
+        path.relative_to(site if wheel else root).as_posix() + (",,\n" if wheel else "\n"))
+    monkeypatch.syspath_prepend(str(site))
+    return path, data, metadata
+
+
 def test_recorded_support_and_unknown_remain_scoped(catalog, capsys):
     path, _ = catalog
     assert main(["explain", "--catalog", str(path), "--species", "HCN", "--json"]) == 0
@@ -113,16 +134,8 @@ def test_generic_records_are_separate_from_species_specific_coverage(catalog):
     assert model["species_specific_records"] == []
 
 
-def test_installed_distribution_lookup_never_imports_provider(catalog, monkeypatch, capsys):
-    path, _ = catalog
-    site = path.parents[3]
-    package = site / "fixture_provider"
-    (package / "__init__.py").write_text("raise RuntimeError('Provider must not be imported')\n")
-    metadata = site / "fixture_provider-1.0.dist-info"
-    metadata.mkdir()
-    (metadata / "METADATA").write_text("Metadata-Version: 2.1\nName: fixture-provider\nVersion: 1.0\n")
-    (metadata / "RECORD").write_text("fixture_provider/data/mceg/index.json,,\n")
-    monkeypatch.syspath_prepend(str(site))
+def test_installed_distribution_lookup_never_imports_provider(installed_catalog, capsys):
+    path, _, metadata = installed_catalog
     assert main(["explain", "--package", "fixture-provider", "--model", "fixture.curated",
                  "--species", "HCN", "--json"]) == 0
     report = json.loads(capsys.readouterr().out)
@@ -133,9 +146,18 @@ def test_installed_distribution_lookup_never_imports_provider(catalog, monkeypat
     write_json(path, data)
     with pytest.raises(ValueError, match="does not match the selected distribution"):
         explain_catalog(package="fixture-provider")
-    (metadata / "RECORD").write_text("__editable__.fixture_provider.pth,,\n")
+    listing = metadata / ("RECORD" if metadata.suffix == ".dist-info" else "SOURCES.txt")
+    listing.write_text("__editable__.fixture_provider.pth,,\n" if listing.name == "RECORD" else "")
     with pytest.raises(ValueError, match="use --catalog"):
         explain_catalog(package="fixture-provider")
+
+
+def test_missing_package_catalog_is_actionable(installed_catalog):
+    path, _, _ = installed_catalog
+    path.unlink()
+    with pytest.raises(ValueError, match="use --catalog PATH") as error:
+        explain_catalog(package="fixture-provider")
+    assert str(path) in str(error.value)
 
 
 @pytest.mark.parametrize("target", ["study.yaml", "summary.json"])

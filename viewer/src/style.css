@@ -14,6 +14,7 @@ header { padding: 22px 32px; display: flex; align-items: center; justify-content
 .brand small { display: block; font-size: 11px; letter-spacing: .03em; color: #716778; }
 .brand-icon { display: grid; place-items: center; width: 43px; height: 43px; background: #eadef4; color: #9064ac; border-radius: 15px; font-size: 32px; }
 .header-actions, .language, .welcome-actions { display: flex; gap: 10px; align-items: center; }
+.header-actions { flex-wrap: wrap; justify-content: flex-end; }
 .language { gap: 2px; border: 1px solid #e6dfec; border-radius: 12px; padding: 3px; }
 .language button { border: 0; padding: 5px 9px; background: transparent; font-size: 12px; }
 .language [aria-pressed=true] { background: #eae0f4; color: #573c70; }

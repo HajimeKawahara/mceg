@@ -30,6 +30,7 @@ en/evidence_audit
 en/v02
 en/schema
 en/versioning
+en/releasing
 en/changelog
 ```
 

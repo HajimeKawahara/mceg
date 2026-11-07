@@ -1,5 +1,6 @@
 """Read provider-owned evidence catalogs without importing provider packages."""
 
+import csv
 import hashlib
 from importlib import metadata
 import json
@@ -84,14 +85,23 @@ def package_catalog(package: str) -> tuple[Path, dict]:
         distribution = metadata.distribution(package)
     except metadata.PackageNotFoundError as exc:
         raise ValueError(f"Package {package!r} is not installed; use --catalog PATH for a checkout") from exc
-    paths = [p for p in distribution.files or []
+    # Some Python versions omit missing files from Distribution.files, including
+    # src-layout SOURCES.txt entries that are relative to the checkout root.
+    record = distribution.read_text("RECORD")
+    sources = distribution.read_text("SOURCES.txt")
+    if record is not None:
+        files = [row[0] for row in csv.reader(record.splitlines()) if row]
+    elif sources is not None and distribution.read_text("installed-files.txt") is None:
+        files = sources.splitlines()
+    else:
+        files = distribution.files or []
+    paths = [p for p in files
              if str(p).replace("\\", "/").endswith("/mceg/index.json")]
     if len(paths) != 1:
         raise ValueError(f"Expected one packaged mceg/index.json in {package!r}, found {len(paths)}; "
                          "use --catalog PATH for a checkout or editable install")
     candidates = [Path(distribution.locate_file(paths[0]))]
-    if (not candidates[0].is_file() and not distribution.read_text("RECORD")
-            and distribution.read_text("SOURCES.txt")):
+    if not candidates[0].is_file() and record is None and sources:
         # Legacy src-layout manifests are relative to the checkout, not src/.
         candidates.append(Path(distribution.locate_file("")).parent / paths[0])
     catalog = next((path for path in candidates if path.is_file()), None)

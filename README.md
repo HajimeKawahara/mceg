@@ -7,13 +7,13 @@ By systematically representing what a scientific model claims, under which condi
 Rather than automatically guaranteeing the correctness of scientific models, MCEG provides a transparent foundation for humans and AI systems to continuously examine their scientific validity, limitations, and supporting evidence.
 
 Human and LLM reviewers also use these records to resume investigations, compare
-sources and justify model changes. The [investigation design](docs/en/design_questions.md#investigations-by-human-and-llm-reviewers)
+sources and justify model changes. The [investigation design](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/design_questions.md#investigations-by-human-and-llm-reviewers)
 describes this workflow and the proposed next improvements.
 
 Two design commitments guide that workflow: an LLM without the previous
 conversation must be able to follow the evidence and resume an investigation;
 humans must also be able to inspect the evidence and model contracts themselves.
-[MCEG Viewer](viewer/README.md) provides a small bilingual interface for that
+[MCEG Viewer](https://github.com/HajimeKawahara/mceg/blob/main/viewer/README.md) provides a small bilingual interface for that
 inspection. It consumes exported Graph JSON; MCEG itself does not depend on it.
 
 ## Start with the package you use
@@ -42,12 +42,12 @@ mceg explain mceg/contracts/model.yaml --evidence source_review --investigation 
 ```
 
 Use the contract path and Evidence ID reported by your provider. See the
-[investigation guide](docs/en/checks.md#resume-an-investigation) for selection
+[investigation guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md#resume-an-investigation) for selection
 boundaries and the distinction between completed work and scientific support.
 
 The package commands above work from any directory and require a provider version that
 includes an evidence catalog. For editable installations or explicit catalog
-files, see [packaged evidence catalogs](docs/en/package_evidence.md).
+files, see [packaged evidence catalogs](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/package_evidence.md).
 The report describes recorded evidence, not an evaluation of your calculation's
 conditions. ExoGibbs itself works without MCEG installed.
 
@@ -78,17 +78,23 @@ commands below from a provider checkout after installing MCEG.
 
 Use `mceg COMMAND -h` for options. `check`, `explain` and `coverage` offer JSON
 reports; `check` and `explain` also accept `--lang ja`.
-The [Graph JSON API](docs/en/graph.md) exports contracts, scoped judgments,
+The [Graph JSON API](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/graph.md) exports contracts, scoped judgments,
 investigation records and calculation connections for viewers and other tools.
 
-[Packaged evidence catalogs](docs/en/package_evidence.md) let users inspect a
+[Packaged evidence catalogs](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/package_evidence.md) let users inspect a
 provider's model/species records without cloning its repository or importing its
 code. The provider supplies the catalog as data and need not depend on MCEG.
 This reports recorded evidence; it does not evaluate a user's run conditions.
 
 ## Install
 
-From this checkout, using Python 3.10+:
+Install from PyPI using Python 3.10+:
+
+```bash
+python -m pip install mceg
+```
+
+For development from this checkout:
 
 ```bash
 python -m venv .venv
@@ -152,10 +158,10 @@ mceg coverage .
 
 `coverage` returns **1** while review or registration gaps remain. Structural
 validation does not establish scientific support. Save the records and link them
-from the provider's docs. See the [setup guide](docs/en/initialization.md) for both
-workflows and the [provider workflow](docs/en/provider_onboarding.md) for evidence
+from the provider's docs. See the [setup guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/initialization.md) for both
+workflows and the [provider workflow](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_onboarding.md) for evidence
 review. Installed-package discovery additionally needs a
-[packaged catalog](docs/en/package_evidence.md).
+[packaged catalog](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/package_evidence.md).
 
 ## Inspect existing contracts
 
@@ -172,7 +178,7 @@ A **PASS** applies to the named check and its scope. **UNKNOWN** identifies miss
 support or an unresolved review. Numerical agreement, registered model mappings
 and physical accuracy are separate questions. A stored result is not a fresh
 solver run. For a recorded v0.2 Assessment, `--assessment ID --root .` also checks
-its selected source and artifact hashes; see the [check guide](docs/en/checks.md).
+its selected source and artifact hashes; see the [check guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md).
 
 ## Export relationship graphs
 
@@ -209,7 +215,7 @@ installs. Use `mceg graph --catalog PATH` for an explicit catalog or editable
 installs whose metadata does not list the catalog. Local contract and case paths
 resolve from `--root`, which defaults to the current directory. JSON retains
 source identities, scoped judgments and explicit selections for viewers and LLM tools. See the
-[Graph JSON API](docs/en/graph.md) for Python examples and relationship meanings.
+[Graph JSON API](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/graph.md) for Python examples and relationship meanings.
 
 ## Documentation and examples
 
@@ -224,7 +230,7 @@ npm run dev
 Open the printed local URL, choose **Open graph JSON**, and select an export
 from `mceg graph`. The bundled H2 example can also be opened from the welcome
 screen. Switch between English and Japanese in the header. See the
-[viewer guide](viewer/README.md) for navigation and interpretation boundaries.
+[viewer guide](https://github.com/HajimeKawahara/mceg/blob/main/viewer/README.md) for navigation and interpretation boundaries.
 
 To publish the viewer on a static web server, run this from the same `viewer/`
 directory:
@@ -237,16 +243,16 @@ Upload **all contents of `viewer/dist/`** (`index.html`, `assets/`,
 `viewer-export.json` and `example-graph.json`) to the server's public directory.
 PHP, Node.js, Python and MCEG are not required on the server. Visitors open their graph JSON in the
 browser; the build does not bundle a graph previously opened in the viewer.
-See [static hosting instructions](viewer/README.md#static-hosting) for deployment
+See [static hosting instructions](https://github.com/HajimeKawahara/mceg/blob/main/viewer/README.md#static-hosting) for deployment
 and local preview.
 
 To publish a specific graph, open it in the viewer and click **Save as HTML**.
 Upload the downloaded file to the server; it includes the complete graph and
 interactive viewer, so visitors do not need to select a JSON file. See the
-[HTML export guide](viewer/README.md#save-a-graph-as-a-standalone-html-page).
+[HTML export guide](https://github.com/HajimeKawahara/mceg/blob/main/viewer/README.md#save-a-graph-as-a-standalone-html-page).
 
 For a browsable model catalog and linked calculation/evidence graphs, see the
-[HTML guide](docs/en/html.md). Build it with Graphviz installed:
+[HTML guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/html.md). Build it with Graphviz installed:
 
 ```bash
 python -m pip install -e '.[docs]'
@@ -260,18 +266,20 @@ Each repository builds HTML with its own Sphinx configuration and update script.
 
 | Topic | Guides |
 | --- | --- |
-| Model registration | [LLM and manual setup](docs/en/initialization.md), [inventory coverage](docs/en/coverage.md), [provider workflow](docs/en/provider_onboarding.md) |
-| Checks and source review | [CLI checks](docs/en/checks.md), [provenance](docs/en/provenance.md), [evidence audit](docs/en/evidence_audit.md) |
-| Relationship graphs | [Graph JSON API](docs/en/graph.md), [HTML documentation](docs/en/html.md) |
-| Contract formats | [v0.2](docs/en/v02.md), [v0.1](docs/en/schema.md), [compatibility](docs/en/versioning.md) |
-| Worked connections | [H2 solubility](docs/en/h2_solubility.md), [provider trials](docs/en/provider_trials.md), [provider-owned pilot](docs/en/provider_pilot.md) |
-| Evidence studies | [H2 sources](docs/en/h2_primary_audit.md), [curated gas](docs/en/curated_assessment.md), [assessment lifecycle](docs/en/assessment_lifecycle.md) |
-| Design questions | [English](docs/en/design_questions.md), [Japanese](docs/ja/design_questions.md) |
+| Model registration | [LLM and manual setup](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/initialization.md), [inventory coverage](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/coverage.md), [provider workflow](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_onboarding.md) |
+| Checks and source review | [CLI checks](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md), [provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md), [evidence audit](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/evidence_audit.md) |
+| Relationship graphs | [Graph JSON API](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/graph.md), [HTML documentation](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/html.md) |
+| Contract formats | [v0.2](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md), [v0.1](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/schema.md), [compatibility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/versioning.md) |
+| Worked connections | [H2 solubility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_solubility.md), [provider trials](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_trials.md), [provider-owned pilot](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_pilot.md) |
+| Evidence studies | [H2 sources](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_primary_audit.md), [curated gas](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/curated_assessment.md), [assessment lifecycle](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/assessment_lifecycle.md) |
+| Design questions | [English](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/design_questions.md), [Japanese](https://github.com/HajimeKawahara/mceg/blob/main/docs/ja/design_questions.md) |
 
-Browse [example contracts](contracts) and [saved examples](examples).
-The current package is the experimental **`0.2.0rc2`** candidate. It reads both
-v0.1 and v0.2 contracts; the frozen `v0.1.0` baseline remains unchanged.
-See the [changelog](CHANGELOG.md) for candidate-format extensions.
+Browse [example contracts](https://github.com/HajimeKawahara/mceg/tree/main/contracts) and [saved examples](https://github.com/HajimeKawahara/mceg/tree/main/examples).
+The current package release is **`0.1.1`**. It reads both v0.1 and v0.2 contracts;
+package versions and schema versions are separate. The frozen `v0.1.0` baseline
+remains unchanged, and the v0.2 schema remains experimental.
+See the [changelog](https://github.com/HajimeKawahara/mceg/blob/main/CHANGELOG.md) for changes and the
+[release guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/releasing.md) for publishing instructions.
 
 ## Development
 

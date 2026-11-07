@@ -1,6 +1,30 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 - 2026-11-07
+
+### First public package release
+
+- Publish the current implementation as `0.1.1`, preserving the immutable
+  `v0.1.0` baseline. Package versions and contract schema versions are separate;
+  the unpublished `0.2.0rc1` and `0.2.0rc2` development features are included.
+- Add PyPI metadata, installation instructions and a GitHub Actions workflow
+  for Trusted Publishing after a GitHub release is published.
+- Include the standalone MCEG Viewer with package navigation, scoped evidence
+  and investigation views, literature inspection, PDF printing and HTML export.
+- Keep the viewer README in English, removing duplicate Japanese paragraphs
+  and translated interface labels from the English instructions.
+- Preserve explicit readers for schemas `"0.1"` and `"0.2"`, the experimental
+  v0.2 semantics and the existing runtime dependencies.
+- Read declared catalog paths even when Python's distribution metadata filters
+  out missing files. Restore legacy src-layout discovery and missing-file
+  diagnostics on Python 3.12; keep multiple declared catalogs ambiguous.
+- Fix links to the viewer guide in generated HTML documentation and use
+  repository URLs for README links displayed on PyPI.
+
+Validation: all 530 Python tests passed against the installed wheel, including
+the HTML/SVG link checks. The wheel and source distribution passed strict Twine
+checks. The viewer passed its Node tests, production build and 19 Chromium
+browser tests, including standalone HTML export and PDF printing.
 
 ### Graph JSON API
 

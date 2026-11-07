@@ -1,7 +1,7 @@
 # MCEG Viewer
 
 A small, read-only interface for humans to inspect model contracts, evidence,
-scoped judgments and unfinished investigation work. English / 日本語 can be
+scoped judgments and unfinished investigation work. English and Japanese can be
 switched in the header. Authored scientific text always stays in its original
 language.
 
@@ -14,9 +14,8 @@ npm ci
 npm run dev
 ```
 
-Open the printed local URL. Choose **Explore example** / **サンプルを見る** to
-inspect the saved H₂ solubility example, or **Open graph JSON** /
-**グラフJSONを開く** to read your own export (up to 20 MiB).
+Open the printed local URL. Choose **Explore example** to inspect the saved H₂
+solubility example, or **Open graph JSON** to read your own export (up to 20 MiB).
 
 Export from a provider environment where MCEG is installed:
 
@@ -94,15 +93,9 @@ embedded in the build. To publish a specific graph as the initial view, use
 **Save as HTML** as described above. `viewer-export.json` contains the bundled
 viewer code and styles used by this button; include it when hosting `dist/`.
 
-静的サーバーで公開する場合は、`viewer/` で `npm run build` を実行し、生成された
-`dist/` の中身をすべてアップロードしてください。`index.html` だけでなく
-`assets/` と `example-graph.json` も必要です。サーバーにPHP・Node.js・Python・MCEGを
-導入する必要はありません。アクセス後に「グラフJSONを開く」から閲覧データを選べます。
-読み込んだJSONはブラウザー内で処理され、PDF保存も利用できます。
+## How to investigate
 
-## How to investigate / 調査の進め方
-
-Every import opens **Package overview** / **全体を見る**, listing contracts and
+Every import opens **Package overview**, listing contracts and
 counts of records and open/completed FollowUps. No model is selected implicitly.
 Choose a contract card or use search and the record filters; **Package overview**
 returns to the collection, and **Back** restores the prior record/source view.
@@ -116,12 +109,8 @@ lists the corresponding records. Catalog entries remain individually inspectable
 even when multiple entries select the same contract. Index version, provider,
 distribution and hash remain accessible.
 
-JSONを開くと最初に「全体を見る」が表示されます。`index.json` は契約を束ねる
-カタログの入口として扱い、登録された契約を一覧表示します。契約カードを選ぶと
-概要とグラフへ進み、「全体を見る」で戻れます。
-
-After selecting a record, read **About this contract** / **この契約について** above the graph. It
-shows the selected record's owning Model name and authored description, including
+After selecting a record, read **About this contract** above the graph. It shows
+the selected record's owning Model name and authored description, including
 comparison tables and evidence links when the author supplies them. Open
 **Judgments & next steps** for one excerpt each for recorded support, unknown
 judgments/domains and pending FollowUps. Expand each group for the remaining
@@ -136,10 +125,6 @@ generated conclusions. Historical assessments are kept individually, completed
 FollowUps are excluded from next steps, and an empty group does not imply that
 the science is settled. Catalog summaries remain separate for each explicit
 catalog selection. As elsewhere, changing UI language does not translate records.
-
-グラフの上の「この契約について」には、記録者が書いた比較対象・差・資料・
-未解明点の説明を表示します。「評価と次の作業を見る」を開くと、各欄にまず1件ずつ
-表示し、残りは展開できます。説明中の証拠リンクや項目から元の記録へ進めます。
 
 ### Author a useful investigation brief
 
@@ -201,15 +186,9 @@ catalog and export a fresh graph so the description and source hashes agree.
    not given a dedicated presentation. **Explicit selections** preserves catalog
    and case choices separately.
 
-日本語では、検索欄に化学種や調査したい語を入力し、「記録された評価」
-「不明とされた判断」「未解決の作業」「完了した作業」から記録を選びます。
-グラフまたは詳細欄の「つながり」をクリックすると、証拠・対象・条件を
-たどれます。「出典のスナップショット」で契約の場所とハッシュを、
-「記録のJSON全文」で全項目を確認できます。
-
 ### Find literature for pending and completed work
 
-The detail panel's **Papers & materials** / **文献・資料を探す** button jumps to
+The detail panel's **Papers & materials** button jumps to
 source locators, citation lookup and Google/Google Scholar searches. FollowUp
 sources are visible without opening raw JSON. Evidence and Resolution records
 provide the same entry point, including recorded artifact locators.
@@ -251,7 +230,7 @@ not-inspected records keep their original state, including when a later supplied
 document has been inspected. The viewer cannot determine which PDFs are on the
 reader's computer.
 
-Open **Materials list** / **資料一覧** in the top navigation to browse these
+Open **Materials list** in the top navigation to browse these
 states across the package or a selected contract/catalog. The list includes
 literature Evidence and otherwise uncovered DOI citations. Filter by inspection
 state or search DOI, description and scope; four records appear per page. Counts
@@ -283,12 +262,6 @@ export does not fetch metadata, download papers or upload graph data. Local path
 and SHA-256 URNs stay plain text; referenced documents are not embedded in the
 PDF. Saving or cancelling printing preserves the list's filters and page.
 
-「資料一覧」で必要なら契約・確認状態・検索語を絞り込み、「PDFに保存」を押して、
-ブラウザーの印刷画面からPDFとして保存できます。画面の4件だけでなく、絞り込みに
-一致する全件を出力します。DOI・PDF・検索リンクと、PDF内の確認記録へのリンクを
-利用できます。取得済みの書誌情報、確認状態、読む箇所、入手案内も収録します。
-全資料を出力するときは絞り込みを解除してください。
-
 Graph snapshots often contain DOIs without full titles/authors. **Look up
 citation** fetches title, authors, publication year and journal information from
 the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/)
@@ -300,18 +273,8 @@ send the displayed DOI/citation to the selected search engine when clicked.
 Nothing is fetched automatically and no provider files or project text are sent
 by citation lookup. Bibliographic data is not written back into the graph.
 
-未解決・完了作業の詳細から「文献・資料を探す」で、DOI・PDF等のリンクと、
-関連記録に残された読む箇所を確認できます。「書誌情報を取得」を押すと、そのDOI
-だけをCrossrefへ送り、論文名・著者・年・掲載誌を表示します。Google／Scholar
-への検索リンクも利用できます。完了作業では、Resolutionの完了根拠をたどります。
-必要な文献自体が記録されていない場合は推測せず、提供元の追記が必要だと表示します。
-
-上部の「資料一覧」から「未確認」「一部確認」「確認済み」「確認状態の記録なし」で
-絞り込めます。各DOIのそばにはMCEGの記録に基づく確認状態と、入手・再ダウンロードの
-案内を表示します。「確認記録と対象範囲を見る」で、同じ契約内の同一DOIについて
-本文・補足資料のどの箇所を確認したかたどれます。過去の未確認記録が残っていても、
-確認済み範囲が見つかれば、追加で必要な資料かを先に確認するよう案内します。
-書誌情報の取得だけで「確認済み」にはなりません。
+If required literature is not recorded, the viewer indicates that the provider
+must add it; it does not infer a missing source.
 
 Record lists, connections and graph neighbors are paged in groups of eight.
 The graph shows one selected record and up to eight immediate neighbors; the

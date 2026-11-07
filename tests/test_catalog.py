@@ -160,6 +160,15 @@ def test_missing_package_catalog_is_actionable(installed_catalog):
     assert str(path) in str(error.value)
 
 
+def test_missing_duplicate_catalog_remains_ambiguous(installed_catalog):
+    _, _, metadata = installed_catalog
+    listing = metadata / ("RECORD" if metadata.suffix == ".dist-info" else "SOURCES.txt")
+    original = listing.read_text()
+    listing.write_text(original + original.replace("fixture_provider/data/", "missing_provider/data/"))
+    with pytest.raises(ValueError, match="found 2"):
+        explain_catalog(package="fixture-provider")
+
+
 @pytest.mark.parametrize("target", ["study.yaml", "summary.json"])
 def test_changed_or_missing_packaged_files_are_rejected(catalog, target):
     path, _ = catalog

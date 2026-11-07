@@ -1,20 +1,27 @@
 # Versions and compatibility
 
-The working package version is `0.2.0rc2`, a release candidate with explicit
-readers for schemas `"0.1"` and `"0.2"`. This does not move the baseline tag or
-publish a final release. The [v0.2 guide](v02.md) defines the common records,
-limited automatic comparisons and migration procedure.
+The current package release is `0.1.1`, with explicit readers for schemas
+`"0.1"` and `"0.2"`. Package versions and contract schema versions are separate.
+The `v0.1.0` baseline tag remains unchanged; the v0.2 schema remains experimental.
+The [v0.2 guide](v02.md) defines the common records, limited automatic comparisons
+and migration procedure.
 
-The second candidate adds optional `follow_up_resolutions` to the experimental
-v0.2 format. Existing v0.2 records remain readable; resolutions default to an
+Before the first PyPI release, development snapshots used the unpublished
+`0.2.0rc1` and `0.2.0rc2` package labels. Their features are included in `0.1.1`.
+Users with one of those snapshots installed must select `mceg==0.1.1` explicitly,
+because package installers consider `0.2.0rc2` newer than `0.1.1`.
+
+The second development candidate added optional `follow_up_resolutions` to the
+experimental v0.2 format. Existing v0.2 records remain readable; resolutions default to an
 empty list. The rc1 reader rejects documents
 containing the new field, including an empty list, because unknown fields are
-forbidden. Such documents require rc2 or later. This is an explicitly documented
-candidate-format extension, not a change to the frozen v0.1 format or tracing
+forbidden. Such documents require the current release or the rc2 development
+snapshot. This is an explicitly documented candidate-format extension, not a
+change to the frozen v0.1 format or tracing
 semantics. Task completion never changes historical inspection or support.
 
-The candidate also adds distinct volatile partial-pressure/fugacity quantity
-names described in the [v0.2 guide](v02.md). Older readers that lack these enum
+The current release also includes distinct volatile partial-pressure/fugacity
+quantity names described in the [v0.2 guide](v02.md). Older readers that lack these enum
 values reject contracts using them. `init` and `coverage` are additive commands;
 their separate inventory format is documented in the [coverage guide](coverage.md).
 
@@ -84,8 +91,8 @@ to produce a matching receipt; do not update hashes to imply a new execution.
 
 ## Deferred work
 
-The v0.2 candidate adds source-scoped closed intervals, exact joint samples,
-K/pressure-unit comparison, and explicit Subject/Context-bound Assessments.
+The experimental v0.2 schema adds source-scoped closed intervals, exact joint
+samples, K/pressure-unit comparison, and explicit Subject/Context-bound Assessments.
 It does not infer physical applicability, general extrapolation accuracy,
 source rankings or cross-contract support. The earlier H2 and lifecycle trial
 formats remain historical example artifacts, not accepted core contracts.

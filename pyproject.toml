@@ -1,15 +1,28 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mceg"
-version = "0.2.0rc2"
+version = "0.1.1"
 description = "Experimental scientific model contracts and evidence links"
+authors = [{name = "Hajime Kawahara"}]
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = ["pydantic>=2,<3", "PyYAML>=6,<7"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/HajimeKawahara/mceg"
+Documentation = "https://github.com/HajimeKawahara/mceg/blob/main/README.md"
+Issues = "https://github.com/HajimeKawahara/mceg/issues"
 
 [project.optional-dependencies]
 test = ["pytest>=8"]

@@ -165,6 +165,18 @@ review. Installed-package discovery additionally needs a
 
 ## Inspect existing contracts
 
+The development version also supports [equation definitions and code bindings](docs/en/equations.md)
+in schema `"0.3"`. Record the math, argument units and implementation revision,
+then export a TeX fragment without adding MCEG to the provider's dependencies:
+
+```bash
+python -m mceg equations examples/equations/continuity.yaml \
+  --output examples/equations/equations.tex --check
+```
+
+Definition hashes and static function checks detect changes; they do not prove
+that code implements an equation or that the model is physically accurate.
+
 `check` and `explain` discover YAML contracts under `mceg/contracts/` or
 `contracts/`. Filter by name or give an explicit path:
 

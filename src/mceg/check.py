@@ -19,6 +19,7 @@ from .validator import load_contract
 from .schema_v02 import ContractV02
 from .assessment import compare_condition
 from .integrity import file_integrity, resolve_root
+from .equation_checks import equation_checks
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
 
@@ -169,6 +170,7 @@ def check_contract(path, context, assessment_id=None, *, root=None):
         contexts = {c.id: c for c in contract.contexts}
         conditions = {(c.id, c.revision): c for c in contract.conditions}
         for assessment in assessments:
+            entry["checks"].extend(equation_checks(contract, assessment, root))
             if assessment.kind == "evidence_support":
                 if selected is not None:
                     entry["checks"].append(result(
@@ -272,7 +274,9 @@ def display(report, verbose, plain=False, lang="en"):
             for claim in contract["declarations"]:
                 write(f"    {claim['id']}: {claim['status']} [{claim['kind']}]")
         if verbose and contract.get("assessments"):
-            write(t("  Recorded v0.2 assessments (each bound to its own subject and context):"))
+            write(t("  Recorded v0.2 assessments (each bound to its own subject and context):")
+                  if contract.get("schema_version") == "0.2" else
+                  "  Recorded v0.3 assessments (each bound to its own subject and context):")
             for assessment in contract["assessments"]:
                 outcome = assessment.get("status", assessment.get("classification"))
                 write(f"    {assessment['id']}: {outcome}; context={assessment['context']}")
@@ -298,7 +302,7 @@ def positive(value):
 
 
 def add_context_arguments(parser):
-    parser.add_argument("--context", type=Path, help="Curated v0.1 context JSON; for v0.2 use mceg assess")
+    parser.add_argument("--context", type=Path, help="Curated v0.1 context JSON; for v0.2/v0.3 use mceg assess")
     parser.add_argument("--temperature", type=positive, metavar="K", help="Override curated temperature in kelvin")
     parser.add_argument("--pressure", type=positive, metavar="BAR", help="Override curated pressure in bar")
     parser.add_argument("--network", choices=["ions", "neutral"], help="Override curated network")
@@ -325,7 +329,7 @@ def main(argv=None):
     parser.add_argument("paths", nargs="*", type=Path, help="Files or directories; default: current directory")
     parser.add_argument("-k", default="", metavar="NAME", help="Case-insensitive substring of contract paths")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show audit gaps and recorded Claim declarations")
-    parser.add_argument("--assessment", help="Check one v0.2 Assessment ID and its evidence dependencies")
+    parser.add_argument("--assessment", help="Check one v0.2/v0.3 Assessment ID and its evidence dependencies")
     parser.add_argument("--root", type=Path, metavar="DIR",
                         help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
@@ -344,9 +348,9 @@ def main(argv=None):
     contracts = [entry for p in selected
                  if (entry := check_contract(p, context, args.assessment, root=root)) is not None]
     if args.assessment is not None and selected and not contracts:
-        parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2")
-    if context_options(args) and any(c.get("schema_version") == "0.2" for c in contracts):
-        parser.error("For v0.2 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
+        parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2/v0.3")
+    if context_options(args) and any(c.get("schema_version") in {"0.2", "0.3"} for c in contracts):
+        parser.error("For v0.2/v0.3 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
     counts = Counter(check["status"] for entry in contracts for check in entry["checks"])
     curated_context = any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"
                           for c in contracts)

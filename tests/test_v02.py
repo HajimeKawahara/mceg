@@ -130,7 +130,7 @@ def test_reassessment_does_not_silently_keep_a_conflicting_generated_id():
         assess_conditions(contract, contract.contexts[-1], "imported")
 
 
-@pytest.mark.parametrize("version", ["0.3", 0.2, None])
+@pytest.mark.parametrize("version", ["0.4", 0.2, None])
 def test_reader_rejects_unsupported_or_ambiguous_versions(version, tmp_path):
     data = load_contract(EXAMPLE).model_dump()
     data["schema_version"] = version

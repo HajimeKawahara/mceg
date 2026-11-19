@@ -25,6 +25,9 @@ def main(argv: list[str] | None = None) -> int:
         if argv[0] == "docs":
             from .documentation import main as command
             return command(argv[1:])
+        if argv[0] == "equations":
+            from .equations import main as command
+            return command(argv[1:])
         if argv[0] == "graph":
             from .graph import main as command
             return command(argv[1:])
@@ -48,6 +51,7 @@ def main(argv: list[str] | None = None) -> int:
             "  check     Discover contracts and summarize available checks.\n"
             "  coverage  Find model registration and source-review gaps.\n"
             "  docs      Generate RST sources for a repository's Sphinx docs.\n"
+            "  equations Export equation definitions as a TeX fragment.\n"
             "  graph     Export recorded relationships as Graph JSON.\n"
             "  explain   Inspect gaps, evidence and concrete next steps.\n"
             "  migrate   Preserve a v0.1 contract in the v0.2 format.\n"

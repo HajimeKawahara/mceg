@@ -97,14 +97,18 @@ Node types are `model`, `claim`, `evidence`, `subject`, `context`, `condition`,
 `assessment`, `follow_up`, `resolution`, `case`, `component`, `manual_case` and
 `manual_assessment`. The last two preserve the existing legacy manual case format
 without converting its judgments into v0.2 Assessments.
+Schema v0.3 additionally supplies `equation` and `binding` nodes.
 
 | Edge type | Direction and meaning |
 | --- | --- |
 | `contains` | Model to its keyed records; manual case to its judgments |
-| `uses_evidence` | Claim in v0.1, Condition, Assessment, Resolution or manual judgment to cited Evidence; Model to Evidence cited by an assumption, domain or limitation |
+| `uses_evidence` | Claim in v0.1, Equation, Condition, Assessment, Resolution or manual judgment to cited Evidence; Model to Evidence cited by an assumption, domain or limitation |
 | `derived_from` | Evidence to upstream Evidence; `data` retains `comparison` and `note` |
 | `assesses` | Assessment to the exact Claim or Condition revision |
-| `has_subject`, `has_context` | Evidence, Assessment or selected Component to its Subject/Context |
+| `has_subject`, `has_context` | Evidence, Assessment, Binding or selected Component to its Subject/Context |
+| `refers_to_equation` | Claim to the exact Equation revision it concerns |
+| `binds_equation` | Declared implementation Binding to its Equation revision |
+| `pins_equation`, `pins_binding` | Assessment to the reviewed definition; `data.sha256` retains the recorded identity |
 | `targets` | FollowUp to its target, retaining the target revision |
 | `resolves` | Resolution to the FollowUp it records as complete |
 | `selects` | Case to Component; registered Component to Model and explicitly selected Assessments |
@@ -119,7 +123,7 @@ constraint. Consumers should use visited sets when traversing relationships.
 ## Identity and selection
 
 IDs are opaque deterministic hashes. A node ID includes its source snapshot,
-record type, local ID and, for Claims/Conditions, revision. A Resolution uses its
+record type, local ID and, for Claims/Conditions/Equations, revision. A Resolution uses its
 FollowUp's ID within the separate `resolution` namespace. Labels are descriptive;
 clients must use IDs for links and retain unfamiliar node/edge types when possible.
 

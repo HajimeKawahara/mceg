@@ -16,6 +16,7 @@ from .check import (add_context_arguments, audit_scope, check_contract, context_
 from .integrity import resolve_root
 from .provenance import trace_provenance
 from .schema_v02 import ContractV02
+from .equation_checks import equation_checks
 from .validator import load_contract
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
@@ -334,6 +335,8 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                 checks, report["integrity"] = integrity_checks(contract, selected, report["audited_evidence"], root)
                 report["items"].extend({**check, "suggested_steps": check_steps(check["name"], report)
                                         if check["status"] != "PASS" else []} for check in checks)
+            report["items"].extend({**check, "suggested_steps": []}
+                                   for check in equation_checks(contract, selected, root))
     else:
         entry = check_contract(path, context)
         report["audit_scope"] = entry["audit_scope"]
@@ -635,7 +638,7 @@ def main(argv=None):
     select = parser.add_mutually_exclusive_group()
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
     select.add_argument("--claim", help="Inspect a Claim ID, including all its recorded revisions")
-    select.add_argument("--assessment", help="Inspect a v0.2 Assessment ID and its context")
+    select.add_argument("--assessment", help="Inspect a v0.2/v0.3 Assessment ID and its context")
     parser.add_argument("--investigation", action="store_true",
                         help="Gather related evidence, completed work and pending tasks for the selected ID")
     parser.add_argument("--root", type=Path, metavar="DIR",
@@ -669,8 +672,8 @@ def main(argv=None):
         paths = [p for p in discover(args.paths or [Path.cwd()]) if args.k.casefold() in str(p).casefold()]
         contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root,
                                      investigation=args.investigation) for p in paths]
-        if context_options(args) and any(c["schema_version"] == "0.2" for c in contracts):
-            raise ValueError("v0.2 contexts belong to recorded assessments; use --assessment ID or mceg assess")
+        if context_options(args) and any(c["schema_version"] in {"0.2", "0.3"} for c in contracts):
+            raise ValueError("v0.2/v0.3 contexts belong to recorded assessments; use --assessment ID or mceg assess")
         if args.evidence or args.claim or args.assessment:
             contracts = [c for c in contracts if c["items"]]
             if paths and not contracts:

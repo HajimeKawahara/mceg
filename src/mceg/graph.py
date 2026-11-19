@@ -79,7 +79,8 @@ class _Graph:
         model = self.node(source, "model", c.model.id, model_record, "", label=c.model.name)
         collections = {"claim": "claims", "evidence": "evidence", "subject": "subjects",
                        "context": "contexts", "condition": "conditions", "assessment": "assessments",
-                       "follow_up": "follow_ups", "resolution": "follow_up_resolutions"}
+                       "follow_up": "follow_ups", "resolution": "follow_up_resolutions",
+                       "equation": "equations", "binding": "bindings"}
 
         def node_id(kind, key, revision=None):
             return _node_id(source, kind, key, revision)
@@ -90,7 +91,7 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition"} else None
+                revision = record.get("revision") if kind in {"claim", "condition", "equation"} else None
                 pointer = _pointer(collection, i)
                 identifier = self.node(source, kind, key, record, pointer, revision)
                 self.edge(model, identifier, "contains", source, pointer)
@@ -104,7 +105,7 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition"} else None
+                revision = record.get("revision") if kind in {"claim", "condition", "equation"} else None
                 start = node_id(kind, key, revision)
 
                 def field(*parts):
@@ -115,6 +116,14 @@ class _Graph:
                 for target_kind in ("subject", "context"):
                     if record.get(target_kind) is not None:
                         link(start, target_kind, record[target_kind], "has_" + target_kind, field(target_kind))
+                if kind == "claim":
+                    for j, equation in enumerate(record.get("equations", [])):
+                        link(start, "equation", equation["id"], "refers_to_equation",
+                             field("equations", j), equation["revision"])
+                elif kind == "binding":
+                    equation = record["equation"]
+                    link(start, "equation", equation["id"], "binds_equation", field("equation"),
+                         equation["revision"])
                 if kind == "evidence" and record.get("provenance"):
                     for j, parent in enumerate(record["provenance"]["derived_from"]):
                         link(start, "evidence", parent["evidence"], "derived_from",
@@ -124,6 +133,12 @@ class _Graph:
                     target_kind = "claim" if record["kind"] == "evidence_support" else "condition"
                     link(start, target_kind, record[target_kind], "assesses", field(target_kind),
                          record[target_kind + "_revision"])
+                    for j, pin in enumerate(record.get("equation_pins", [])):
+                        link(start, "equation", pin["id"], "pins_equation", field("equation_pins", j),
+                             pin["revision"], data={"sha256": pin["sha256"]})
+                    for j, pin in enumerate(record.get("binding_pins", [])):
+                        link(start, "binding", pin["id"], "pins_binding", field("binding_pins", j),
+                             data={"sha256": pin["sha256"]})
                 elif kind == "follow_up":
                     link(start, record["target_kind"], record["target"], "targets", field("target"),
                          record["revision"])

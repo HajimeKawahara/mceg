@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Add an explicit experimental schema `"0.3"` for equation definitions,
+  symbol/unit descriptions and declared Python implementation bindings.
+  Preserve v0.1/v0.2 readers and scientific support semantics.
+- Pin equation and binding identities in scoped Assessments. `check` and
+  `explain` report stale definitions and inspect selected Python declarations
+  with AST, without importing or executing provider code.
+- Export deterministic TeX fragments with `mceg equations` and a read-only
+  `--check` mode. Add equation/binding nodes to Graph JSON and math plus
+  correspondence tables to generated documentation.
+- Include a standalone continuity example. Matching definitions and code
+  declarations do not establish mathematical equivalence or physical validity.
+
 ## 0.1.1 - 2026-11-07
 
 ### First public package release

@@ -1,0 +1,134 @@
+schema_version: '0.3'
+model:
+  id: example.mass_continuity
+  name: Spherical mass continuity
+  description: A provider-independent example of equation and function records.
+  implementation: &id001
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: working-tree:equations-example-v1
+    entry_points:
+    - examples/equations/provider.py:density
+assumptions: []
+domains:
+- kind: scientific_applicability
+  status: unknown
+  description: This authoring example makes no atmospheric accuracy claim.
+  conditions: []
+  evidence:
+  - definition
+claims:
+- id: implementation_correspondence
+  revision: '1'
+  kind: theoretical
+  statement: The declared function implements the continuity equation with the recorded velocity
+    conversion.
+  scope: Algebra and source correspondence only; no physical validation.
+  equations:
+  - id: continuity
+    revision: '1'
+evidence:
+- id: definition
+  kind: theory
+  summary: An authored continuity definition, with a declared implementation mapping.
+  sources:
+  - docs/en/equations.md
+  scope: Illustrative definition, not independent verification.
+  provenance:
+    role: primary
+    location: Record a definition; Bind an equation to code
+    inspection: not_inspected
+    note: An initial example inventory awaiting a scientific correspondence review.
+- id: source
+  kind: implementation
+  summary: The standalone Python function used in the binding example.
+  sources:
+  - examples/equations/provider.py
+  scope: Function source identity only; no numerical execution record.
+  subject: example_source
+  artifacts:
+  - source: examples/equations/provider.py
+    sha256: d23191b82b06412a1e60db77ddc3d297dc4972c79ef56729f37beb0becdb8fcc
+limitations:
+- statement: Static declaration checks and matching hashes do not establish numerical or physical
+    correctness.
+  evidence:
+  - definition
+  - source
+subjects:
+- id: example_source
+  implementation: *id001
+  selected_files:
+    examples/equations/provider.py: d23191b82b06412a1e60db77ddc3d297dc4972c79ef56729f37beb0becdb8fcc
+contexts:
+- id: authoring_example
+  scope: Initial authored record; no solver run or scientific assessment.
+equations:
+- id: continuity
+  revision: '1'
+  latex: \rho = \frac{\dot M}{4\pi r^2 v}
+  description: Steady spherical mass continuity.
+  scope: Positive radius and outward speed; prescribed mass-loss rate.
+  assumptions:
+  - No sources or sinks of mass between shells.
+  symbols:
+    rho:
+      latex: \rho
+      description: Mass density
+      unit: g cm^-3
+    r:
+      latex: r
+      description: Radius
+      unit: cm
+    v:
+      latex: v
+      description: Radial speed
+      unit: cm s^-1
+    mdot:
+      latex: \dot M
+      description: Mass-loss rate
+      unit: g s^-1
+  evidence:
+  - definition
+bindings:
+- id: continuity_density
+  equation:
+    id: continuity
+    revision: '1'
+  subject: example_source
+  source: examples/equations/provider.py
+  symbol: density
+  arguments:
+    radius_cm:
+      symbol: r
+    velocity_kms:
+      symbol: v
+      scale: 100000.0
+    mass_loss_g_s:
+      symbol: mdot
+  result: rho
+  note: The return value already uses the equation's density units.
+assessments:
+- id: initial_record
+  kind: evidence_support
+  subject: example_source
+  context: authoring_example
+  claim: implementation_correspondence
+  claim_revision: '1'
+  method:
+    id: initial_inventory
+    revision: '1'
+    description: Record the definitions and mapping for subsequent inspection.
+  evidence:
+  - definition
+  - source
+  reasons:
+  - Definitions are pinned for inspection; no scientific support is asserted.
+  status: unknown
+  origin: reviewed
+  equation_pins:
+  - id: continuity
+    revision: '1'
+    sha256: ffd756ad24f595b851c971a3ea22266d53b054ef0b60506cd0c5b5a82aa94384
+  binding_pins:
+  - id: continuity_density
+    sha256: fab64d813be10082b29691526909293ad52bfde4b2984d9956c80ed6e6cb609a

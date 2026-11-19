@@ -8,6 +8,7 @@ from yaml.constructor import ConstructorError
 
 from .schema import Contract
 from .schema_v02 import ContractV02
+from .schema_v03 import ContractV03
 
 
 class _UniqueKeyLoader(yaml.SafeLoader):
@@ -50,9 +51,11 @@ def read_document(path: str | Path):
     return yaml.load(text, Loader=_UniqueKeyLoader)
 
 
-def load_contract(path: str | Path) -> Contract | ContractV02:
+def load_contract(path: str | Path) -> Contract | ContractV02 | ContractV03:
     """Dispatch explicitly by version; validate structure, not scientific truth."""
     data = read_document(path)
+    if isinstance(data, dict) and data.get("schema_version") == "0.3":
+        return ContractV03.model_validate(data)
     if isinstance(data, dict) and data.get("schema_version") == "0.2":
         return ContractV02.model_validate(data)
     return Contract.model_validate(data)

@@ -98,6 +98,10 @@ Node types are `model`, `claim`, `evidence`, `subject`, `context`, `condition`,
 `manual_assessment`. The last two preserve the existing legacy manual case format
 without converting its judgments into v0.2 Assessments.
 Schema v0.3 additionally supplies `equation` and `binding` nodes.
+Schema v0.4 supplies `decision` and `decision_option` nodes. Each option is local
+to one Decision revision; its `ref.parent` retains that Decision's `id` and
+`revision`. An option's `ref.id` is its authored option ID and its `ref.revision`
+is the parent revision. This keeps reused option names distinct across choices.
 
 | Edge type | Direction and meaning |
 | --- | --- |
@@ -105,25 +109,30 @@ Schema v0.3 additionally supplies `equation` and `binding` nodes.
 | `uses_evidence` | Claim in v0.1, Equation, Condition, Assessment, Resolution or manual judgment to cited Evidence; Model to Evidence cited by an assumption, domain or limitation |
 | `derived_from` | Evidence to upstream Evidence; `data` retains `comparison` and `note` |
 | `assesses` | Assessment to the exact Claim or Condition revision |
-| `has_subject`, `has_context` | Evidence, Assessment, Binding or selected Component to its Subject/Context |
+| `has_subject`, `has_context` | Evidence, Assessment, Binding, Decision or selected Component to its Subject/Context |
 | `refers_to_equation` | Claim to the exact Equation revision it concerns |
 | `binds_equation` | Declared implementation Binding to its Equation revision |
 | `pins_equation`, `pins_binding` | Assessment to the reviewed definition; `data.sha256` retains the recorded identity |
 | `targets` | FollowUp to its target, retaining the target revision |
 | `resolves` | Resolution to the FollowUp it records as complete |
-| `selects` | Case to Component; registered Component to Model and explicitly selected Assessments |
+| `selects` | Case to Component; registered Component to Model and explicitly selected Assessments; Decision to its selected option |
+| `considers` | Decision to each of its recorded options |
+| `based_on` | Decision to cited Evidence or Assessment; `data.sha256` retains the dependency-record pin |
+| `supersedes` | Decision to the exact retained Decision revision it explicitly replaces |
 | `requires` | Consumer Component to dependency Component; `data` retains `quantity` and `description` |
 | `uses_record` | Case to its pinned manual-case snapshot |
 
 Other edge `data` objects are empty. Parallel edges retain distinct field
 origins, such as two consumed quantities between the same components. The graph
-as a whole can contain cycles; only input Evidence provenance has a DAG
-constraint. Consumers should use visited sets when traversing relationships.
+as a whole can contain cycles. Input Evidence provenance and Decision
+supersession each have a DAG constraint. Consumers should use visited sets when
+traversing relationships.
 
 ## Identity and selection
 
 IDs are opaque deterministic hashes. A node ID includes its source snapshot,
-record type, local ID and, for Claims/Conditions/Equations, revision. A Resolution uses its
+record type, local ID and, for Claims/Conditions/Equations/Decisions, revision.
+Decision option identity also includes its parent Decision identity. A Resolution uses its
 FollowUp's ID within the separate `resolution` namespace. Labels are descriptive;
 clients must use IDs for links and retain unfamiliar node/edge types when possible.
 
@@ -142,7 +151,7 @@ covers the envelope and relationship meanings; source schemas govern `record`.
 Incompatible changes require a new graph format identifier.
 
 All records in each selected contract are exported, including historical
-Assessments and multiple Claim/Condition revisions. `selections` preserves the
+Assessments and multiple Claim/Condition/Decision revisions. `selections` preserves the
 narrower choices separately:
 
 - `catalog_record`: `origin` identifies the catalog record. `catalog_model`
@@ -155,7 +164,9 @@ narrower choices separately:
 Two records/components can select the same contract with different Assessments.
 These selections are never unioned into an implicit current judgment. A known
 unregistered component remains a node with null model/subject/context and empty
-assessments. Direct contract exports have an empty `selections` list.
+assessments. Direct contract exports have an empty `selections` list. A Decision's
+selected option is represented by its `selects` edge, not by a catalog or case
+selection. Neither that edge nor `supersedes` designates a global current choice.
 
 ## Scientific interpretation and future reasoning records
 
@@ -165,6 +176,12 @@ means a declared reference; it does not mean that support follows automatically.
 Evidence `result`, provenance `inspection`, Assessment `status` and membership
 `classification` keep their different meanings. A completed FollowUp does not
 establish physical accuracy or resolve separately scoped questions.
+
+A Decision records a choice that can coexist with an `unknown` Assessment.
+`based_on` retains its recorded premise identities; the graph does not recheck
+these pins or treat them as supporting the selected option. Use `mceg check`
+with a Decision selector to check the declared basis. `supersedes` records an
+explicit replacement without discarding the old choice or its limitations.
 
 The graph retains v0.1 Claim declarations and v0.2 Assessment origins. It neither
 selects the latest revision nor updates historical outcomes after an implementation
@@ -178,8 +195,6 @@ is not the selected [investigation view](checks.md#resume-an-investigation): a
 shared upstream source alone does not make all citing Assessments relevant to
 one investigation. Generated suggestions are not authored graph nodes.
 
-Future reasoning records can add explicit premise Claims, inference steps,
-choices, reviewers, dates and replacement relationships when concrete cases need
-them. The existing graph already preserves the scoped judgments and source
-identities needed to attach those records. No inference engine or new scientific
-contract schema is introduced by this export.
+Further reasoning records can add explicit inference steps, reviewers and dates
+when concrete cases need them. [Decision records](decisions.md) supply authored
+choices and replacement relationships; the graph export adds no inference engine.

@@ -29,6 +29,7 @@ en/provenance
 en/evidence_audit
 en/v02
 en/equations
+en/decisions
 en/schema
 en/versioning
 en/releasing

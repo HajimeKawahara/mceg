@@ -17,6 +17,7 @@ from .integrity import resolve_root
 from .provenance import trace_provenance
 from .schema_v02 import ContractV02
 from .equation_checks import equation_checks
+from .decisions import decision_detail, select_decisions
 from .validator import load_contract
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
@@ -178,6 +179,9 @@ def assessment_detail(contract, path, assessment):
 
 
 def check_steps(name, entry):
+    if name == "decision_basis":
+        return [action("Review the missing or changed basis for this recorded choice.",
+                       "Keep the earlier Decision; add a separately reviewed revision if its choice or basis changes.")]
     if name == "structure":
         return [action("Correct the field or local reference identified in the validation error.",
                        "Run mceg check again; valid structure permits inspection but does not establish scientific support.")]
@@ -296,16 +300,20 @@ def apply_resolutions(contract, path, item):
 
 
 def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_id=None, *, root=None,
-                     investigation=False):
-    if investigation and not (evidence_id or claim_id or assessment_id):
-        raise ValueError("--investigation requires --evidence, --claim or --assessment")
+                     investigation=False, decision_id=None, decision_revision=None):
+    if sum(x is not None for x in (evidence_id, claim_id, assessment_id, decision_id)) > 1:
+        raise ValueError("Select one Evidence, Claim, Assessment or Decision")
+    if decision_revision is not None and decision_id is None:
+        raise ValueError("--decision-revision requires --decision ID")
+    if investigation and not (evidence_id or claim_id or assessment_id or decision_id):
+        raise ValueError("--investigation requires --evidence, --claim, --assessment or --decision")
     root = resolve_root(root, assessment_id)
     if root is not None and (evidence_id is not None or claim_id is not None):
         raise ValueError("--root requires an Assessment view")
     try:
         contract = load_contract(path)
     except (OSError, ValueError, yaml.YAMLError):
-        if evidence_id or claim_id or assessment_id:
+        if evidence_id or claim_id or assessment_id or decision_id:
             raise
         entry = check_contract(path, context)
         return {"path": str(path), "model": None, "schema_version": None, "view": "overview",
@@ -316,6 +324,14 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                       if any(e.id == evidence_id for e in contract.evidence) else [])
     elif claim_id:
         report.update(view="claim", items=[claim_detail(contract, path, c) for c in contract.claims if c.id == claim_id])
+    elif decision_id:
+        decisions = select_decisions(contract, decision_id, decision_revision)
+        report.update(view="decision", items=[], audit_scope={"kind": "decision", "decisions": [
+            {"id": d.id, "revision": d.revision} for d in decisions]})
+        for decision in decisions:
+            item = decision_detail(contract, path, decision)
+            report["items"].append(item)
+            report["items"].extend({**check, "suggested_steps": []} for check in item["basis_checks"])
     elif assessment_id:
         selected = next((a for a in getattr(contract, "assessments", []) if a.id == assessment_id), None)
         report.update(view="assessment", items=[])
@@ -350,13 +366,16 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                       unknown_claims=[c.id for c in contract.claims if getattr(c, "status", None) == "unknown"],
                       assessments=[{"id": a.id, "context": a.context,
                                     "result": getattr(a, "status", getattr(a, "classification", None))}
-                                   for a in getattr(contract, "assessments", [])])
+                                   for a in getattr(contract, "assessments", [])],
+                      decisions=[{"id": d.id, "revision": d.revision, "selected": d.selected,
+                                  "question": d.question} for d in select_decisions(contract)])
     for item in report["items"]:
         apply_resolutions(contract, path, item)
     if investigation and report["items"]:
         from .investigation import build_investigation
         report["investigation"] = build_investigation(
-            contract, path, evidence_id=evidence_id, claim_id=claim_id, assessment_id=assessment_id)
+            contract, path, evidence_id=evidence_id, claim_id=claim_id, assessment_id=assessment_id,
+            decision_id=decision_id, decision_revision=decision_revision)
     return report
 
 
@@ -446,6 +465,11 @@ def display(report, lang="en", plain=False):
             write(t("Completion") + ": " + task["completion"], "      ")
             for source in task.get("sources", []):
                 print(f"      {t('Source')}: {source}")
+        for item in bundle.get("decisions", []):
+            write("Decision: " + item["id"] + "@" + item["record"]["revision"], code="1;36")
+            record(item["record"])
+            for next_command in item["next_commands"]:
+                inspect(next_command)
         for item in bundle["assessments"]:
             write(t("Assessment") + ": " + item["id"], code="1;36")
             record(item["record"])
@@ -539,6 +563,12 @@ def display(report, lang="en", plain=False):
                     if key in item:
                         print(paint(f"  {t(key)}:", "1;36"))
                         record(item[key])
+                for assessment in item.get("basis_assessments", []):
+                    write("Referenced Assessment: " + assessment["id"] + "; " +
+                          assessment.get("status", assessment.get("classification", "unknown")) +
+                          " (current contract record; see basis identity checks)", code="1")
+                    for reason in assessment["reasons"]:
+                        write(reason, "      ")
             else:
                 message = check_message(item, lang)
                 write(message if terminal else f"{item['status']}: {message}")
@@ -607,6 +637,9 @@ def display(report, lang="en", plain=False):
         for assessment in contract.get("assessments", []):
             print(f"  Assessment {assessment['id']}: {assessment['result']}; context={assessment['context']}")
             inspect(command(path, "--assessment", assessment["id"]), "  ")
+        for decision in contract.get("decisions", []):
+            print(f"  Decision {decision['id']}@{decision['revision']}: selected={decision['selected']}")
+            inspect(command(path, "--decision", decision["id"], "--decision-revision", decision["revision"]), "  ")
     if terminal:
         print()
         write(t("Use --plain for the original text layout or --json for complete records."), "", "2")
@@ -638,7 +671,9 @@ def main(argv=None):
     select = parser.add_mutually_exclusive_group()
     select.add_argument("--evidence", help="Inspect one Evidence ID and its source/review gaps")
     select.add_argument("--claim", help="Inspect a Claim ID, including all its recorded revisions")
-    select.add_argument("--assessment", help="Inspect a v0.2/v0.3 Assessment ID and its context")
+    select.add_argument("--assessment", help="Inspect an Assessment ID and its context")
+    select.add_argument("--decision", help="Inspect a Decision ID, including all recorded revisions")
+    parser.add_argument("--decision-revision", help="Select an exact revision with --decision ID")
     parser.add_argument("--investigation", action="store_true",
                         help="Gather related evidence, completed work and pending tasks for the selected ID")
     parser.add_argument("--root", type=Path, metavar="DIR",
@@ -650,10 +685,12 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
-        if args.investigation and not (args.evidence or args.claim or args.assessment):
-            raise ValueError("--investigation requires --evidence, --claim or --assessment")
+        if args.decision_revision is not None and args.decision is None:
+            raise ValueError("--decision-revision requires --decision ID")
+        if args.investigation and not (args.evidence or args.claim or args.assessment or args.decision):
+            raise ValueError("--investigation requires --evidence, --claim, --assessment or --decision")
         if args.package or args.catalog:
-            if (args.paths or args.k or args.root or args.evidence or args.claim or args.assessment or args.investigation
+            if (args.paths or args.k or args.root or args.evidence or args.claim or args.assessment or args.decision or args.investigation
                     or context_options(args)):
                 raise ValueError("Package/catalog lookup cannot be combined with contract selectors or context options; "
                                  "inspect the reported contract separately for those views")
@@ -671,10 +708,11 @@ def main(argv=None):
         context = requested_context(args)
         paths = [p for p in discover(args.paths or [Path.cwd()]) if args.k.casefold() in str(p).casefold()]
         contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root,
-                                     investigation=args.investigation) for p in paths]
-        if context_options(args) and any(c["schema_version"] in {"0.2", "0.3"} for c in contracts):
-            raise ValueError("v0.2/v0.3 contexts belong to recorded assessments; use --assessment ID or mceg assess")
-        if args.evidence or args.claim or args.assessment:
+                                     investigation=args.investigation, decision_id=args.decision,
+                                     decision_revision=args.decision_revision) for p in paths]
+        if context_options(args) and any(c["schema_version"] in {"0.2", "0.3", "0.4"} for c in contracts):
+            raise ValueError("v0.2/v0.3/v0.4 contexts belong to recorded assessments; use --assessment ID or mceg assess")
+        if args.evidence or args.claim or args.assessment or args.decision:
             contracts = [c for c in contracts if c["items"]]
             if paths and not contracts:
                 raise ValueError("Requested ID not found in the selected contracts")

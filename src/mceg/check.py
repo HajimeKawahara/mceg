@@ -20,6 +20,7 @@ from .schema_v02 import ContractV02
 from .assessment import compare_condition
 from .integrity import file_integrity, resolve_root
 from .equation_checks import equation_checks
+from .decisions import decision_basis_checks, decision_records, select_decisions
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
 
@@ -57,7 +58,7 @@ def source_audit(contract, roots=None):
     issues = sorted({f"{issue['evidence']}: {issue['issue']}" for trace in traces for issue in trace["issues"]})
     check = result("source_audit", "UNKNOWN" if issues or not traces else "PASS",
                    f"{complete}/{len(traces)} evidence records have complete declared source traces"
-                   if traces else "No evidence recorded for the selected assessment", issues)
+                   if traces else "No evidence recorded for this selection", issues)
     return check, traces
 
 
@@ -71,6 +72,9 @@ def audit_scope(assessment=None):
 def scope_message(scope):
     if scope["kind"] == "all_records_including_history":
         return "All records, including history"
+    if scope["kind"] == "decision":
+        return "Recorded Decision revisions: " + ", ".join(
+            f"{d['id']}@{d['revision']}" for d in scope["decisions"])
     return (f"Assessment {scope['assessment']}; subject={scope['subject']}; "
             f"context={scope['context']}")
 
@@ -138,9 +142,14 @@ def integrity_checks(contract, assessment, evidence_ids, root):
     return checks, report
 
 
-def check_contract(path, context, assessment_id=None, *, root=None):
+def check_contract(path, context, assessment_id=None, *, root=None,
+                   decision_id=None, decision_revision=None):
     """Return checks, or None when a valid contract does not contain the selected ID."""
     root = resolve_root(root, assessment_id)
+    if decision_id is not None and assessment_id is not None:
+        raise ValueError("Select either an Assessment or a Decision")
+    if decision_revision is not None and decision_id is None:
+        raise ValueError("--decision-revision requires --decision ID")
     entry = {"path": str(path), "model": None, "checks": [], "declarations": []}
     try:
         contract = load_contract(path)
@@ -158,6 +167,20 @@ def check_contract(path, context, assessment_id=None, *, root=None):
     if contract.schema_version == "0.1":
         entry["declarations"] = [claim.model_dump() for claim in contract.claims]
     entry["checks"].append(result("structure", "PASS", f"v{contract.schema_version} structure and local references are consistent"))
+    if decision_id is not None:
+        decisions = select_decisions(contract, decision_id, decision_revision)
+        if not decisions:
+            return None
+        entry["audit_scope"] = {"kind": "decision", "decisions": [
+            {"id": d.id, "revision": d.revision} for d in decisions]}
+        records = decision_records(contract, decisions)
+        audit, traces = source_audit(contract, [r["id"] for r in records if r["kind"] == "evidence"])
+        entry["checks"].append(audit)
+        entry["audited_evidence"] = [t["evidence"] for t in traces]
+        entry["decisions"] = [d.model_dump() for d in decisions]
+        for decision in decisions:
+            entry["checks"].extend(decision_basis_checks(contract, decision))
+        return entry
     audit, traces = source_audit(contract, selected.evidence if selected is not None else None)
     entry["checks"].append(audit)
     entry["audited_evidence"] = [trace["evidence"] for trace in traces]
@@ -165,6 +188,10 @@ def check_contract(path, context, assessment_id=None, *, root=None):
         checks, entry["integrity"] = integrity_checks(contract, selected, entry["audited_evidence"], root)
         entry["checks"].extend(checks)
     if isinstance(contract, ContractV02):
+        if selected is None:
+            entry["decisions"] = [d.model_dump() for d in select_decisions(contract)]
+            for decision in select_decisions(contract):
+                entry["checks"].extend(decision_basis_checks(contract, decision))
         assessments = [selected] if selected is not None else contract.assessments
         entry["assessments"] = [a.model_dump() for a in assessments]
         contexts = {c.id: c for c in contract.contexts}
@@ -276,10 +303,14 @@ def display(report, verbose, plain=False, lang="en"):
         if verbose and contract.get("assessments"):
             write(t("  Recorded v0.2 assessments (each bound to its own subject and context):")
                   if contract.get("schema_version") == "0.2" else
-                  "  Recorded v0.3 assessments (each bound to its own subject and context):")
+                  f"  Recorded v{contract.get('schema_version')} assessments (each bound to its own subject and context):")
             for assessment in contract["assessments"]:
                 outcome = assessment.get("status", assessment.get("classification"))
                 write(f"    {assessment['id']}: {outcome}; context={assessment['context']}")
+        if verbose:
+            for decision in contract.get("decisions", []):
+                write(f"    Decision {decision['id']}@{decision['revision']}: selected={decision['selected']} "
+                      "(recorded choice; implementation and scientific support are separate)")
     counts = report["summary"]
     print()
     if terminal:
@@ -302,7 +333,7 @@ def positive(value):
 
 
 def add_context_arguments(parser):
-    parser.add_argument("--context", type=Path, help="Curated v0.1 context JSON; for v0.2/v0.3 use mceg assess")
+    parser.add_argument("--context", type=Path, help="Curated v0.1 context JSON; for newer schemas use mceg assess")
     parser.add_argument("--temperature", type=positive, metavar="K", help="Override curated temperature in kelvin")
     parser.add_argument("--pressure", type=positive, metavar="BAR", help="Override curated pressure in bar")
     parser.add_argument("--network", choices=["ions", "neutral"], help="Override curated network")
@@ -329,7 +360,10 @@ def main(argv=None):
     parser.add_argument("paths", nargs="*", type=Path, help="Files or directories; default: current directory")
     parser.add_argument("-k", default="", metavar="NAME", help="Case-insensitive substring of contract paths")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show audit gaps and recorded Claim declarations")
-    parser.add_argument("--assessment", help="Check one v0.2/v0.3 Assessment ID and its evidence dependencies")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--assessment", help="Check one Assessment ID and its evidence dependencies")
+    selection.add_argument("--decision", help="Check a Decision ID, including all recorded revisions")
+    parser.add_argument("--decision-revision", help="Select an exact revision with --decision ID")
     parser.add_argument("--root", type=Path, metavar="DIR",
                         help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
@@ -339,6 +373,8 @@ def main(argv=None):
     add_language_argument(parser)
     args = parser.parse_args(argv)
     try:
+        if args.decision_revision is not None and args.decision is None:
+            raise ValueError("--decision-revision requires --decision ID")
         root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = discover(args.paths or [Path.cwd()])
@@ -346,11 +382,15 @@ def main(argv=None):
         parser.error(str(exc))
     selected = [p for p in paths if args.k.casefold() in str(p).casefold()]
     contracts = [entry for p in selected
-                 if (entry := check_contract(p, context, args.assessment, root=root)) is not None]
+                 if (entry := check_contract(p, context, args.assessment, root=root,
+                                             decision_id=args.decision,
+                                             decision_revision=args.decision_revision)) is not None]
     if args.assessment is not None and selected and not contracts:
-        parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2/v0.3")
-    if context_options(args) and any(c.get("schema_version") in {"0.2", "0.3"} for c in contracts):
-        parser.error("For v0.2/v0.3 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
+        parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2 or newer")
+    if args.decision is not None and selected and not contracts:
+        parser.error("Requested Decision ID/revision not found in the selected contracts")
+    if context_options(args) and any(c.get("schema_version") in {"0.2", "0.3", "0.4"} for c in contracts):
+        parser.error("For v0.2/v0.3/v0.4 contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
     counts = Counter(check["status"] for entry in contracts for check in entry["checks"])
     curated_context = any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"
                           for c in contracts)
@@ -362,6 +402,8 @@ def main(argv=None):
               "explain_command": shlex.join(["mceg", "explain", *map(str, args.paths),
                                              *(["-k", args.k] if args.k else []),
                                              *(["--assessment", args.assessment] if args.assessment is not None else []),
+                                             *(["--decision", args.decision] if args.decision is not None else []),
+                                             *(["--decision-revision", args.decision_revision] if args.decision_revision is not None else []),
                                              *(["--root", str(args.root)] if args.root is not None else []),
                                              *context_options(args)])}
     if args.json:

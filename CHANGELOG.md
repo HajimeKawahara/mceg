@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add experimental schema `"0.4"` for authored Decision records, with explicit
+  alternatives, selection, reasons, limitations and reconsideration conditions.
+  Pin the cited Evidence/Assessment dependency records and retain exact Decision
+  revisions and supersession without inferring current choices or support.
+- Expose Decisions through scoped checks, explanation, Graph JSON and generated
+  documentation. Keep v0.1–v0.3 readers and provider-owned historical records.
 - Add an explicit experimental schema `"0.3"` for equation definitions,
   symbol/unit descriptions and declared Python implementation bindings.
   Preserve v0.1/v0.2 readers and scientific support semantics.

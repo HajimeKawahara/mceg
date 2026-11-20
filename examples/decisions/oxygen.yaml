@@ -1,0 +1,94 @@
+schema_version: '0.4'
+model:
+  id: example.oxygen_coefficient_choice
+  name: Oxygen self-interaction coefficient choice
+  description: >-
+    Illustrative adaptation of the archived ExoEOS provisional adoption. This is
+    not an author clarification, physical validation or new numerical execution.
+  implementation: &implementation
+    repository: https://github.com/HajimeKawahara/exoeos
+    revision: 9ed2c72c58ad45003fce11141a32ce9b9ecbeaba
+    entry_points:
+    - MaFeSiOLiquid
+    - MaFeSiOHLiquid
+assumptions: []
+domains:
+- kind: scientific_applicability
+  status: unknown
+  description: The archived provisional selection does not establish physical accuracy.
+  conditions: []
+  evidence: [archived_review]
+claims:
+- id: author_intent
+  revision: '1'
+  kind: theoretical
+  statement: The authors confirm the intended oxygen self-interaction coefficient.
+  scope: The printed Young Eq.21 and its relationship to the cited Badro supplement and code.
+evidence:
+- id: archived_review
+  kind: literature
+  summary: >-
+    The ExoEOS decision records agreement between the inspected Badro supplement
+    and pinned Young code on epsilon_OO=-1873/T. The printed Young Eq.21 differs,
+    and no author clarification had been received.
+  sources:
+  - https://github.com/HajimeKawahara/exoeos/blob/9ed2c72c58ad45003fce11141a32ce9b9ecbeaba/results/mceg/20261029_badro_default/decision.json
+  scope: The provider's saved interpretation and provisional choice, not an independent source comparison.
+  provenance:
+    role: secondary
+    location: reason; author_clarification; future_update; physical_accuracy
+    inspection: inspected
+    note: The archived provider decision was inspected; this example does not repeat its source investigation.
+subjects:
+- id: archived_oxygen_model
+  implementation: *implementation
+contexts:
+- id: provisional_review
+  scope: The 2026-10-29 choice for the dry Ma model and its ideal-H wrapper only.
+assessments:
+- id: author_intent_review
+  kind: evidence_support
+  claim: author_intent
+  claim_revision: '1'
+  subject: archived_oxygen_model
+  context: provisional_review
+  method:
+    id: archived_review_adaptation
+    revision: '1'
+    description: Record the unresolved author clarification from the archived decision.
+  evidence: [archived_review]
+  reasons:
+  - No attributable author response is present in the archived decision.
+  status: unknown
+  origin: reviewed
+limitations:
+- statement: This adaptation supplies no author response, new solver comparison or physical accuracy estimate.
+  evidence: [archived_review]
+decisions:
+- id: oxygen_self_interaction
+  revision: '1'
+  question: Which oxygen self-interaction coefficient should the default dry model and wrapper use?
+  scope: Provisional coefficient choice recorded on 2026-10-29; downstream adoption requires separate review.
+  options:
+  - id: legacy_printed
+    description: Retain epsilon_OO=-16500/T from the earlier default.
+  - id: badro_code
+    description: Adopt epsilon_OO=-1873/T, as recorded for the Badro supplement and pinned Young code.
+  selected: badro_code
+  reasons:
+  - The archived source comparison favors the agreement between the original supplement and pinned code.
+  - Provisional adoption was explicitly chosen while the printed-equation discrepancy remained unresolved.
+  basis:
+  - kind: evidence
+    id: archived_review
+    sha256: 979bd239b070d11c8c2890afe91c5dd175961b75c17e665cef234a279cbf0e93
+  - kind: assessment
+    id: author_intent_review
+    sha256: 192c609d697b9ffeb54117ea97496688083a0780b5823190c63cd409e436991e
+  subject: archived_oxygen_model
+  context: provisional_review
+  limitations:
+  - The separate infinite-dilution term ln_gamma0_O=4.29-16500/T remains unchanged.
+  - The suspected typographical error is not confirmed by an author, and physical accuracy remains unknown.
+  reconsider_when:
+  - An attributable author reply or corrected publication clarifies the intended coefficient.

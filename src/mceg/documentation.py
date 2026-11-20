@@ -17,6 +17,7 @@ import yaml
 
 from mceg import ContractV02, trace_provenance
 from mceg.schema_v02 import Record
+from mceg.schema_v04 import decision_basis_digest
 from mceg._sources import (ContractSource, SourceEntry, SourceCatalog,
                            digest, identity, load_case)
 from mceg.graph import _case_graph, _contract_graph
@@ -150,7 +151,7 @@ class Entry(SourceEntry):
             return f"{self.page}-{kind}-{identity(key)}"
         suffix = {"claim": "assessments", "condition": "applicability",
                   "subject": "records", "context": "records",
-                  "equation": "records", "binding": "records"}[kind]
+                  "equation": "records", "binding": "records", "decision": "decisions"}[kind]
         return self.page + "-" + suffix
 
     def anchor(self, kind, key, revision=None):
@@ -312,9 +313,71 @@ def model_page(catalog, entry):
         else:
             out.append(doc_link(f"Read all {len(c.claims)} declared claims and their scopes",
                                 entry.page + "-assessments") + ".\n")
-    out += [heading("Explore", 2), toctree(
-        entry.page + "-" + suffix for suffix in
-        ("applicability", "assessments", "evidence", "references", "records"))]
+    suffixes = ["applicability", "assessments", "evidence", "references", "records"]
+    decisions = getattr(c, "decisions", [])
+    if decisions:
+        out += [heading("Recorded choices", 2),
+                f"{len(decisions)} Decision revisions are recorded. "
+                f"{doc_link('Read the choices and reasons', entry.page + '-decisions')}. "
+                "Adoption and scientific support remain separate; no current choice is inferred.\n"]
+        suffixes.insert(2, "decisions")
+    out += [heading("Explore", 2), toctree(entry.page + "-" + suffix for suffix in suffixes)]
+    return "\n".join(out)
+
+
+def decisions_page(entry):
+    out = [*model_header(entry, "Decisions"),
+           "These are authored choices, with the alternatives and reasons retained. "
+           "A recorded choice does not establish implementation or scientific support. "
+           "All revisions are shown; their order does not identify a current choice.\n"]
+    assessments = {a.id: a for a in entry.contract.assessments}
+    for decision in entry.contract.decisions:
+        out += [f".. _{entry.anchor('decision', decision.id, decision.revision)}:\n\n"
+                + heading(text(f"{decision.id} (revision {decision.revision})"), 2),
+                text(decision.question) + "\n", "Scope: " + text(decision.scope) + "\n",
+                f"Recorded choice: **{text(decision.selected)}**\n",
+                table(["Option", "Description", "Recorded selection"],
+                      ((text(option.id), text(option.description),
+                        "selected" if option.id == decision.selected else "alternative")
+                       for option in decision.options)),
+                heading("Why this choice", 3), *("- " + text(reason) for reason in decision.reasons), "",
+                heading("Basis and separate outcomes", 3)]
+        rows = []
+        for basis in decision.basis:
+            outcome = "Evidence record; see its scope"
+            if basis.kind == "assessment":
+                assessment = assessments[basis.id]
+                outcome = getattr(assessment, "status", getattr(assessment, "classification", "unknown"))
+            matches = decision_basis_digest(entry.contract, basis.kind, basis.id) == basis.sha256
+            rows.append((entry.link(basis.kind, basis.id), text(basis.kind), text(outcome),
+                         "matches recorded pin" if matches else "changed since recorded pin"))
+        if rows:
+            out.append(table(["Basis", "Kind", "Outcome in this contract", "Basis identity"], rows))
+        else:
+            out.append("No basis is recorded. Support for this choice remains unknown.\n")
+        out.append("Identity matching checks the referenced records and their declared dependencies. "
+                   "It does not promote an unknown Assessment or validate the chosen option. "
+                   "For a changed pin, the displayed record is the present input; the original "
+                   "review basis cannot be recovered from its hash alone.\n")
+        for title, items in (("Remaining limitations", decision.limitations),
+                             ("When to reconsider", decision.reconsider_when)):
+            out += [heading(title, 3), *("- " + text(item) for item in items)]
+            if not items:
+                out.append("None recorded.")
+            out.append("")
+        if decision.subject is not None:
+            out.append("Subject: " + entry.link("subject", decision.subject) + "\n")
+        if decision.context is not None:
+            out.append("Context: " + entry.link("context", decision.context) + "\n")
+        if decision.supersedes is not None:
+            previous = decision.supersedes
+            out.append("Explicitly supersedes: " + entry.link(
+                "decision", previous.id, previous.revision,
+                label=f"{previous.id} (revision {previous.revision})") + "\n")
+        out.append(folded("Recorded identity pins", values({
+            "revision": decision.revision,
+            "basis": [basis.model_dump() for basis in decision.basis],
+        })))
     return "\n".join(out)
 
 
@@ -515,6 +578,8 @@ def model_pages(catalog, entry):
     if isinstance(entry.contract, ContractV02):
         pages.update({entry.record_page("assessment", a.id): assessment_page(entry, a)
                       for a in entry.contract.assessments})
+    if getattr(entry.contract, "decisions", []):
+        pages[entry.page + "-decisions"] = decisions_page(entry)
     return pages
 
 

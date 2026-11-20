@@ -29,8 +29,9 @@ def _contract_source(entry):
     return _source(entry.provider, entry.path, entry.sha256, "contract", entry.contract.schema_version)
 
 
-def _node_id(source, kind, key, revision=None):
-    return _identity(source["id"], kind, key, revision)
+def _node_id(source, kind, key, revision=None, parent=None):
+    parts = (source["id"], kind, key, revision)
+    return _identity(*parts, parent) if parent is not None else _identity(*parts)
 
 
 class _Graph:
@@ -53,12 +54,15 @@ class _Graph:
         self._put(self.sources, source)
         return source
 
-    def node(self, source, kind, key, record, pointer, revision=None, label=None):
+    def node(self, source, kind, key, record, pointer, revision=None, label=None, parent=None):
         self.source(source)
+        reference = {"provider": source["provider"], "path": source["path"],
+                     "type": kind, "id": key, "revision": revision}
+        if parent is not None:
+            reference["parent"] = parent
         return self._put(self.nodes, {
-            "id": _node_id(source, kind, key, revision), "type": kind, "label": label or key,
-            "ref": {"provider": source["provider"], "path": source["path"],
-                    "type": kind, "id": key, "revision": revision},
+            "id": _node_id(source, kind, key, revision, parent), "type": kind, "label": label or key,
+            "ref": reference,
             "origin": {"source": source["id"], "pointer": pointer}, "record": record,
         })
 
@@ -80,7 +84,7 @@ class _Graph:
         collections = {"claim": "claims", "evidence": "evidence", "subject": "subjects",
                        "context": "contexts", "condition": "conditions", "assessment": "assessments",
                        "follow_up": "follow_ups", "resolution": "follow_up_resolutions",
-                       "equation": "equations", "binding": "bindings"}
+                       "equation": "equations", "binding": "bindings", "decision": "decisions"}
 
         def node_id(kind, key, revision=None):
             return _node_id(source, kind, key, revision)
@@ -91,10 +95,20 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition", "equation"} else None
+                revision = record.get("revision") if kind in {"claim", "condition", "equation", "decision"} else None
                 pointer = _pointer(collection, i)
                 identifier = self.node(source, kind, key, record, pointer, revision)
                 self.edge(model, identifier, "contains", source, pointer)
+                if kind == "decision":
+                    parent = {"id": key, "revision": revision}
+                    for j, option in enumerate(record["options"]):
+                        option_pointer = _pointer(collection, i, "options", j)
+                        target = self.node(source, "decision_option", option["id"], option,
+                                           option_pointer, revision, parent=parent)
+                        self.edge(identifier, target, "considers", source, option_pointer)
+                        if option["id"] == record["selected"]:
+                            self.edge(identifier, target, "selects", source,
+                                      _pointer(collection, i, "selected"))
 
         # These unkeyed records stay in the model payload, with field-level edge origins.
         for collection in ("assumptions", "domains", "limitations"):
@@ -105,7 +119,7 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition", "equation"} else None
+                revision = record.get("revision") if kind in {"claim", "condition", "equation", "decision"} else None
                 start = node_id(kind, key, revision)
 
                 def field(*parts):
@@ -144,6 +158,14 @@ class _Graph:
                          record["revision"])
                 elif kind == "resolution":
                     link(start, "follow_up", record["follow_up"], "resolves", field("follow_up"))
+                elif kind == "decision":
+                    for j, basis in enumerate(record["basis"]):
+                        link(start, basis["kind"], basis["id"], "based_on", field("basis", j),
+                             data={"sha256": basis["sha256"]})
+                    if record["supersedes"] is not None:
+                        previous = record["supersedes"]
+                        link(start, "decision", previous["id"], "supersedes", field("supersedes"),
+                             previous["revision"])
         return model
 
     def case(self, case, source):

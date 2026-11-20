@@ -41,7 +41,7 @@ def compare_condition(condition, context):
 def assess_conditions(contract: ContractV02, context: Context, subject: str) -> ContractV02:
     """Append context-bound membership assessments to a copy, preserving all history."""
     if not isinstance(contract, ContractV02):
-        raise ValueError("Condition assessment requires a v0.2/v0.3 contract; use mceg migrate first")
+        raise ValueError("Condition assessment requires a v0.2 or newer contract; use mceg migrate first")
     if not contract.conditions:
         raise ValueError("No structured conditions; add reviewed source-scoped conditions before assessment")
     subjects = {s.id: s for s in contract.subjects}
@@ -83,13 +83,13 @@ def main(argv=None):
     parser.add_argument("contract", type=Path, nargs="?")
     parser.add_argument("--curated", type=Path, help="ExoGibbs checkout for the existing reviewed curated-gas reuse policy")
     parser.add_argument("--context", type=Path, required=True,
-                        help="v0.2/v0.3 Context, or the existing flat curated JSON context when --curated is used")
-    parser.add_argument("--subject", help="Evaluated Subject ID; required for a v0.2/v0.3 contract")
+                        help="Context record, or the existing flat curated JSON context when --curated is used")
+    parser.add_argument("--subject", help="Evaluated Subject ID; required for a v0.2 or newer contract")
     parser.add_argument("--output", type=Path, required=True, help="New contract with appended assessments; never overwritten")
     args = parser.parse_args(argv)
     try:
         if bool(args.contract) == bool(args.curated):
-            raise ValueError("Specify a v0.2/v0.3 contract or --curated CHECKOUT, but not both")
+            raise ValueError("Specify a v0.2 or newer contract or --curated CHECKOUT, but not both")
         if args.curated:
             if args.subject:
                 raise ValueError("--curated identifies its subject from the observed files; omit --subject")
@@ -97,7 +97,7 @@ def main(argv=None):
             result = assess_curated(args.curated, read_document(args.context))
         else:
             if not args.subject:
-                raise ValueError("A v0.2/v0.3 condition assessment requires --subject ID")
+                raise ValueError("A condition assessment requires --subject ID")
             result = assess_conditions(load_contract(args.contract), Context.model_validate(read_document(args.context)),
                                        args.subject)
         write_document(result.model_dump(exclude_none=True), args.output)

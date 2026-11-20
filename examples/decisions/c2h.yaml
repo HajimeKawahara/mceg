@@ -1,0 +1,97 @@
+schema_version: '0.4'
+model:
+  id: example.c2h_source_choice
+  name: C2H thermochemistry source choice
+  description: >-
+    Illustrative adaptation of the archived ExoGibbs C2H adoption. This example
+    records the historical choice without a new scientific assessment or solver run.
+  implementation: &implementation
+    repository: https://github.com/HajimeKawahara/exogibbs
+    revision: 8b34501a90f24d04c31f17dffac14eb0b0694fa2
+    entry_points:
+    - exogibbs.presets.curated_c2h.chemsetup
+assumptions: []
+domains:
+- kind: scientific_applicability
+  status: unknown
+  description: The archived choice does not quantify high-temperature physical accuracy.
+  conditions: []
+  evidence: [source_review]
+claims:
+- id: complete_thermal_support
+  revision: '1'
+  kind: theoretical
+  statement: The selected C2H model has complete primary-source and high-temperature thermal support.
+  scope: The historical C2H correction at 1500-4000 K only.
+evidence:
+- id: source_review
+  kind: literature
+  summary: >-
+    The archived review identifies an outdated JANAF energy anchor and thermal
+    estimates. It chooses NASA thermal functions with balanced ATcT 1.172 energy,
+    while retaining gaps in original-paper inspection and thermal uncertainty.
+  sources:
+  - https://github.com/HajimeKawahara/exogibbs/blob/8b34501a90f24d04c31f17dffac14eb0b0694fa2/src/exogibbs/data/curated/c2h_v1.json
+  - https://github.com/HajimeKawahara/exogibbs/blob/8b34501a90f24d04c31f17dffac14eb0b0694fa2/documents/presets/curated_c2h.rst
+  - https://github.com/HajimeKawahara/exogibbs/blob/8b34501a90f24d04c31f17dffac14eb0b0694fa2/mceg/contracts/curated_c2h.yaml
+  scope: Archived provider review and adoption rationale; not independent primary-source verification.
+  provenance:
+    role: secondary
+    location: decision; Why the correction was adopted; conditional_selection_review
+    inspection: inspected
+    note: The provider records were inspected for this adaptation; their underlying papers were not reinspected.
+subjects:
+- id: archived_c2h_preset
+  implementation: *implementation
+contexts:
+- id: historical_source_choice
+  scope: The 2026-11-02 C2H correction to curated-gas-v1, not the current cumulative default.
+  settings:
+    temperature_interval_K: 1500-4000
+    standard_pressure_bar: 1
+assessments:
+- id: thermal_support_review
+  kind: evidence_support
+  claim: complete_thermal_support
+  claim_revision: '1'
+  subject: archived_c2h_preset
+  context: historical_source_choice
+  method:
+    id: archived_review_adaptation
+    revision: '1'
+    description: Retain the unknown outcome of the archived conditional_selection_review.
+  evidence: [source_review]
+  reasons:
+  - Original-paper access and high-temperature uncertainty gaps remain in the archived review.
+  status: unknown
+  origin: reviewed
+limitations:
+- statement: This example neither repeats the provider's calculations nor endorses the complete gas model.
+  evidence: [source_review]
+decisions:
+- id: c2h_thermochemistry
+  revision: '1'
+  question: Which C2H thermochemistry should the reviewed preset use?
+  scope: Conditional source choice for the archived ideal-gas C2H correction at 1500-4000 K.
+  options:
+  - id: inherited_janaf
+    description: Retain the inherited fit based on the 1967 JANAF evaluation.
+  - id: nasa_atct
+    description: Use NASA thermal functions and balanced ATcT 1.172 atomization energy.
+  selected: nasa_atct
+  reasons:
+  - The old energy estimate and thermal estimates both require revision; an energy shift alone leaves a discrepancy.
+  - The archived review therefore conditionally prefers the NASA and ATcT combination.
+  basis:
+  - kind: evidence
+    id: source_review
+    sha256: a7bab8fa243656f1562f17eca9ffb5c9c8677102f5332249c41fc7d6d4cc43b3
+  - kind: assessment
+    id: thermal_support_review
+    sha256: 1074e3b9e1af6405af36d69a97ab3b7a654b560099da038ea4e3bb35d9cbffb2
+  subject: archived_c2h_preset
+  context: historical_source_choice
+  limitations:
+  - The selected option does not establish complete thermal support or whole-mixture accuracy.
+  reconsider_when:
+  - Further primary-source inspection or thermal-function evidence changes the comparison.

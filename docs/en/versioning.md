@@ -2,12 +2,20 @@
 
 The current package release is `0.1.1`, with explicit readers for schemas
 `"0.1"` and `"0.2"`. The development version also reads experimental `"0.3"`
-[equation definitions and bindings](equations.md). Existing contracts keep
-their formats and semantics; older readers reject `"0.3"` explicitly.
+[equation definitions and bindings](equations.md) and `"0.4"`
+[Decision records](decisions.md). Existing contracts keep their formats and
+semantics; older readers reject unsupported versions explicitly.
 Package versions and contract schema versions are separate.
 The `v0.1.0` baseline tag remains unchanged; the v0.2 schema remains experimental.
 The [v0.2 guide](v02.md) defines the common records, limited automatic comparisons
 and migration procedure.
+
+Schema `"0.4"` adds an optional `decisions` collection to v0.3 and preserves the
+earlier readers. Its basis hashes identify the cited records and their declared
+local dependencies. A stale basis does not rewrite a historical Decision or
+change scientific support. There is no automatic migration of provider-owned
+decision artifacts and no implicit current choice. The package version remains
+`0.1.1` during development; a schema number is not an installable package version.
 
 Before the first PyPI release, development snapshots used the unpublished
 `0.2.0rc1` and `0.2.0rc2` package labels. Their features are included in `0.1.1`.

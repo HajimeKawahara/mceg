@@ -221,7 +221,7 @@ def test_investigation_requires_a_contract_selector(options, capsys):
     with pytest.raises(SystemExit) as exc:
         main(["explain", *options, "--investigation", "--json"])
     assert exc.value.code == 2
-    assert "--investigation requires --evidence, --claim or --assessment" in capsys.readouterr().err
+    assert "--investigation requires --evidence, --claim, --assessment or --decision" in capsys.readouterr().err
 
 
 @pytest.mark.parametrize("catalog", [["--package", "not-installed"], ["--catalog", "missing.json"]])

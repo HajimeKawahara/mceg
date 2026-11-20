@@ -37,6 +37,10 @@ def text(value):
     return re.sub(r"([\\`*_|<>{}\[\]:.])", r"\\\1", " ".join(str(value).split()))
 
 
+def inline_math(value):
+    return ":math:`" + " ".join(value.split()).replace("`", r"\`") + "`"
+
+
 def heading(title, level=1):
     return title + "\n" + "=-~"[level - 1] * len(title) + "\n"
 
@@ -145,7 +149,8 @@ class Entry(SourceEntry):
         if kind in {"evidence", "assessment"}:
             return f"{self.page}-{kind}-{identity(key)}"
         suffix = {"claim": "assessments", "condition": "applicability",
-                  "subject": "records", "context": "records"}[kind]
+                  "subject": "records", "context": "records",
+                  "equation": "records", "binding": "records"}[kind]
         return self.page + "-" + suffix
 
     def anchor(self, kind, key, revision=None):
@@ -349,6 +354,11 @@ def assessments_page(entry):
             out += ["Revision: " + text(claim.revision) + "\n",
                     "Recorded assessments: " + (", ".join(entry.link("assessment", a.id) for a in assessments)
                                                 or "None recorded") + "\n"]
+            equations = getattr(claim, "equations", [])
+            if equations:
+                out.append("Equation definitions: " + ", ".join(
+                    entry.link("equation", e.id, e.revision, label=f"{e.id} ({e.revision})")
+                    for e in equations) + "\n")
         else:
             out += [f"v0.1 declared status: **{text(claim.status)}**. This is not a case-specific assessment.\n",
                     "Evidence: " + evidence_links(entry, claim.evidence) + "\n"]
@@ -379,6 +389,14 @@ def assessment_page(entry, assessment):
             "Method description": a.method.description,
             **({"Origin": a.origin} if a.kind == "evidence_support" else {}),
         })),
+        *([heading("Pinned definitions", 2),
+           "These are recorded identities; this document build does not recheck their hashes.\n",
+           table(["Equation", "SHA-256"], (
+               (entry.link("equation", p.id, p.revision), text(p.sha256))
+               for p in a.equation_pins)),
+           table(["Binding", "SHA-256"], (
+               (entry.link("binding", p.id), text(p.sha256)) for p in a.binding_pins))]
+          if getattr(a, "equation_pins", []) or getattr(a, "binding_pins", []) else []),
     ])
 
 
@@ -401,6 +419,26 @@ def records_page(catalog, entry):
         for r in c.contexts:
             out += [section(entry, "context", r), text(r.scope) + "\n", values(r.model_dump()["quantities"]),
                     folded("Context settings", values(r.settings))]
+    if getattr(c, "equations", []):
+        out += [heading("Equation definitions", 2),
+                "Definitions and declared code mappings are not proofs or execution results. "
+                "Units and conversions are authored declarations, not dimensionally checked.\n"]
+        for r in c.equations:
+            out += [section(entry, "equation", r), text(r.description) + "\n",
+                    "Revision: " + text(r.revision) + "\n",
+                    "Scope: " + text(r.scope) + "\n",
+                    ".. math::\n\n" + indent("\\begin{aligned}\n" + r.latex + "\n\\end{aligned}", "   ") + "\n",
+                    table(["Symbol ID", "Symbol", "Meaning", "Unit"],
+                          ((text(key), inline_math(s.latex), text(s.description), text(s.unit))
+                           for key, s in r.symbols.items())),
+                    *("- " + text(s) for s in r.assumptions),
+                    "\nEvidence: " + evidence_links(entry, r.evidence) + "\n"]
+        out.append(heading("Declared implementation bindings", 2))
+        for r in c.bindings:
+            out += [section(entry, "binding", r),
+                    "Equation: " + entry.link("equation", r.equation.id, r.equation.revision) + "\n",
+                    "Subject: " + entry.link("subject", r.subject) + "\n",
+                    values(r.model_dump(exclude={"id", "equation", "subject"}))]
     return "\n".join(out)
 
 

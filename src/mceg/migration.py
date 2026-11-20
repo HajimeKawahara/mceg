@@ -66,7 +66,7 @@ def restore_v01(contract: ContractV02) -> Contract:
     for claim in contract.claims:
         assessment = declarations.get((claim.id, claim.revision))
         if assessment is not None:
-            data["claims"].append({**claim.model_dump(exclude={"revision"}), "status": assessment.status,
+            data["claims"].append({**claim.model_dump(include={"id", "statement", "kind", "scope"}), "status": assessment.status,
                                    "evidence": assessment.evidence})
     restored = Contract.model_validate(data)
     if content_hash(restored.model_dump()) != contract.migration.content_sha256:

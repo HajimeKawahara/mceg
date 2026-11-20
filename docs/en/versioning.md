@@ -1,7 +1,10 @@
 # Versions and compatibility
 
 The current package release is `0.1.1`, with explicit readers for schemas
-`"0.1"` and `"0.2"`. Package versions and contract schema versions are separate.
+`"0.1"` and `"0.2"`. The development version also reads experimental `"0.3"`
+[equation definitions and bindings](equations.md). Existing contracts keep
+their formats and semantics; older readers reject `"0.3"` explicitly.
+Package versions and contract schema versions are separate.
 The `v0.1.0` baseline tag remains unchanged; the v0.2 schema remains experimental.
 The [v0.2 guide](v02.md) defines the common records, limited automatic comparisons
 and migration procedure.

@@ -1,7 +1,7 @@
 """Local HTML documentation; scientific implementations are never imported."""
 
 project = "MCEG"
-extensions = ["myst_parser", "sphinx.ext.graphviz"]
+extensions = ["myst_parser", "sphinx.ext.graphviz", "sphinx.ext.mathjax"]
 exclude_patterns = ["_build", "ja"]
 source_suffix = {".md": "markdown", ".rst": "restructuredtext"}
 root_doc = "index"

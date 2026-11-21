@@ -152,8 +152,14 @@ class SupportAssessment(AssessmentBase):
     kind: Literal["evidence_support"]
     claim: Text
     claim_revision: Text
-    status: Literal["supported", "unknown"]
+    status: Literal["supported", "contradicted", "unknown"]
     origin: Literal["imported_v0.1_declaration", "reviewed"]
+
+    @model_validator(mode="after")
+    def reviewed_contradiction(self):
+        if self.status == "contradicted" and self.origin != "reviewed":
+            raise ValueError("Contradicted assessments require an explicit review")
+        return self
 
 
 class RangeAssessment(AssessmentBase):
@@ -255,13 +261,21 @@ class ContractV02(Record):
                 claim = claims.get((item.claim, item.claim_revision))
                 if claim is None:
                     raise ValueError("Unknown assessed Claim revision")
-                if item.status == "supported":
+                if item.status in {"supported", "contradicted"}:
                     linked = [evidence[key] for key in item.evidence]
                     kinds = {"theoretical": {"theory"}, "physical_validation": {"experiment", "observation"},
                              "numerical_verification": {"numerical_test", "benchmark"}}[claim.kind]
-                    if not any(e.kind in kinds and (claim.kind != "numerical_verification" or e.result == "passed")
-                               for e in linked):
-                        raise ValueError("Supported assessment lacks matching evidence")
+                    linked = [e for e in linked if e.kind in kinds]
+                    if claim.kind == "numerical_verification":
+                        expected = "passed" if item.status == "supported" else "failed"
+                        linked = [e for e in linked if e.result == expected]
+                    if item.status == "contradicted":
+                        # A supplied review interprets the result; failure alone
+                        # never creates or changes an Assessment.
+                        linked = [e for e in linked if e.subject in {None, item.subject}
+                                  and e.context in {None, item.context}]
+                    if not linked:
+                        raise ValueError(f"{item.status.capitalize()} assessment lacks matching evidence")
             else:
                 condition = conditions.get((item.condition, item.condition_revision))
                 expected = "range" if isinstance(item, RangeAssessment) else "samples"

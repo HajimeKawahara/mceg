@@ -273,7 +273,8 @@ def display_catalog(report: dict, lang: str = "en", plain: bool = False) -> None
                 statuses = [a.get("status", a.get("classification")) for a in claim["assessments"]]
                 status = ", ".join(statuses) if statuses else value.get("status", "unknown (no selected assessment)")
                 supported = all(s == "supported" for s in (statuses or [value.get("status")]))
-                write(f"{value['kind']} / {claim['id']}: {status}", "    ", "1;32" if supported else "1;33")
+                status_color = "1;31" if "contradicted" in statuses else "1;32" if supported else "1;33"
+                write(f"{value['kind']} / {claim['id']}: {status}", "    ", status_color)
                 write(f"{label('Claim', '主張')}: {value['statement']}", "      ")
                 write(f"{label('Scope', '評価範囲')}: {value['scope']}", "      ")
                 commands = [command(record["path"], "--assessment", a["id"])

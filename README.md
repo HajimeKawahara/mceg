@@ -16,6 +16,51 @@ humans must also be able to inspect the evidence and model contracts themselves.
 [MCEG Viewer](https://github.com/HajimeKawahara/mceg/blob/main/viewer/README.md) provides a small bilingual interface for that
 inspection. It consumes exported Graph JSON; MCEG itself does not depend on it.
 
+## Main record types
+
+A **Contract** groups records describing a model, its evidence and the judgments
+made about it. These are the main **record types** in schemas 0.2–0.4. Each type
+has its own role; there is no single status shared by all records.
+
+| Record type | What it records | Kinds, states and interpretation |
+| --- | --- | --- |
+| Model | Which model is described and its declared implementation | Identifies the model; has no overall scientific support status. |
+| Claim | A proposition, its scope and revision | `kind`: `theoretical`, `numerical_verification`, or `physical_validation`. Its support is recorded in an Assessment. |
+| Evidence | What was inspected or measured, with sources and provenance | Numerical tests and benchmarks have `result`: `passed`, `failed`, `not_run`, or `unknown`. Other evidence kinds have no numerical result. Source inspection is recorded separately. |
+| **Assessment** | A judgment about a Claim or Condition for one Subject and Context | For `kind: evidence_support`, `status` is **`supported`** (supporting evidence), **`contradicted`** (reviewed contrary evidence), or **`unknown`** (insufficient or inconclusive evidence). Range/sample membership uses separate classifications below. |
+| Decision | Which alternative was chosen, why, and when to reconsider it | `selected` identifies an authored option; there is no scientific support status. A choice can be provisional even when support is unknown. |
+| Equation | A mathematical definition, symbols, units and assumptions | Has an explicit revision; defining an equation does not establish implementation correctness or physical accuracy. |
+| EquationBinding | The declared correspondence between an Equation and code in a Subject | Maps a function, arguments and result to mathematical symbols; has no verified/unverified status. |
+| Subject | The implementation or data snapshot being evaluated | Records implementation identity and optional file hashes; matching bytes do not establish scientific support. |
+| Context | The conditions and settings of an evaluation | Records quantities and settings such as temperature or software versions; has no applicability status. |
+| Condition | A reported range or a set of joint samples | `kind`: `range` or `samples`. Membership for a particular Context is recorded in an Assessment. |
+| Domain | The model's declared applicability or numerical evaluation domain | `status`: `documented` or `unknown`. Documented conditions do not by themselves establish physical validity. |
+| FollowUp | What to investigate next, required material and completion criteria | Has no status field. It remains open until an explicit FollowUpResolution records its completion. |
+| FollowUpResolution | Evidence and a note recording completion of a FollowUp | Records that the task was completed; does not change a Claim's support or erase a contradiction. |
+
+Assessment has three distinct kinds. Their outcomes answer different questions:
+
+| Assessment kind | Question | Outcome field and values |
+| --- | --- | --- |
+| `evidence_support` | Does the evidence support this Claim revision for this Subject and Context? | `status`: `supported`, `contradicted`, `unknown` |
+| `range_membership` | Is the Context's quantity inside the recorded range? | `classification`: `within_reported_range`, `outside_reported_range`, `unknown` |
+| `sample_membership` | Does the Context match a recorded joint sample? | `classification`: `at_recorded_sample`, `not_sampled`, `unknown` |
+
+For example, a valid comparison exceeding a Claim's error threshold can justify
+`contradicted`. A crashed calculation supplies no valid comparison and does not
+establish a contradiction. Range inclusion or a completed FollowUp does not
+establish scientific support either. Keep the earlier Assessment when a repair
+changes the Subject, then add a new scoped judgment.
+
+These tables describe the development reader: Equation/EquationBinding require
+schema 0.3 or later, and Decision requires 0.4. Older readers reject the new
+`contradicted` value. Frozen v0.1 Claims retain their original status fields.
+See [scoped assessments](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md),
+[source provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md),
+[decisions](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/decisions.md) and
+[compatibility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/versioning.md)
+for the detailed rules.
+
 ## Start with the package you use
 
 After [installing MCEG](#install), start by inspecting your scientific package:

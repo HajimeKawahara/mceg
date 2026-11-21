@@ -86,9 +86,9 @@ correspondence still need review and meaningful provider tests.
 
 Claims use `equations: [{id: continuity, revision: '1'}]`. Support Assessments
 add `equation_pins` with those IDs, revisions and SHA-256 values, and optionally
-`binding_pins` with binding IDs and SHA-256 values. A supported Claim with
-equations requires pins for all of them. An unknown Assessment may record
-partial pins while a review is unfinished.
+`binding_pins` with binding IDs and SHA-256 values. A `supported` or `contradicted`
+Assessment requires pins for every equation referenced by its Claim. An unknown
+Assessment may record partial pins while a review is unfinished.
 
 Use `equation_digest` and `binding_digest` from `mceg.schema_v03` to compute
 identities **after** inspecting the definitions and mappings. The digest
@@ -99,7 +99,7 @@ Fingerprinting is conservative byte identity of canonical JSON, not symbolic
 equivalence. Formatting changes can require review too.
 
 A hash mismatch is reported as FAIL by `check`; records remain readable so
-the original outcome can still be inspected. Stored `supported` is never
+the original outcome can still be inspected. Stored support statuses are never
 rewritten or promoted by a hash check. Preserve the old equation revision,
 binding and assessment, and add new revisions/IDs when their meaning changes.
 Do not refresh hashes to imply a new review or test execution.

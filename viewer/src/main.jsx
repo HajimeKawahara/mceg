@@ -58,9 +58,10 @@ function OverviewEntry({ item, select, t, lang }) {
   </button>;
 }
 function Overview({ overview, select, t, lang }) {
-  const { model, source, supported, unknown, open, completed, catalogEntries } = overview;
+  const { model, source, supported, contradicted, unknown, open, completed, catalogEntries } = overview;
   const groups = [
     { key: 'supported', title: t.supportedOverview, items: supported },
+    { key: 'contradicted', title: t.contradictedOverview, items: contradicted },
     { key: 'unknown', title: t.unknownOverview, items: unknown },
     { key: 'open', title: t.openOverview, items: open },
   ];
@@ -228,7 +229,7 @@ function App() {
       }} t={t} lang={lang} />}
       <div className="panels"><aside className="browser panel"><label className="sr-only" htmlFor="search">{t.search}</label><input id="search" type="search" value={query} placeholder={t.search} onChange={e => { setQuery(e.target.value); setPage(0); }} />
         <label htmlFor="source">{t.source}</label><select id="source" value={source} onChange={e => openSource(e.target.value)}><option value="">{t.allSources}</option>{graph.sources.map(s => <option key={s.id} value={s.id}>{s.provider} · {s.path}{s.kind === 'catalog' ? ` (${t.catalogIndex})` : ''}</option>)}</select>
-        <div className="filters">{['all', 'assessments', 'unknown', 'open', 'completed', 'evidence'].map(key => <button key={key} aria-pressed={filter === key} onClick={() => { setFilter(key); setPage(0); }}>{t[key]}<span>{scoped.filter(n => matchesCategory(n, index, key)).length}</span></button>)}</div>
+        <div className="filters">{['all', 'assessments', 'contradicted', 'unknown', 'open', 'completed', 'evidence'].map(key => <button key={key} aria-pressed={filter === key} onClick={() => { setFilter(key); setPage(0); }}>{t[key]}<span>{scoped.filter(n => matchesCategory(n, index, key)).length}</span></button>)}</div>
         <div className="record-list">{filtered.slice(page * PAGE, (page + 1) * PAGE).map(n => <button className={`record-card ${n.id === id ? 'active' : ''}`} key={n.id} onClick={() => select(n.id)} aria-current={n.id === id ? 'true' : undefined}><small>{typeLabel(n.type, lang)}</small><strong>{n.label}</strong><span>{excerpt(n)}</span></button>)}{!filtered.length && <p className="muted">{graph.nodes.length ? t.empty : t.noData}</p>}</div>
         <Pager page={page} total={filtered.length} setPage={setPage} t={t} />
       </aside>

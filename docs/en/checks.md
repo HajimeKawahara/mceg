@@ -125,6 +125,14 @@ reports its declaration. For a selected range/sample Assessment, only that
 membership result is recomputed. An empty Evidence list leaves `source_audit`
 UNKNOWN, and a completed trace never promotes unknown support.
 
+For `recorded_support`, `supported` maps to PASS, `contradicted` to FAIL, and
+`unknown` to UNKNOWN. A selected contradiction makes `check` exit 1 while the
+report retains its Claim revision, Subject, Context and reasons. Without an
+Assessment selector, historical support records are listed without choosing an
+implicit current scientific judgment. A failed file-integrity check or provider
+execution never rewrites a stored Assessment to `contradicted`. See the
+[three support states](v02.md#support-contradiction-and-missing-knowledge).
+
 For the reviewed curated snapshot and default context, the terminal result
 (with explanations omitted here) is:
 

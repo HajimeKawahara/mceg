@@ -201,7 +201,8 @@ def check_contract(path, context, assessment_id=None, *, root=None,
             if assessment.kind == "evidence_support":
                 if selected is not None:
                     entry["checks"].append(result(
-                        "recorded_support", "PASS" if assessment.status == "supported" else "UNKNOWN",
+                        "recorded_support", {"supported": "PASS", "contradicted": "FAIL",
+                                             "unknown": "UNKNOWN"}[assessment.status],
                         f"Stored support: {assessment.status}; claim={assessment.claim}; origin={assessment.origin}",
                         ["Recorded judgment only; no new support evaluation.", *assessment.reasons]))
                 continue

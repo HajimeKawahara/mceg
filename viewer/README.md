@@ -112,7 +112,7 @@ distribution and hash remain accessible.
 After selecting a record, read **About this contract** above the graph. It shows
 the selected record's owning Model name and authored description, including
 comparison tables and evidence links when the author supplies them. Open
-**Judgments & next steps** for one excerpt each for recorded support, unknown
+**Judgments & next steps** for one excerpt each for recorded support, contradiction, unknown
 judgments/domains and pending FollowUps. Expand each group for the remaining
 records; click an excerpt to inspect its authored record and evidence.
 Completed FollowUps, assumptions/domains/limitations
@@ -289,6 +289,8 @@ same question.
 - Recorded support, numerical execution results, membership classifications and
   source inspection states retain separate labels. No overall validity score is
   calculated. An absent judgment is not automatically called `unknown`.
+- **Contradicted judgments** selects only support Assessments explicitly recorded
+  as `status: contradicted`. A failed execution result does not imply this judgment.
 - **Unknown judgments** selects explicit top-level `status: unknown` or
   `classification: unknown`. Other gaps, including unknown Model domains, remain
   visible in the original fields and searchable text; this is not an exhaustive

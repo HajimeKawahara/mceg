@@ -171,8 +171,8 @@ class ContractV03(ContractV02):
             pinned = _unique((_equation_key(p) for p in assessment.equation_pins), "equation pins")
             if pinned - referenced:
                 raise ValueError("Equation pins must refer to assessed Claim equations")
-            if assessment.status == "supported" and pinned != referenced:
-                raise ValueError("Supported assessments must pin every Claim equation")
+            if assessment.status in {"supported", "contradicted"} and pinned != referenced:
+                raise ValueError(f"{assessment.status.capitalize()} assessments must pin every Claim equation")
             binding_ids = _unique((p.id for p in assessment.binding_pins), "binding pins")
             if binding_ids - bindings.keys():
                 raise ValueError("Unknown pinned binding")

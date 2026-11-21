@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add explicitly reviewed `contradicted` support Assessments in experimental
+  schemas `"0.2"`–`"0.4"`. Distinguish scoped contrary evidence from unknown
+  support in checks, explanations and the viewer. Older readers reject the new
+  enum value; v0.1 declarations and historical Assessments remain unchanged.
+- Require matching evidence and equation pins for contradicted Assessments.
+  Execution failure alone never creates a scientific contradiction.
 - Add experimental schema `"0.4"` for authored Decision records, with explicit
   alternatives, selection, reasons, limitations and reconsideration conditions.
   Pin the cited Evidence/Assessment dependency records and retain exact Decision

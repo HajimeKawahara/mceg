@@ -144,6 +144,10 @@ def assessment_detail(contract, path, assessment):
         if assessment.origin == "imported_v0.1_declaration":
             steps.append(action("Review the imported declaration before using it for a new context.",
                                 "Keep the imported Assessment attached to its original Claim revision; add a separate reviewed Assessment for the new target."))
+        if assessment.status == "contradicted":
+            steps.append(action(
+                "Investigate the recorded contradiction for this Claim revision, Subject and Context.",
+                "Review the contrary evidence and failure criterion; record new evidence and a separate Assessment after a repair or revised scope, preserving this judgment."))
         if assessment.status == "unknown":
             steps += claim_detail(contract, path, claim)["suggested_steps"]
             missing = [r.removeprefix("Missing context: ") for r in assessment.reasons if r.startswith("Missing context: ")]

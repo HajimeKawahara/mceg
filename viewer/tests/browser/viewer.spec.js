@@ -135,3 +135,29 @@ test('authored Markdown is local, supports evidence navigation, and cannot load 
   await expect(page.locator('.detail h2')).toHaveText(evidence.label);
   expect(externalRequests).toEqual([]);
 });
+
+
+test('contradicted judgments are visible and link to their recorded reasons and scope', async ({ page }) => {
+  const graph = structuredClone(example);
+  const assessment = graph.nodes.find(n => n.type === 'assessment' && n.record.status === 'supported');
+  assessment.record.status = 'contradicted';
+  assessment.record.reasons = ['The valid comparison exceeds the scoped tolerance.'];
+  graph.nodes.find(n => n.type === 'evidence').record.result = 'failed';
+  await page.goto('/');
+  await page.locator('input[type=file]').setInputFiles({ name: 'contradicted.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(graph)) });
+  await page.locator('.contract-card > button').first().click();
+  await page.getByText('Judgments & next steps', { exact: true }).click();
+  const group = page.locator('.overview-group.contradicted');
+  await expect(group).toContainText('Recorded as contradicted');
+  await expect(group).toContainText(assessment.record.reasons[0]);
+  await group.locator('.overview-entry').click();
+  await expect(page.locator('.detail h2')).toHaveText(assessment.label);
+  await expect(page.locator('.detail .badges')).toContainText('Support status: contradicted');
+  await page.getByRole('button', { name: 'Contradicted judgments' }).click();
+  await expect(page.locator('.record-card')).toHaveCount(1);
+  await expect(page.locator('.record-card')).toContainText(assessment.record.reasons[0]);
+  await page.locator('.detail').getByText('Full record JSON', { exact: true }).click();
+  await expect(page.locator('.detail pre')).toContainText(assessment.record.subject);
+  await expect(page.locator('.detail pre')).toContainText(assessment.record.context);
+  await expect(page.locator('.detail pre')).toContainText(assessment.record.claim_revision);
+});

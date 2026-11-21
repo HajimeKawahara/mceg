@@ -62,8 +62,9 @@ h3 { font-size: 12px; color: #776782; letter-spacing: .04em; margin-bottom: 8px;
 .missing-reference { text-decoration: underline dotted; color: #91683f; }
 .overview-progress > summary { margin-bottom: 14px; }
 .overview-scope { font-size: 10px; margin-bottom: 12px; }
-.overview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.overview-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .overview-group { border-radius: 12px; background: #f2f8f5; padding: 14px; }
+.overview-group.contradicted { background: #fceced; }
 .overview-group.unknown { background: #f6f0fa; }
 .overview-group.open { background: #fff7eb; }
 .overview-group h3 { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 8px; }

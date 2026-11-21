@@ -192,6 +192,13 @@ and physical accuracy are separate questions. A stored result is not a fresh
 solver run. For a recorded v0.2 Assessment, `--assessment ID --root .` also checks
 its selected source and artifact hashes; see the [check guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md).
 
+The development version distinguishes `supported`, `contradicted` and `unknown`
+Assessments. A valid comparison that violates a Claim's criterion can justify
+`contradicted`; an untested claim or failed execution remains `unknown`.
+Each judgment belongs to a specific Claim revision, implementation and context.
+See the [support states](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md#support-contradiction-and-missing-knowledge)
+for review requirements and compatibility.
+
 ## Export relationship graphs
 
 From this MCEG checkout, export a model's evidence and judgments or a calculation's

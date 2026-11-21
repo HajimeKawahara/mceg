@@ -10,6 +10,15 @@ The `v0.1.0` baseline tag remains unchanged; the v0.2 schema remains experimenta
 The [v0.2 guide](v02.md) defines the common records, limited automatic comparisons
 and migration procedure.
 
+The development reader adds the `contradicted` support-Assessment status to
+experimental schemas `"0.2"`, `"0.3"` and `"0.4"`. Existing documents remain
+readable; older readers reject documents using the new enum value. This is an
+explicit experimental-format extension, following the optional-field and
+quantity-enum extensions below. It does not change frozen v0.1 Claim statuses,
+migration results, or existing `unknown` judgments. New contradictions require
+an explicit scoped review; neither failed executions nor stale evidence are
+automatically reclassified. See the [support-state definitions](v02.md#support-contradiction-and-missing-knowledge).
+
 Schema `"0.4"` adds an optional `decisions` collection to v0.3 and preserves the
 earlier readers. Its basis hashes identify the cited records and their declared
 local dependencies. A stale basis does not rewrite a historical Decision or

@@ -93,7 +93,7 @@ test('HCN overview retains source context, authored judgments, open work and cat
   assert.match(overview.catalogEntries[0].record.summary, /recorded model sensitivities/);
   const related = index.nodes.get(overview.open[0].id);
   assert.deepEqual(contractOverview(related, index, graph.selections), overview);
-  for (const group of ['supported', 'unknown', 'open', 'completed']) {
+  for (const group of ['supported', 'contradicted', 'unknown', 'open', 'completed']) {
     for (const item of overview[group]) assert.equal(index.nodes.get(item.id).origin.source, model.origin.source);
   }
   const otherModel = graph.nodes.find(n => n.type === 'model' && n.id !== model.id);
@@ -128,4 +128,32 @@ test('narrative references resolve only to evidence in the same contract snapsho
   for (const href of ['#evidence/missing', '#evidence/%ZZ', 'https://example.org', null]) {
     assert.equal(narrativeEvidence(href, overview.evidence), null);
   }
+});
+
+
+test('contradicted support remains separate from unknown, history, and failed execution results', () => {
+  const graph = fixture();
+  const supported = graph.nodes.find(n => n.type === 'assessment' && n.record.status === 'supported');
+  const contradicted = structuredClone(supported);
+  contradicted.id = 'scoped-contradiction';
+  contradicted.record.id = 'scoped-contradiction';
+  contradicted.record.status = 'contradicted';
+  contradicted.record.reasons = ['The valid comparison exceeds the scoped tolerance.'];
+  graph.nodes.push(contradicted);
+  const evidence = graph.nodes.find(n => n.type === 'evidence');
+  evidence.record.result = 'failed';
+  const before = structuredClone(graph);
+  const index = indexGraph(validateGraph(graph));
+  const overview = contractOverview(supported, index);
+  assert.deepEqual(overview.contradicted.map(item => item.id), [contradicted.id]);
+  assert.equal(overview.contradicted[0].text, contradicted.record.reasons[0]);
+  assert.ok(overview.supported.some(item => item.id === supported.id));
+  assert.ok(overview.unknown.length > 0);
+  assert.ok(!overview.unknown.some(item => item.id === contradicted.id));
+  assert.ok(matchesCategory(contradicted, index, 'contradicted'));
+  assert.ok(matchesCategory(contradicted, index, 'assessments'));
+  assert.ok(!matchesCategory(contradicted, index, 'unknown'));
+  assert.ok(!matchesCategory(evidence, index, 'contradicted'));
+  assert.ok(!matchesCategory(supported, index, 'contradicted'));
+  assert.deepEqual(graph, before);
 });

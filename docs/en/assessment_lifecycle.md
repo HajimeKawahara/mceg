@@ -77,7 +77,10 @@ with `numerical_comparison_failed` as a reason. Missing coverage is unknown
 Evidence with a different reason. A nonzero process exit is `execution_failed`;
 it does not by itself identify a numerical contradiction. Duplicate samples,
 nonfinite residuals, or altered archived artifacts are errors. The example adds
-no new Claim status for refutation or conflict resolution.
+no new Claim status for refutation or conflict resolution. Its archived evaluator
+continues to emit `unknown` for a measured failure. The later development reader
+supports explicitly reviewed [`contradicted` Assessments](v02.md#support-contradiction-and-missing-knowledge);
+it does not reinterpret this trial's saved records or change its evaluator.
 
 ## Minimal identity and migration findings
 

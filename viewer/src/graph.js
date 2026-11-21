@@ -63,9 +63,10 @@ export function category(node, index) {
   return node.type === 'evidence' ? 'evidence' : 'all';
 }
 
-// Only explicit unknown judgments; missing fields are not inferred judgments.
+// Filter explicit judgments only; execution results do not imply support status.
 export function matchesCategory(node, index, filter) {
   if (filter === 'all') return true;
+  if (filter === 'contradicted') return node.type === 'assessment' && node.record.kind === 'evidence_support' && node.record.status === 'contradicted';
   if (filter === 'unknown') return node.record.status === 'unknown' || node.record.classification === 'unknown';
   return category(node, index) === filter;
 }
@@ -85,17 +86,19 @@ export function contractOverview(node, index, selections = []) {
   const model = records.find(n => n.type === 'model');
   if (!model) return null;
   const supported = [];
+  const contradicted = [];
   const unknown = [];
   for (const record of records) {
     if (!['assessment', 'claim'].includes(record.type)) continue;
     const status = record.record.status ?? record.record.classification;
-    if (!['supported', 'unknown'].includes(status)) continue;
+    if (!['supported', 'contradicted', 'unknown'].includes(status)) continue;
+    if (status === 'contradicted' && (record.type !== 'assessment' || record.record.kind !== 'evidence_support')) continue;
     const targetEdge = index.adjacent.get(record.id).find(e => e.source === record.id && e.type === 'assesses');
     const target = targetEdge ? index.nodes.get(targetEdge.target) : null;
     const reasons = record.record.reasons;
     const reason = Array.isArray(reasons) ? reasons.find(r => typeof r === 'string') : null;
     const item = { id: record.id, text: reason || (target && excerpt(target)) || excerpt(record), kind: record.type };
-    (status === 'supported' ? supported : unknown).push(item);
+    ({ supported, contradicted, unknown })[status].push(item);
   }
   for (const domain of Array.isArray(model.record.domains) ? model.record.domains : []) {
     if (domain?.status === 'unknown' && typeof domain.description === 'string') {
@@ -106,7 +109,7 @@ export function contractOverview(node, index, selections = []) {
     .map(n => ({ id: n.id, text: excerpt(n), kind: n.type }));
   const completed = records.filter(n => n.type === 'follow_up' && index.completed.has(n.id))
     .map(n => ({ id: n.id, text: excerpt(n), kind: n.type }));
-  return { model, source: index.sources.get(model.origin.source), supported, unknown, open, completed,
+  return { model, source: index.sources.get(model.origin.source), supported, contradicted, unknown, open, completed,
     evidence: records.filter(n => n.type === 'evidence'),
     catalogEntries: selections.filter(s => s.kind === 'catalog_record' && s.model === model.id),
   };

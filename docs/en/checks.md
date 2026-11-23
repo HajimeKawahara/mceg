@@ -250,6 +250,10 @@ does not infer a latest Assessment from IDs. Anonymous assumptions still need
 human or AI review to become explicit Claims; unregistered problems cannot be
 discovered by this check.
 
+For a declared use that must not proceed with unknown required support, use a
+[readiness manifest](readiness.md). `--require-handling` remains a check for a
+recorded response; it does not require scientific readiness.
+
 ## Inspect the next step
 
 When UNKNOWN or FAIL remains, `check` prints one `Next steps: mceg explain ...`

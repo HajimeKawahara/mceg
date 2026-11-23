@@ -19,6 +19,9 @@ def main(argv: list[str] | None = None) -> int:
         if argv[0] == "check":
             from .check import main as command
             return command(argv[1:])
+        if argv[0] == "readiness":
+            from .readiness import main as command
+            return command(argv[1:])
         if argv[0] == "coverage":
             from .coverage import main as command
             return command(argv[1:])
@@ -49,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
             "Commands:\n"
             "  init      Start a model contract and register it for review.\n"
             "  check     Discover contracts and summarize available checks.\n"
+            "  readiness Check pinned requirements for an explicitly declared use.\n"
             "  coverage  Find model registration and source-review gaps.\n"
             "  docs      Generate RST sources for a repository's Sphinx docs.\n"
             "  equations Export equation definitions as a TeX fragment.\n"

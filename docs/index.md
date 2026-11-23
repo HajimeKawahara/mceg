@@ -25,6 +25,7 @@ en/initialization
 en/provider_onboarding
 en/coverage
 en/checks
+en/readiness
 en/provenance
 en/evidence_audit
 en/v02

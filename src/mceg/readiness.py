@@ -142,7 +142,8 @@ def check_readiness(path, *, root=None):
                                    "Entry-point source has a selected-file pin" if pinned else
                                    "Entry-point source needs a selected-file SHA-256"))
     status, message = _binding_source(SimpleNamespace(
-        id="use_entry_point", source=source, symbol=symbol, arguments={}), root)
+        id="use_entry_point", source=source, symbol=symbol, arguments={}), root,
+        allow_decorators=True)
     report["checks"].append(_check("entry_point_source", status, message))
     assessments = {a.id: a for a in getattr(contract, "assessments", [])}
     for requirement in manifest.requirements:

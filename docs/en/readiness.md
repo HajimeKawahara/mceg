@@ -77,10 +77,13 @@ automatic fallback to another implementation or Context.
 
 The entry point must occur in the Subject's `implementation.entry_points`, have
 a source-file SHA-256 in `selected_files`, and be a statically inspectable Python
-function (`relative/file.py:function` or `relative/file.py:Class.method`). A
-missing, decorated, dynamically rebound or ambiguous declaration is not accepted.
-This checks a declaration, **not a call graph, function execution or coupling**.
-The latter needs its own Claim, scoped Assessment and appropriate evidence.
+function (`relative/file.py:function` or `relative/file.py:Class.method`). Missing,
+conditional, dynamically rebound or ambiguous declarations are not accepted.
+Decorated functions such as a JAX-jitted method are accepted as lexical
+declarations; their decorators are never evaluated. This checks a declaration,
+**not a runtime callable, call graph, function execution or coupling**. Those
+need their own Claim, scoped Assessment and appropriate evidence. EquationBinding
+checks retain their existing stricter treatment of decorators.
 
 ## Run and interpret the check
 

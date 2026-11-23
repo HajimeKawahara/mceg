@@ -9,6 +9,7 @@ import pytest
 from mceg import ContractV04
 from mceg.__main__ import main
 from mceg.readiness import UseManifest, check_readiness, decision_digest
+from mceg.equation_checks import _binding_source
 from mceg.schema_v04 import decision_basis_digest
 
 from test_handling import add_decision, add_task, data  # noqa: F401
@@ -219,6 +220,30 @@ def test_source_symlink_cannot_escape_the_selected_root(setup, tmp_path_factory)
     source.symlink_to(outside)
     path, _ = write_use(setup)
     assert not check_readiness(path, root=directory)["ready"]
+
+
+def test_decorated_entry_point_is_only_a_lexical_declaration(setup):
+    from types import SimpleNamespace
+
+    data, directory = setup
+    source = directory / "src/model.py"
+    source.write_text("raise RuntimeError('Never import this provider')\n"
+                      "class Atmosphere:\n"
+                      "    @partial(jax.jit, static_argnums=0)\n"
+                      "    def spectrum(self):\n"
+                      "        return 1\n")
+    data["subjects"][0]["selected_files"]["src/model.py"] = sha256(source.read_bytes()).hexdigest()
+    data["subjects"][0]["implementation"]["entry_points"] = ["src/model.py:Atmosphere.spectrum"]
+    path, manifest = write_use(setup)
+    manifest["target"]["entry_point"] = "src/model.py:Atmosphere.spectrum"
+    path.write_text(json.dumps(manifest))
+    report = check_readiness(path, root=directory)
+    assert report["ready"]
+    check = next(c for c in report["checks"] if c["name"] == "entry_point_source")
+    assert "decorators are not evaluated" in check["message"]
+    # Equation bindings retain their stricter declaration/argument semantics.
+    binding = SimpleNamespace(id="binding", source="src/model.py", symbol="Atmosphere.spectrum", arguments={})
+    assert _binding_source(binding, directory)[0] == "UNKNOWN"
 
 
 def test_unknown_source_audit_is_not_waived_by_an_exploration_decision(setup):

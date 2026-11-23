@@ -61,6 +61,23 @@ See [scoped assessments](https://github.com/HajimeKawahara/mceg/blob/main/docs/e
 [compatibility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/versioning.md)
 for the detailed rules.
 
+Known limitations need a response as development proceeds. For example, a
+prescribed radiation field can be documented as an assumption while its effect
+on a spectrum remains unknown. Give that question its own scoped Claim and
+Assessment, then link an Assessment-targeted FollowUp or a provisional Decision.
+`mceg check` reports missing handling; providers can explicitly require it:
+
+```bash
+mceg check contract.yaml --assessment radiation_review --require-handling
+mceg explain contract.yaml --assessment radiation_review --investigation
+```
+
+This checks whether a response is recorded, not whether the approximation is
+accurate. Scientific support remains `unknown` or `contradicted` until separately
+reviewed. See [handling known gaps](docs/en/checks.md#handling-known-gaps) for the
+scope and Decision requirements. MCEG does not extract new Claims from prose
+assumptions automatically, and no new record type is needed.
+
 ## Start with the package you use
 
 After [installing MCEG](#install), start by inspecting your scientific package:

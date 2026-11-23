@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Report scoped unresolved Assessments without an open, directly targeted
+  FollowUp or a matching pinned Decision with limitations and reconsideration
+  conditions. Add opt-in `check --assessment ID --require-handling` and expose
+  handling in investigation reports. Recorded handling never resolves scientific
+  support; schemas and provider execution remain unchanged.
 - Add explicitly reviewed `contradicted` support Assessments in experimental
   schemas `"0.2"`–`"0.4"`. Distinguish scoped contrary evidence from unknown
   support in checks, explanations and the viewer. Older readers reject the new

@@ -202,6 +202,54 @@ the command does not select among those archives or launch a new run.
 The command and JSON check report are experimental conveniences; they do not
 change the frozen v0.1 validation/trace reports.
 
+## Handling known gaps
+
+A known approximation can remain buried in an `assumptions` paragraph even when
+unrelated numerical tests pass. Register its adequacy as a separate Claim and
+scoped Assessment. `check` reports `handling_coverage` for unresolved
+`evidence_support` Assessments (`unknown` or `contradicted`):
+
+```bash
+mceg check contract.yaml --assessment radiation_review
+mceg check contract.yaml --assessment radiation_review --require-handling --json
+mceg explain contract.yaml --assessment radiation_review --investigation
+```
+
+The second command opts into a provider review requirement. It exits 1 when
+handling is missing; the ordinary check reports that gap as `UNKNOWN` and does
+not fail for it alone. `--require-handling` requires an explicit support Assessment
+selection so historical judgments are not implicitly made current requirements.
+A selected `contradicted` Assessment still fails `recorded_support`, even when
+its handling check passes. A supported Assessment has no handling requirement.
+
+Handling is recorded by either:
+
+- An open FollowUp with `target_kind: assessment` and that exact Assessment ID.
+  Claim-wide and Evidence-wide tasks remain visible, but do not establish
+  handling for every Subject/Context. A FollowUpResolution closes the task and
+  does not resolve the Assessment; record a next task or scoped disposition if
+  support remains unresolved.
+- A nonsuperseded Decision directly pinning that Assessment, with the same
+  explicit `subject` and `context`, nonempty `limitations` and `reconsider_when`,
+  and matching fingerprints for its entire recorded basis. Its selected option
+  and reasons should explain how to handle the unresolved judgment. Merely
+  citing the same paper, an unscoped choice, or a stale Decision is insufficient.
+
+This is a **record-coverage check**, not a scientific or policy decision. MCEG
+does not interpret the reasoning in prose, declare a recorded task sufficient,
+approve a provisional use, or change support to `supported`. Even a passing
+handling check leaves the unresolved judgment and its limitations visible.
+Selection and exit policy belong to the provider, independently of numerical
+execution; no runtime MCEG dependency is required.
+
+Check JSON adds `handling` rows containing `assessment`, `claim`, `claim_revision`,
+`subject`, `context`, `recorded_support`, `open_follow_ups`, `decisions` and
+`handling_recorded`. Investigation JSON exposes the same rows for its included
+Assessments. A contract-wide check includes historical unresolved records and
+does not infer a latest Assessment from IDs. Anonymous assumptions still need
+human or AI review to become explicit Claims; unregistered problems cannot be
+discovered by this check.
+
 ## Inspect the next step
 
 When UNKNOWN or FAIL remains, `check` prints one `Next steps: mceg explain ...`
@@ -295,6 +343,7 @@ JSON adds an `investigation` object to each selected contract's existing report:
 | --- | --- |
 | `selection`, `scope` | Selected records and the traversal boundary |
 | `completed_follow_ups`, `pending_follow_ups` | Explicit completion records and outstanding authored tasks |
+| `handling` | Scoped unresolved Assessments and their recorded open tasks or qualifying Decisions; support remains unchanged |
 | `evidence`, `assessments` | Related records with their original scopes, source locations, reasons and judgments |
 | `subjects`, `contexts` | Bindings from included Evidence and Assessments |
 | `suggested_steps` | Generated guidance labeled with its target record |

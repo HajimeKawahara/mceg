@@ -21,6 +21,7 @@ from .assessment import compare_condition
 from .integrity import file_integrity, resolve_root
 from .equation_checks import equation_checks
 from .decisions import decision_basis_checks, decision_records, select_decisions
+from .handling import assessment_handling, handling_check
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
 
@@ -143,9 +144,11 @@ def integrity_checks(contract, assessment, evidence_ids, root):
 
 
 def check_contract(path, context, assessment_id=None, *, root=None,
-                   decision_id=None, decision_revision=None):
+                   decision_id=None, decision_revision=None, require_handling=False):
     """Return checks, or None when a valid contract does not contain the selected ID."""
     root = resolve_root(root, assessment_id)
+    if require_handling and assessment_id is None:
+        raise ValueError("--require-handling requires --assessment ID")
     if decision_id is not None and assessment_id is not None:
         raise ValueError("Select either an Assessment or a Decision")
     if decision_revision is not None and decision_id is None:
@@ -163,6 +166,8 @@ def check_contract(path, context, assessment_id=None, *, root=None,
         selected = next((a for a in getattr(contract, "assessments", []) if a.id == assessment_id), None)
         if selected is None:
             return None
+        if require_handling and selected.kind != "evidence_support":
+            raise ValueError("--require-handling requires an evidence_support Assessment")
     entry["audit_scope"] = audit_scope(selected)
     if contract.schema_version == "0.1":
         entry["declarations"] = [claim.model_dump() for claim in contract.claims]
@@ -194,6 +199,9 @@ def check_contract(path, context, assessment_id=None, *, root=None,
                 entry["checks"].extend(decision_basis_checks(contract, decision))
         assessments = [selected] if selected is not None else contract.assessments
         entry["assessments"] = [a.model_dump() for a in assessments]
+        entry["handling"] = assessment_handling(contract, assessments)
+        if entry["handling"] or require_handling:
+            entry["checks"].append(handling_check(entry["handling"], required=require_handling))
         contexts = {c.id: c for c in contract.contexts}
         conditions = {(c.id, c.revision): c for c in contract.conditions}
         for assessment in assessments:
@@ -365,6 +373,8 @@ def main(argv=None):
     selection.add_argument("--assessment", help="Check one Assessment ID and its evidence dependencies")
     selection.add_argument("--decision", help="Check a Decision ID, including all recorded revisions")
     parser.add_argument("--decision-revision", help="Select an exact revision with --decision ID")
+    parser.add_argument("--require-handling", action="store_true",
+                        help="Fail when the selected support Assessment has no recorded handling; requires --assessment ID")
     parser.add_argument("--root", type=Path, metavar="DIR",
                         help="Verify local file hashes relative to DIR; requires --assessment ID")
     output = parser.add_mutually_exclusive_group()
@@ -376,16 +386,22 @@ def main(argv=None):
     try:
         if args.decision_revision is not None and args.decision is None:
             raise ValueError("--decision-revision requires --decision ID")
+        if args.require_handling and args.assessment is None:
+            raise ValueError("--require-handling requires --assessment ID")
         root = resolve_root(args.root, args.assessment)
         context = requested_context(args)
         paths = discover(args.paths or [Path.cwd()])
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
     selected = [p for p in paths if args.k.casefold() in str(p).casefold()]
-    contracts = [entry for p in selected
-                 if (entry := check_contract(p, context, args.assessment, root=root,
-                                             decision_id=args.decision,
-                                             decision_revision=args.decision_revision)) is not None]
+    try:
+        contracts = [entry for p in selected
+                     if (entry := check_contract(p, context, args.assessment, root=root,
+                                                 decision_id=args.decision,
+                                                 decision_revision=args.decision_revision,
+                                                 require_handling=args.require_handling)) is not None]
+    except ValueError as exc:
+        parser.error(str(exc))
     if args.assessment is not None and selected and not contracts:
         parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2 or newer")
     if args.decision is not None and selected and not contracts:

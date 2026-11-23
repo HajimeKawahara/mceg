@@ -18,6 +18,7 @@ from .provenance import trace_provenance
 from .schema_v02 import ContractV02
 from .equation_checks import equation_checks
 from .decisions import decision_detail, select_decisions
+from .handling import assessment_handling, handling_check
 from .validator import load_contract
 from ._display import (add_language_argument, check_message, detail, language_command,
                        translate, wrap)
@@ -183,6 +184,9 @@ def assessment_detail(contract, path, assessment):
 
 
 def check_steps(name, entry):
+    if name == "handling_coverage":
+        return [action("Record how each unresolved Assessment will be investigated or used provisionally.",
+                       "Link an open FollowUp to the Assessment, or record a scoped Decision with its pinned basis, limitations and reconsideration conditions; preserve the scientific judgment.")]
     if name == "decision_basis":
         return [action("Review the missing or changed basis for this recorded choice.",
                        "Keep the earlier Decision; add a separately reviewed revision if its choice or basis changes.")]
@@ -340,6 +344,7 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
         selected = next((a for a in getattr(contract, "assessments", []) if a.id == assessment_id), None)
         report.update(view="assessment", items=[])
         if selected is not None:
+            report["handling"] = assessment_handling(contract, [selected])
             audit, traces = source_audit(contract, selected.evidence)
             gaps = {}
             for trace in traces:
@@ -357,6 +362,10 @@ def explain_contract(path, context, evidence_id=None, claim_id=None, assessment_
                                         if check["status"] != "PASS" else []} for check in checks)
             report["items"].extend({**check, "suggested_steps": []}
                                    for check in equation_checks(contract, selected, root))
+            if report["handling"]:
+                check = handling_check(report["handling"])
+                report["items"].append({**check, "suggested_steps":
+                                        check_steps("handling_coverage", report) if check["status"] != "PASS" else []})
     else:
         entry = check_contract(path, context)
         report["audit_scope"] = entry["audit_scope"]
@@ -455,6 +464,13 @@ def display(report, lang="en", plain=False):
                 record({k: v for k, v in selected["record"].items()
                         if k in {"id", "revision", "statement", "scope"}})
         write(t("Review progress"), code="1;36")
+        for item in bundle.get("handling", []):
+            write(f"Handling: {item['assessment']}; scientific support remains {item['recorded_support']}; "
+                  f"response {'recorded' if item['handling_recorded'] else 'missing'}", code="1;33")
+            write(f"subject={item['subject']}; context={item['context']}", "      ")
+            write("Open follow-ups: " + (", ".join(item["open_follow_ups"]) or "none"), "      ")
+            write("Scoped decisions: " + (", ".join(d["id"] + "@" + d["revision"]
+                  for d in item["decisions"]) or "none"), "      ")
         for resolution in bundle["completed_follow_ups"]:
             write(t("Completed follow-up") + ": " + resolution["follow_up"], code="1;36")
             write(resolution["note"], "      ")

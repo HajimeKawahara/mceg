@@ -83,7 +83,8 @@ def test_completion_preserves_history_and_never_promotes_support(reviewed, capsy
     assert "Inspect the source conventions." not in output
     assert "Obtain and inspect" not in output
     checks = {c["name"]: c["status"] for c in check_contract(path, {}, "current-review")["checks"]}
-    assert checks == {"structure": "PASS", "source_audit": "PASS", "recorded_support": "UNKNOWN"}
+    assert checks == {"structure": "PASS", "source_audit": "PASS", "recorded_support": "UNKNOWN",
+                      "handling_coverage": "UNKNOWN"}
     assert all(a.status == "unknown" for a in contract.assessments)
     assert path.read_bytes() == before
 

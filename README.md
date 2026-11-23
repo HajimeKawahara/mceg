@@ -78,6 +78,27 @@ reviewed. See [handling known gaps](docs/en/checks.md#handling-known-gaps) for t
 scope and Decision requirements. MCEG does not extract new Claims from prose
 assumptions automatically, and no new record type is needed.
 
+**Handling a gap does not make a model ready for its intended use.** A separate
+use manifest selects required Assessments for the actual entry point, Subject
+and Context. `mceg readiness mceg/uses/physical-spectrum.yaml --root .` requires
+all selected requirements to pass, including current record and file pins.
+An `unknown` radiation-feedback Assessment with an open FollowUp still means
+`NOT_READY`; a supported test of an unrelated solver cannot validate the spectrum
+path. An explicitly scoped Decision can permit a declared exploratory use while
+preserving the unknown scientific status.
+
+| Use-manifest field | Meaning |
+| --- | --- |
+| `target` | Contract, actual entry point, Subject and Context; all required Assessments must match this scope. |
+| `requirements` | Pinned Assessments labeled `implementation` or `physical_support`; every requirement must be met. |
+| `mode` | `scientific` requires supported Assessments; `exploration` can explicitly select a scoped Decision per physical-support requirement. |
+| Report `outcome` | `requirements_met`, `exploration_permitted`, or `not_ready`; no stored Assessment is changed. |
+
+This manifest is a provider-owned selection policy, **not a new Contract record
+type** or a proof that the required physics is complete. Entry-point inspection
+is static; evidence must establish actual model coupling. See
+[readiness for a declared use](docs/en/readiness.md).
+
 ## Start with the package you use
 
 After [installing MCEG](#install), start by inspecting your scientific package:
@@ -125,6 +146,7 @@ commands below from a provider checkout after installing MCEG.
 | --- | --- |
 | Start a model contract and inventory entry | `mceg init MODEL_ID --source PATH --symbol NAME` |
 | Check discovered contracts and saved evidence | `mceg check` |
+| Check requirements for a declared use | `mceg readiness USE.yaml --root .` |
 | Explain gaps and the next review steps | `mceg explain` |
 | Discover an installed provider's model evidence | `mceg explain --package exogibbs` |
 | Resume a recorded investigation | `mceg explain CONTRACT --evidence EVIDENCE_ID --investigation --json` |

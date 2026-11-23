@@ -33,7 +33,7 @@ def _attribute_name(node):
     return None
 
 
-def _function(tree, symbol):
+def _function(tree, symbol, *, allow_decorators=False):
     """Locate an unambiguous lexical declaration, without resolving Python."""
     body = tree.body
     parts = symbol.split(".")
@@ -70,7 +70,7 @@ def _function(tree, symbol):
         if not definitions:
             return None, "FAIL", f"Function declaration not found: {symbol}"
         declaration = definitions[0]
-        if declaration not in body or declaration.decorator_list:
+        if declaration not in body or (declaration.decorator_list and not allow_decorators):
             return None, "UNKNOWN", f"Conditional or decorated declaration: {symbol}"
         if index < len(parts) - 1:
             body = declaration.body
@@ -80,7 +80,7 @@ def _function(tree, symbol):
             return None, "FAIL", f"Selected declaration is not a function: {symbol}"
 
 
-def _binding_source(binding, root):
+def _binding_source(binding, root, *, allow_decorators=False):
     label = f"{binding.id}: {binding.source}:{binding.symbol}"
     if root is None:
         return "UNKNOWN", f"{label}: no file root supplied"
@@ -97,7 +97,7 @@ def _binding_source(binding, root):
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=binding.source)
     except (OSError, ValueError, RuntimeError, SyntaxError) as exc:
         return "FAIL", f"{label}: cannot inspect source: {exc}"
-    declaration, status, message = _function(tree, binding.symbol)
+    declaration, status, message = _function(tree, binding.symbol, allow_decorators=allow_decorators)
     if declaration is None:
         return status, f"{label}: {message}"
     args = declaration.args
@@ -106,7 +106,8 @@ def _binding_source(binding, root):
     missing = set(binding.arguments) - parameters
     if missing:
         return "FAIL", f"{label}: arguments not declared: {', '.join(sorted(missing))}"
-    return "PASS", f"{label}: function and {len(binding.arguments)} mapped arguments declared"
+    suffix = "; decorators are not evaluated" if allow_decorators else ""
+    return "PASS", f"{label}: function and {len(binding.arguments)} mapped arguments declared{suffix}"
 
 
 def equation_checks(contract, assessment, root=None):

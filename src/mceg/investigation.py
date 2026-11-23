@@ -2,6 +2,7 @@
 
 from .schema_v02 import ContractV02
 from .decisions import decision_detail, decision_records, select_decisions
+from .handling import assessment_handling
 
 
 def build_investigation(contract, path, *, evidence_id=None, claim_id=None, assessment_id=None,
@@ -153,6 +154,7 @@ def build_investigation(contract, path, *, evidence_id=None, claim_id=None, asse
                   "its explicit basis; related Decisions are navigation records, not additional support."),
         "completed_follow_ups": completed,
         "pending_follow_ups": pending,
+        "handling": assessment_handling(contract, [a for a in assessments if a.id in assessment_ids]),
         "evidence": details,
         "assessments": assessment_details,
         "decisions": decision_details,

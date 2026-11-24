@@ -144,6 +144,8 @@ def equation_checks(contract, assessment, root=None):
                     for pin in assessment.binding_pins]
         checks.append(_check("binding_definitions", outcomes,
                              "Recorded equation-to-code mappings, not implementation correctness"))
-        checks.append(_check("binding_source", [_binding_source(b, root) for b in pinned],
-                             "Python declarations only; no provider execution or constant evaluation"))
+        checks.append(_check("binding_source", [
+            _binding_source(b, root, allow_decorators=True) for b in pinned
+        ], "Python declarations and arguments before decoration; no runtime signature, "
+           "provider execution or constant evaluation"))
     return checks

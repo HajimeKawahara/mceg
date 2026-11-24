@@ -77,9 +77,13 @@ derivative formulas separately, with scoped Claims about each connection.
 
 `mceg check --assessment ID --root ROOT` checks the selected bindings with
 Python's AST, without importing or executing the source. It checks declared
-function and parameter locations only. Dynamic or ambiguous definitions can
-remain UNKNOWN. Existence of a function is not evidence that it evaluates the
-equation. Unit conversions, constants, returned values and scientific
+function and parameter locations **before decorators are applied**. A unique,
+unconditional decorated declaration is inspected without evaluating its
+decorators, even if a decorator would replace the callable or its signature.
+Mapped parameters must still occur in the original declaration. Dynamic,
+conditional or rebound definitions remain UNKNOWN. This does not verify the
+runtime callable or its accepted arguments. Existence of a function is not
+evidence that it evaluates the equation. Unit conversions, constants, returned values and scientific
 correspondence still need review and meaningful provider tests.
 
 ## Pin a review without rewriting its history

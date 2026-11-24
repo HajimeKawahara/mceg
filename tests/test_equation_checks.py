@@ -91,9 +91,10 @@ def test_selection_does_not_inspect_unrelated_equations_or_bindings(recorded):
     assert set(statuses(scoped, root).values()) == {"PASS"}
 
 
-def test_deleted_argument_is_not_hidden_by_kwargs(recorded):
+@pytest.mark.parametrize("decoration", ["", "@replace_callable\n"])
+def test_deleted_argument_is_not_hidden_by_kwargs(recorded, decoration):
     contract, root, source, _ = recorded
-    source.write_text(f"def {contract.bindings[0].symbol}(**kwargs):\n    return 0\n")
+    source.write_text(decoration + f"def {contract.bindings[0].symbol}(**kwargs):\n    return 0\n")
     assert statuses(contract, root)["binding_source"] == "FAIL"
     assert contract.assessments[0].status == "supported"
 
@@ -135,7 +136,7 @@ def test_source_checker_defensively_rejects_nonlocal_paths(recorded, source):
     assert _binding_source(binding, root)[0] == "FAIL"
 
 
-@pytest.mark.parametrize("mode", ["duplicate", "conditional", "assignment", "dynamic", "decorator"])
+@pytest.mark.parametrize("mode", ["duplicate", "conditional", "assignment", "dynamic"])
 def test_ambiguous_python_bindings_are_unknown(recorded, mode):
     contract, root, source, code = recorded
     name = contract.bindings[0].symbol
@@ -147,10 +148,29 @@ def test_ambiguous_python_bindings_are_unknown(recorded, mode):
         code += f"{name} = replacement\n"
     elif mode == "dynamic":
         code += f"globals()[{name!r}] = replacement\n"
-    else:
-        code = "@decorator\n" + code
     source.write_text(code)
     assert statuses(contract, root)["binding_source"] == "UNKNOWN"
+
+
+def test_decorated_binding_checks_original_arguments_without_running_wrapper(recorded, tmp_path):
+    contract, root, source, code = recorded
+    marker = tmp_path / "decorator-ran"
+    source.write_text(
+        "from pathlib import Path\n"
+        "def replace_callable(function):\n"
+        f"    Path({str(marker)!r}).touch()\n"
+        "    return lambda: None\n\n"
+        "@replace_callable\n" + code
+    )
+    before = contract.model_dump()
+    check = next(item for item in equation_checks(contract, contract.assessments[0], root)
+                 if item["name"] == "binding_source")
+    assert check["status"] == "PASS"
+    assert "before decoration" in check["message"]
+    assert "no runtime signature" in check["message"]
+    assert "decorators are not evaluated" in check["details"][0]
+    assert not marker.exists()
+    assert contract.model_dump() == before
 
 
 def test_qualified_function_and_positional_keyword_only_arguments(tmp_path):
@@ -161,6 +181,23 @@ def test_qualified_function_and_positional_keyword_only_arguments(tmp_path):
     assert _binding_source(binding, tmp_path)[0] == "PASS"
     source.write_text(source.read_text() + "Model.evaluate = other\n")
     assert _binding_source(binding, tmp_path)[0] == "UNKNOWN"
+
+
+def test_decorated_class_and_method_only_expose_source_declarations(tmp_path):
+    source = tmp_path / "model.py"
+    source.write_text("raise RuntimeError('Do not import')\n"
+                      "@replace_class\nclass Model:\n"
+                      "    @replace_method\n"
+                      "    def evaluate(self, radius, /, *, velocity):\n"
+                      "        return radius\n")
+    binding = SimpleNamespace(id="method", source="model.py", symbol="Model.evaluate",
+                              arguments={"radius": None, "velocity": None})
+    status, message = _binding_source(binding, tmp_path, allow_decorators=True)
+    assert status == "PASS" and "decorators are not evaluated" in message
+    binding.arguments["absent"] = None
+    assert _binding_source(binding, tmp_path, allow_decorators=True)[0] == "FAIL"
+    source.write_text(source.read_text() + "Model = replacement\n")
+    assert _binding_source(binding, tmp_path, allow_decorators=True)[0] == "UNKNOWN"
 
 
 def test_non_equation_and_condition_assessments_have_no_extra_checks(recorded):

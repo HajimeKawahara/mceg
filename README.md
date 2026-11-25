@@ -379,6 +379,10 @@ See the [changelog](https://github.com/HajimeKawahara/mceg/blob/main/CHANGELOG.m
 
 ## Development
 
+MCEG's own [minimal self-description](mceg/README.md) records three design
+principles and one existing document-loading feature under `mceg/`. These are
+optional development records; package execution does not depend on them.
+
 ```bash
 python -m pip install -e '.[test]'
 python -m pytest

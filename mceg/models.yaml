@@ -1,0 +1,25 @@
+inventory_version: '0.1'
+scope: 'One-feature self-description pilot: read_document and its YAML loader in validator.py.
+  Other functions (including schema dispatch), other package files and example contracts are
+  outside scope. This is not package-wide coverage.'
+source_roots:
+- src/mceg/validator.py
+contract_roots:
+- mceg/contracts
+files:
+  src/mceg/validator.py:
+    sha256: cacf49fbcb80f347086682801e3a38ec2ae97bb7fad15a90db4352af239f52cb
+    role: model
+    note: Inspected read_document and _UniqueKeyLoader for this pilot. The whole-file hash
+      detects changes; it does not establish coverage of schema dispatch.
+models:
+- id: mceg.read_document
+  description: YAML/JSON document loading with duplicate-key rejection; software behavior,
+    not a physical model.
+  bindings:
+  - path: src/mceg/validator.py
+    symbol: read_document
+  contracts:
+  - path: mceg/contracts/mceg.read_document.yaml
+    model_id: mceg.read_document
+  review_pending: true

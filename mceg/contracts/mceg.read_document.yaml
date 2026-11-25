@@ -1,0 +1,160 @@
+schema_version: '0.2'
+model:
+  id: mceg.read_document
+  name: YAML and JSON document loading
+  description: 'One software feature: parse local documents with duplicate-key rejection.
+    Schema validation and other MCEG features are outside this pilot.'
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: ecbc2cc4352188f9c2779274205b788bf54545ca
+    entry_points:
+    - src/mceg/validator.py:read_document
+assumptions:
+- statement: Execution must remain independent of these optional self-description records.
+  evidence:
+  - design_intent
+- statement: Structural validity and passing software tests must remain separate from scientific
+    support.
+  evidence:
+  - design_intent
+- statement: Evidence and remaining review tasks must be inspectable and resumable by humans
+    and assistants.
+  evidence:
+  - design_intent
+domains:
+- kind: numerical_evaluation
+  status: documented
+  description: Software input boundary only; no physical quantities or applicability domain.
+  conditions:
+  - A readable local UTF-8 file is supplied.
+  - The .json suffix selects JSON; otherwise JSON-looking text is tried as JSON before falling
+    back to YAML on JSON syntax errors.
+  - YAML uses a SafeLoader subclass with duplicate-key rejection.
+  evidence:
+  - implementation
+claims:
+- id: document_loading_regressions
+  revision: '1'
+  statement: The selected regression cases reject duplicate JSON keys and six invalid YAML
+    inputs (including duplicate keys and a Python object tag), and preserve a JSON exponent
+    value.
+  kind: numerical_verification
+  scope: Seven existing pytest cases named in the receipt. This is software regression verification,
+    not exhaustive parser security or scientific validation.
+evidence:
+- id: design_intent
+  kind: theory
+  summary: Three authored design commitments for this self-description.
+  sources:
+  - mceg/README.md
+  scope: Normative intent only; the regression assessment does not verify these principles
+    across MCEG.
+  provenance:
+    role: primary
+    location: mceg/README.md, Design principles
+    inspection: inspected
+    note: The principles are authored here; they are not inferred from passing tests.
+- id: implementation
+  kind: implementation
+  summary: 'Inspected read_document and _UniqueKeyLoader: JSON object pairs reject duplicates;
+    YAML uses SafeLoader and rejects duplicate or unhashable mapping keys.'
+  sources:
+  - src/mceg/validator.py
+  scope: Document parsing only. load_contract schema dispatch is not assessed.
+  subject: recorded_source
+  provenance:
+    role: primary
+    location: src/mceg/validator.py:read_document and _UniqueKeyLoader
+    inspection: inspected
+    note: This authored source is the primary record of the implemented behavior; no external
+      specification compliance is claimed.
+- id: regression_run
+  kind: numerical_test
+  summary: Seven selected existing regression cases passed; command, versions and source hashes
+    are retained in the receipt.
+  sources:
+  - tests/test_validator.py
+  - tests/test_v02.py
+  - mceg/evidence/read_document/receipt.json
+  - mceg/evidence/read_document/pytest.txt
+  scope: Six YAML rejection cases through load_contract and one JSON exponent/duplicate-key
+    case through read_document. Only the selected cases were executed in this receipt.
+  result: passed
+  subject: recorded_source
+  context: recorded_environment
+  artifacts:
+  - source: mceg/evidence/read_document/receipt.json
+    sha256: 90b71a459888dc20a5b9af02c7fe86d7618e745ba526f584812404fd367b3c99
+  - source: mceg/evidence/read_document/pytest.txt
+    sha256: 22dda2ca00ae6324a6f97b96c400ce0c3cb8bf22b31857fc022eeba879e7e569
+  provenance:
+    role: primary
+    location: Selected pytest node IDs in mceg/evidence/read_document/receipt.json; captured
+      output in pytest.txt.
+    inspection: inspected
+    note: 'Executed locally and inspected the selected tests and output: exit 0, seven passed.
+      Selected source/test bytes matched the recorded Git revision before and after the run.'
+limitations:
+- statement: Finite regression cases do not establish exhaustive input safety, resource limits,
+    schema correctness or scientific truth.
+  evidence:
+  - regression_run
+- statement: Selected file hashes are not a complete dependency lock. Human review of the
+    pilot boundary and links remains pending.
+  evidence:
+  - implementation
+  - regression_run
+subjects:
+- id: recorded_source
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: ecbc2cc4352188f9c2779274205b788bf54545ca
+    entry_points:
+    - src/mceg/validator.py:read_document
+  selected_files:
+    src/mceg/validator.py: cacf49fbcb80f347086682801e3a38ec2ae97bb7fad15a90db4352af239f52cb
+    tests/test_validator.py: 6c02689784ee8ce7ebfe23ccb22f93f564f566b68fb6ce94e4a56485b46296bc
+    tests/test_v02.py: 3681804e36278c6d82f71e98054a15800c41c4785832b7eb5e6c70724ecc903f
+contexts:
+- id: recorded_environment
+  scope: Local regression execution recorded by the receipt, not a user calculation.
+  settings:
+    python: 3.12.7
+    pytest: 8.3.3
+    pydantic: 2.13.5
+    pyyaml: 6.0.2
+    pytest_plugin_autoload: false
+assessments:
+- id: regression_review
+  kind: evidence_support
+  claim: document_loading_regressions
+  claim_revision: '1'
+  subject: recorded_source
+  context: recorded_environment
+  method:
+    id: existing_pytest_regressions
+    revision: '1'
+    description: Run the two selected pytest node IDs in the receipt; inspect exit status,
+      captured output and assertions. YAML parametrization produces six cases.
+  status: supported
+  origin: reviewed
+  evidence:
+  - implementation
+  - regression_run
+  reasons:
+  - All seven selected cases passed at the recorded source revision and environment.
+  - Support is limited to the explicit regression claim; design intent and overall MCEG correctness
+    are not certified.
+follow_ups:
+- id: review_boundary
+  target_kind: evidence
+  target: implementation
+  action: Have a maintainer review the one-feature boundary, the design commitments and the
+    inventory/contract links before clearing review_pending.
+  requires:
+  - mceg/README.md
+  - mceg/models.yaml
+  - src/mceg/validator.py
+  - The selected test definitions and saved receipt.
+  completion: A maintainer records the boundary/link review and a FollowUpResolution with
+    review evidence; only then clear the inventory review_pending flag.

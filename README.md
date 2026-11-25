@@ -19,7 +19,7 @@ inspection. It consumes exported Graph JSON; MCEG itself does not depend on it.
 ## Main record types
 
 A **Contract** groups records describing a model, its evidence and the judgments
-made about it. These are the main **record types** in schemas 0.2–0.4. Each type
+made about it. These are the main **record types** in schemas 0.2–0.5. Each type
 has its own role; there is no single status shared by all records.
 
 | Record type | What it records | Kinds, states and interpretation |
@@ -30,6 +30,8 @@ has its own role; there is no single status shared by all records.
 | **Assessment** | A judgment about a Claim or Condition for one Subject and Context | For `kind: evidence_support`, `status` is **`supported`** (supporting evidence), **`contradicted`** (reviewed contrary evidence), or **`unknown`** (insufficient or inconclusive evidence). Range/sample membership uses separate classifications below. |
 | Decision | Which alternative was chosen, why, and when to reconsider it | `selected` identifies an authored option; there is no scientific support status. A choice can be provisional even when support is unknown. |
 | Equation | A mathematical definition, symbols, units and assumptions | Has an explicit revision; defining an equation does not establish implementation correctness or physical accuracy. |
+| QuantityDefinition | The meaning, unit, domain and coordinates of a mathematical quantity | Has an explicit revision; distinct from a Context's numeric value. Equal symbols or units do not imply identity. |
+| MathematicalModel | Adopted relations connected through explicitly shared quantities | Has an explicit revision; records nested relation instances and model-specific quantity roles. Has no scientific support status or inferred execution order. |
 | EquationBinding | The declared correspondence between an Equation and code in a Subject | Maps a function, arguments and result to mathematical symbols; has no verified/unverified status. |
 | Subject | The implementation or data snapshot being evaluated | Records implementation identity and optional file hashes; matching bytes do not establish scientific support. |
 | Context | The conditions and settings of an evaluation | Records quantities and settings such as temperature or software versions; has no applicability status. |
@@ -53,7 +55,8 @@ establish scientific support either. Keep the earlier Assessment when a repair
 changes the Subject, then add a new scoped judgment.
 
 These tables describe the development reader: Equation/EquationBinding require
-schema 0.3 or later, and Decision requires 0.4. Older readers reject the new
+schema 0.3 or later, Decision requires 0.4, and QuantityDefinition/MathematicalModel
+require 0.5. Older readers reject the new
 `contradicted` value. Frozen v0.1 Claims retain their original status fields.
 See [scoped assessments](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md),
 [source provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md),
@@ -154,6 +157,7 @@ commands below from a provider checkout after installing MCEG.
 | Generate RST for repository documentation | `mceg docs --config mceg/docs.yaml` |
 | Export an installed provider's graph | `mceg graph --package exogibbs` |
 | Export one contract's graph | `mceg graph CONTRACT` |
+| Export a quantity–relation model graph | `mceg model CONTRACT --model ID --format mermaid` |
 | Export a calculation's graph | `mceg graph --case CASE` |
 | Validate one contract's structure | `mceg path/to/contract.yaml` |
 | Compare recorded conditions with a context | `mceg assess CONTRACT --context CONTEXT --subject ID --output NEW_FILE` |
@@ -261,6 +265,24 @@ python -m mceg equations examples/equations/continuity.yaml \
 Definition hashes and static function checks detect changes; they do not prove
 that code implements an equation or that the model is physically accurate.
 
+Schema `"0.5"` adds [mathematical model graphs](docs/en/mathematical_models.md).
+Define the meanings of quantities, select Equation revisions, and explicitly
+connect each local symbol to a shared quantity. A model can include physical
+laws, prescribed profiles, boundary conditions and probability statements:
+
+```bash
+mceg model examples/mathematical_models/isothermal.yaml \
+  --model atmosphere --format mermaid
+mceg model examples/mathematical_models/isothermal.yaml --model atmosphere \
+  --format tex --output examples/mathematical_models/model_definition.tex --check
+```
+
+The graph describes adopted relationships, including coupled cycles. Claims and
+Assessments can pin the whole assembly, so changing a quantity's meaning or a
+connection requires review even when equation text stays unchanged. Definitions
+and structural checks do not prove solvability, physical completeness or code
+equivalence; provider code remains independent of MCEG.
+
 `check` and `explain` discover YAML contracts under `mceg/contracts/` or
 `contracts/`. Filter by name or give an explicit path:
 
@@ -365,6 +387,7 @@ Each repository builds HTML with its own Sphinx configuration and update script.
 | Model registration | [LLM and manual setup](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/initialization.md), [inventory coverage](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/coverage.md), [provider workflow](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_onboarding.md) |
 | Checks and source review | [CLI checks](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md), [provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md), [evidence audit](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/evidence_audit.md) |
 | Relationship graphs | [Graph JSON API](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/graph.md), [HTML documentation](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/html.md) |
+| Mathematical definitions | [Quantity–relation model graphs](docs/en/mathematical_models.md), [equations and code bindings](docs/en/equations.md) |
 | Contract formats | [v0.2](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md), [v0.1](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/schema.md), [compatibility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/versioning.md) |
 | Worked connections | [H2 solubility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_solubility.md), [provider trials](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_trials.md), [provider-owned pilot](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_pilot.md) |
 | Evidence studies | [H2 sources](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_primary_audit.md), [curated gas](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/curated_assessment.md), [assessment lifecycle](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/assessment_lifecycle.md) |

@@ -151,7 +151,8 @@ class Entry(SourceEntry):
             return f"{self.page}-{kind}-{identity(key)}"
         suffix = {"claim": "assessments", "condition": "applicability",
                   "subject": "records", "context": "records",
-                  "equation": "records", "binding": "records", "decision": "decisions"}[kind]
+                  "equation": "records", "binding": "records", "decision": "decisions",
+                  "quantity": "records", "mathematical_model": "records"}[kind]
         return self.page + "-" + suffix
 
     def anchor(self, kind, key, revision=None):
@@ -422,6 +423,11 @@ def assessments_page(entry):
                 out.append("Equation definitions: " + ", ".join(
                     entry.link("equation", e.id, e.revision, label=f"{e.id} ({e.revision})")
                     for e in equations) + "\n")
+            models = getattr(claim, "mathematical_models", [])
+            if models:
+                out.append("Mathematical models: " + ", ".join(
+                    entry.link("mathematical_model", m.id, m.revision,
+                               label=f"{m.id} ({m.revision})") for m in models) + "\n")
         else:
             out += [f"v0.1 declared status: **{text(claim.status)}**. This is not a case-specific assessment.\n",
                     "Evidence: " + evidence_links(entry, claim.evidence) + "\n"]
@@ -460,6 +466,13 @@ def assessment_page(entry, assessment):
            table(["Binding", "SHA-256"], (
                (entry.link("binding", p.id), text(p.sha256)) for p in a.binding_pins))]
           if getattr(a, "equation_pins", []) or getattr(a, "binding_pins", []) else []),
+        *([heading("Pinned mathematical models", 2),
+           "These snapshots include quantity definitions, adopted relations and their connections. "
+           "Rendering does not recheck support or hashes.\n",
+           table(["Mathematical model", "SHA-256"], (
+               (entry.link("mathematical_model", p.id, p.revision), text(p.sha256))
+               for p in a.mathematical_model_pins))]
+          if getattr(a, "mathematical_model_pins", []) else []),
     ])
 
 
@@ -502,6 +515,28 @@ def records_page(catalog, entry):
                     "Equation: " + entry.link("equation", r.equation.id, r.equation.revision) + "\n",
                     "Subject: " + entry.link("subject", r.subject) + "\n",
                     values(r.model_dump(exclude={"id", "equation", "subject"}))]
+    if getattr(c, "quantities", []):
+        out += [heading("Quantity definitions", 2),
+                "Quantity identity is explicit; equal symbols or units do not establish shared meaning.\n"]
+        for r in c.quantities:
+            out += [section(entry, "quantity", r), text(r.description) + "\n",
+                    values({"Revision": r.revision, "Unit": r.unit, "Domain": r.domain}),
+                    "Coordinates: " + (", ".join(entry.link("quantity", q.id, q.revision)
+                                                  for q in r.coordinates) or "None") + "\n"]
+    if getattr(c, "mathematical_models", []):
+        out += [heading("Mathematical models", 2),
+                "Connections declare shared quantities, not execution order, solvability or code equivalence.\n"]
+        for r in c.mathematical_models:
+            out += [section(entry, "mathematical_model", r), text(r.description) + "\n",
+                    "Scope: " + text(r.scope) + "\n",
+                    table(["Model quantity", "Definition", "Role"], (
+                        (text(alias), entry.link("quantity", q.quantity.id, q.quantity.revision), text(q.role))
+                        for alias, q in r.quantities.items())),
+                    table(["Relation instance", "Definition", "Kind / role", "Local symbol to model quantity"], (
+                        (text(relation.id), entry.link("equation", relation.equation.id, relation.equation.revision),
+                         text(relation.kind + " / " + relation.role),
+                         text(", ".join(f"{symbol} = {alias}" for symbol, alias in relation.quantities.items())))
+                        for relation in r.relations))]
     return "\n".join(out)
 
 

@@ -3,9 +3,17 @@
 The current package release is `0.1.1`, with explicit readers for schemas
 `"0.1"` and `"0.2"`. The development version also reads experimental `"0.3"`
 [equation definitions and bindings](equations.md) and `"0.4"`
-[Decision records](decisions.md). Existing contracts keep their formats and
+[Decision records](decisions.md), plus `"0.5"`
+[mathematical model graphs](mathematical_models.md). Existing contracts keep their formats and
 semantics; older readers reject unsupported versions explicitly.
 Package versions and contract schema versions are separate.
+
+Schema `"0.5"` adds quantity definitions and explicit mathematical model
+assemblies. It reuses unchanged Equation definitions and their digests. Model
+pins include the adopted equations, quantities, coordinates and connection
+maps. Earlier schema readers remain available; unsupported versions are
+rejected. Older contracts are not automatically migrated, and a new default
+field does not renew or reinterpret an earlier review.
 The `v0.1.0` baseline tag remains unchanged; the v0.2 schema remains experimental.
 The [v0.2 guide](v02.md) defines the common records, limited automatic comparisons
 and migration procedure.

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Add experimental schema `"0.5"` for revisioned quantity definitions and
+  mathematical model assemblies. Reuse Equation definitions and record explicit
+  symbol connections, quantity roles and relation instances without inferring
+  execution order or physical completeness.
+- Include model dependencies in scoped Assessment, Decision and Use checks;
+  preserve older schema readers, Equation digests and historical judgments.
+- Export deterministic mathematical graph JSON, Mermaid and TeX with
+  `mceg model`, including a read-only artifact freshness check. Add an isothermal
+  hydrostatic example and update MCEG's own scoped verification records.
+
 - Report scoped unresolved Assessments without an open, directly targeted
   FollowUp or a matching pinned Decision with limitations and reconsideration
   conditions. Add opt-in `check --assessment ID --require-handling` and expose

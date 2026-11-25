@@ -1,0 +1,34 @@
+{
+  "command": "taskset -c 44 env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /home/kawahara/miniconda3/bin/python -m pytest -q -p no:cacheprovider tests/test_validator.py::test_ambiguous_or_unsafe_yaml_is_rejected tests/test_v02.py::test_json_exponents_and_duplicate_keys_are_handled_consistently",
+  "working_directory": ".",
+  "started_at": "2026-11-25T23:12:21.968656+00:00",
+  "implementation_revision": "38f7e780f29c73c7298331df6e7306b59eb0fdc4",
+  "python": "3.12.2",
+  "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+  "dependencies": {
+    "pytest": "8.3.3",
+    "pydantic": "2.13.3",
+    "PyYAML": "6.0.2"
+  },
+  "exit_code": 0,
+  "selected_files": {
+    "src/mceg/validator.py": "635497e3a68220fd1d7eb359317c0b22f15e5e1cca88c11dbbcd341c4cd3f063",
+    "tests/test_v02.py": "b16aea57536b242ad312ee007da6f0b9eba7aae3c9414a8082baa66ea5cdd7f7",
+    "tests/test_validator.py": "6c02689784ee8ce7ebfe23ccb22f93f564f566b68fb6ce94e4a56485b46296bc"
+  },
+  "selected_files_match_revision": true,
+  "selected_files_unchanged_during_run": true,
+  "artifacts": {
+    "mceg/evidence/read_document_20261126/pytest.txt": "22dda2ca00ae6324a6f97b96c400ce0c3cb8bf22b31857fc022eeba879e7e569"
+  },
+  "scope": "Seven existing document-loading regression cases rerun after adding schema 0.5 dispatch. The inspected read_document and _UniqueKeyLoader bodies are unchanged. Selected pins are not a complete dependency lock. Reading this receipt does not run tests.",
+  "source_review": {
+    "comparison_revision": "ecbc2cc4352188f9c2779274205b788bf54545ca",
+    "symbols": [
+      "_UniqueKeyLoader",
+      "read_document"
+    ],
+    "ast_equal_without_location_attributes": true,
+    "scope": "The selected parser class/function bodies only; schema dispatch changed separately."
+  }
+}

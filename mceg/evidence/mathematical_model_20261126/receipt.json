@@ -1,0 +1,46 @@
+{
+  "command": "taskset -c 44 env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /home/kawahara/miniconda3/bin/python -m pytest -q -p no:cacheprovider tests/test_mathematical_schema.py tests/test_mathematical_lifecycle.py tests/test_mathematical_output.py",
+  "working_directory": ".",
+  "started_at": "2026-11-25T23:12:22.453980+00:00",
+  "implementation_revision": "38f7e780f29c73c7298331df6e7306b59eb0fdc4",
+  "python": "3.12.2",
+  "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+  "dependencies": {
+    "pytest": "8.3.3",
+    "pydantic": "2.13.3",
+    "PyYAML": "6.0.2"
+  },
+  "exit_code": 0,
+  "selected_files": {
+    "examples/equations/continuity.yaml": "846df94d3965c78cb87079ffd57be78ef59aeea98beb5b0e6f30eae0aeda976d",
+    "examples/mathematical_models/isothermal.yaml": "c1abf4da38a3930ed7702a70449343a2022a5a800d1d1d95a857ab9c16adbc0f",
+    "examples/mathematical_models/model.tex": "bc41bac71337b4bcbaa5cb2db7d9104ac448b159426fb030e8515971a56ab697",
+    "src/mceg/__init__.py": "70974681cc27c6e3f7aee98e457635c91e65c21366ae75edbd74a6fb3ca58aba",
+    "src/mceg/__main__.py": "25b060dae462ad2950dbc6be20fafdb30940c818781369a106c12d0a8795305d",
+    "src/mceg/check.py": "339d6a805fe4fde19946a8d3624bf5ce3a21febe36c2274229779742f7252b8a",
+    "src/mceg/decisions.py": "4ef60d6eff76588b899b9a18804bd8e5c80f2b8eda4aa96b54fc19728d603650",
+    "src/mceg/documentation.py": "70537e78273699d205eda4ab2e2206a1aa2983d01cbc05be8219a8229c2bab59",
+    "src/mceg/equation_checks.py": "c7f4cc3b1a57963dc06e0dfe003909dd37b112ff8ce7fd40cfa597cba162ba55",
+    "src/mceg/equations.py": "ba757490c9963f558d24708325eeb120f58f2d9fc6a4829db0e6be86a740a5ed",
+    "src/mceg/explain.py": "0ed597292d0949e586fb538b2ee26edc346b70638fc79d7716e953c78bd672c3",
+    "src/mceg/graph.py": "d612db3158f2a557e335b0d1b0c6785fbbad81f4785ddc25f3aa248015b7fadf",
+    "src/mceg/mathematical.py": "47e0fd56fcbb13ec3e6f6afec97030cc67f2d89e380d59a1769f602aebd08443",
+    "src/mceg/readiness.py": "41707017d11143e6170ef4ed73a2e18abd1dd6e7cdf2b535155a5ec119c9ce3c",
+    "src/mceg/schema.py": "c72483c13dceaeddb96a34c36e0c99e88a045371620cea8af564969301f33eae",
+    "src/mceg/schema_v02.py": "6c36b8662d718a865c6a4ee041c77bee090eeadc5998af1723b65b3644d9077c",
+    "src/mceg/schema_v03.py": "86e538d84f7605e70d3eb07b0e99248cad9d064c659af2a0ca483978573c48cd",
+    "src/mceg/schema_v04.py": "e3a0557579d5b287d02f0934ddd3c6c5252c52d80bd17f9597e4d3b4b3992883",
+    "src/mceg/schema_v05.py": "02ba2fbd6abfebe72eced1cde219e971d41f15148c58e78aa2d5eb7db7bf2fe3",
+    "src/mceg/validator.py": "635497e3a68220fd1d7eb359317c0b22f15e5e1cca88c11dbbcd341c4cd3f063",
+    "tests/test_equation_schema.py": "04ad5019457ae3834bd4fec0cad12d65a4aa45fee6a63ff1f7e2b2dd18362ce9",
+    "tests/test_mathematical_lifecycle.py": "94134e31e979aec630b687fbaa34ff97ba60251949712bb634b182cdbffbc029",
+    "tests/test_mathematical_output.py": "2403045b93bc0064d340a67c362a1f8baf5f1507821390e0447247bfb4ce06a8",
+    "tests/test_mathematical_schema.py": "e8ee21c1036735291d0dbe40c8c6e5f73c76ffff4ed50b2c0b65877200c0614f"
+  },
+  "selected_files_match_revision": true,
+  "selected_files_unchanged_during_run": true,
+  "artifacts": {
+    "mceg/evidence/mathematical_model_20261126/pytest.txt": "3d3d7d5f0cf009b1132d0960260b1ae7c8037808382891e84ed93306ecf50380"
+  },
+  "scope": "Finite software tests of explicit semantic quantity references, complete symbol mappings, quantity-relation incidence output, deterministic exports, definition snapshots, and Assessment/Decision/Use staleness. No solver, dimensional algebra, provider execution, physical adequacy or exhaustive software correctness is established. Reading this receipt does not run tests."
+}

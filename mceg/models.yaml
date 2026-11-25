@@ -1,25 +1,93 @@
 inventory_version: '0.1'
-scope: 'One-feature self-description pilot: read_document and its YAML loader in validator.py.
-  Other functions (including schema dispatch), other package files and example contracts are
-  outside scope. This is not package-wide coverage.'
+scope: 'Selected software self-description: document loading and schema-0.5 model assembly, incidence export
+  and review-identity integration. Other functions and package files remain outside this inventory; file hashes
+  do not imply package-wide coverage.'
 source_roots:
 - src/mceg/validator.py
+- src/mceg/schema_v05.py
+- src/mceg/mathematical.py
+- src/mceg/schema_v04.py
+- src/mceg/equation_checks.py
+- src/mceg/graph.py
+- src/mceg/documentation.py
+- src/mceg/check.py
+- src/mceg/explain.py
+- src/mceg/readiness.py
 contract_roots:
 - mceg/contracts
 files:
   src/mceg/validator.py:
-    sha256: cacf49fbcb80f347086682801e3a38ec2ae97bb7fad15a90db4352af239f52cb
+    sha256: 635497e3a68220fd1d7eb359317c0b22f15e5e1cca88c11dbbcd341c4cd3f063
     role: model
-    note: Inspected read_document and _UniqueKeyLoader for this pilot. The whole-file hash
-      detects changes; it does not establish coverage of schema dispatch.
+    note: Inspected selected document-loading and schema-dispatch paths; finite tests do not establish full
+      parser or schema correctness.
+  src/mceg/schema_v05.py:
+    sha256: 02ba2fbd6abfebe72eced1cde219e971d41f15148c58e78aa2d5eb7db7bf2fe3
+    role: model
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/mathematical.py:
+    sha256: 47e0fd56fcbb13ec3e6f6afec97030cc67f2d89e380d59a1769f602aebd08443
+    role: model
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/schema_v04.py:
+    sha256: e3a0557579d5b287d02f0934ddd3c6c5252c52d80bd17f9597e4d3b4b3992883
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/equation_checks.py:
+    sha256: c7f4cc3b1a57963dc06e0dfe003909dd37b112ff8ce7fd40cfa597cba162ba55
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/graph.py:
+    sha256: d612db3158f2a557e335b0d1b0c6785fbbad81f4785ddc25f3aa248015b7fadf
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/documentation.py:
+    sha256: 70537e78273699d205eda4ab2e2206a1aa2983d01cbc05be8219a8229c2bab59
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/check.py:
+    sha256: 339d6a805fe4fde19946a8d3624bf5ce3a21febe36c2274229779742f7252b8a
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/explain.py:
+    sha256: 0ed597292d0949e586fb538b2ee26edc346b70638fc79d7716e953c78bd672c3
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
+  src/mceg/readiness.py:
+    sha256: 41707017d11143e6170ef4ed73a2e18abd1dd6e7cdf2b535155a5ec119c9ce3c
+    role: support
+    note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
+      is a change detector, not complete function coverage.
 models:
 - id: mceg.read_document
-  description: YAML/JSON document loading with duplicate-key rejection; software behavior,
-    not a physical model.
+  description: YAML/JSON document loading with duplicate-key rejection; software behavior, not a physical model.
   bindings:
   - path: src/mceg/validator.py
     symbol: read_document
   contracts:
   - path: mceg/contracts/mceg.read_document.yaml
     model_id: mceg.read_document
+  review_pending: true
+- id: mceg.mathematical_model
+  description: Explicit mathematical assembly, incidence export and review-identity software behavior.
+  bindings:
+  - path: src/mceg/schema_v05.py
+    symbol: ContractV05
+  - path: src/mceg/schema_v05.py
+    symbol: mathematical_model_records
+  - path: src/mceg/schema_v05.py
+    symbol: mathematical_model_digest
+  - path: src/mceg/mathematical.py
+    symbol: model_graph
+  contracts:
+  - path: mceg/contracts/mceg.mathematical_model.yaml
+    model_id: mceg.mathematical_model
   review_pending: true

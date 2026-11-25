@@ -9,7 +9,6 @@ import pytest
 from mceg import ContractV04
 from mceg.__main__ import main
 from mceg.readiness import UseManifest, check_readiness, decision_digest
-from mceg.equation_checks import _binding_source
 from mceg.schema_v04 import decision_basis_digest
 
 from test_handling import add_decision, add_task, data  # noqa: F401
@@ -223,8 +222,6 @@ def test_source_symlink_cannot_escape_the_selected_root(setup, tmp_path_factory)
 
 
 def test_decorated_entry_point_is_only_a_lexical_declaration(setup):
-    from types import SimpleNamespace
-
     data, directory = setup
     source = directory / "src/model.py"
     source.write_text("raise RuntimeError('Never import this provider')\n"
@@ -241,9 +238,44 @@ def test_decorated_entry_point_is_only_a_lexical_declaration(setup):
     assert report["ready"]
     check = next(c for c in report["checks"] if c["name"] == "entry_point_source")
     assert "decorators are not evaluated" in check["message"]
-    # Equation bindings retain their stricter declaration/argument semantics.
-    binding = SimpleNamespace(id="binding", source="src/model.py", symbol="Atmosphere.spectrum", arguments={})
-    assert _binding_source(binding, directory)[0] == "UNKNOWN"
+
+
+@pytest.mark.parametrize("status", ["supported", "unknown", "contradicted"])
+def test_decorated_equation_binding_does_not_replace_scientific_support(tmp_path, status):
+    from test_equation_schema import example_data
+
+    data = example_data()
+    data["schema_version"] = "0.4"
+    source = tmp_path / "src/provider.py"
+    source.parent.mkdir()
+    source.write_text(
+        "raise RuntimeError('Never execute provider code or decorators')\n"
+        "@partial(jax.jit, static_argnums=0)\n"
+        "def hydrogen_nuclei_density(radius_cm, velocity_kms, mass_loss_g_s):\n"
+        "    return 0\n"
+    )
+    data["subjects"][0]["selected_files"]["src/provider.py"] = sha256(source.read_bytes()).hexdigest()
+    data["assessments"][0]["status"] = status
+    contract = ContractV04.model_validate(data)
+    manifest = {
+        "schema_version": "0.1", "id": "fixture.binding_use", "mode": "scientific",
+        "purpose": "Check authored declaration correspondence in a synthetic fixture only.",
+        "target": {"contract": "contract.json", "subject": "implementation",
+                   "context": "review", "entry_point": "src/provider.py:hydrogen_nuclei_density"},
+        "requirements": [{"assessment": "formulation_review", "role": "implementation",
+                          "sha256": decision_basis_digest(contract, "assessment", "formulation_review")}],
+    }
+    path = tmp_path / "use.json"
+    path.write_text(json.dumps(manifest))
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_text(json.dumps(data))
+    before = contract_path.read_bytes()
+    report = check_readiness(path, root=tmp_path)
+    requirement = report["requirements"][0]
+    assert next(c for c in requirement["checks"] if c["name"] == "binding_source")["status"] == "PASS"
+    assert requirement["recorded_support"] == status
+    assert report["ready"] == (status == "supported")
+    assert contract_path.read_bytes() == before
 
 
 def test_unknown_source_audit_is_not_waived_by_an_exploration_decision(setup):

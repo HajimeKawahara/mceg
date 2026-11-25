@@ -83,7 +83,10 @@ Decorated functions such as a JAX-jitted method are accepted as lexical
 declarations; their decorators are never evaluated. This checks a declaration,
 **not a runtime callable, call graph, function execution or coupling**. Those
 need their own Claim, scoped Assessment and appropriate evidence. EquationBinding
-checks retain their existing stricter treatment of decorators.
+checks likewise inspect the original declaration and its mapped arguments before
+decoration. A decorator may change the callable's signature or behavior; this
+structural pass does not verify either. Scientific support and all other
+readiness requirements remain separate checks.
 
 ## Run and interpret the check
 

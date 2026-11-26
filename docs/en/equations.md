@@ -19,6 +19,11 @@ description and unit string. Units describe conventions; no dimensional
 analysis or conversion inference is performed. IDs are local to the contract,
 and symbols are local to an equation. Equation `(id, revision)` pairs are unique.
 
+Schema `"0.6"` also accepts an optional [SymPy definition](symbolic.md). When
+`sympy` is present, it is authoritative and the displayed LaTeX is generated
+from it; otherwise `latex` remains the source. The symbol meanings, assumptions,
+implementation bindings and review requirements described here still apply.
+
 ```yaml
 equations:
   - id: continuity
@@ -100,7 +105,9 @@ covers the complete validated record, including defaults, symbol descriptions,
 units, assumptions and declared evidence IDs. It does not recursively hash
 the referenced evidence; use the existing source/artifact pins for that.
 Fingerprinting is conservative byte identity of canonical JSON, not symbolic
-equivalence. Formatting changes can require review too.
+equivalence. Formatting changes can require review too. For a schema-0.6 SymPy
+Equation, canonical JSON contains the symbolic source and omits any ignored
+`latex`; changing that ignored display string cannot renew or stale a review.
 
 A hash mismatch is reported as FAIL by `check`; records remain readable so
 the original outcome can still be inspected. Stored support statuses are never

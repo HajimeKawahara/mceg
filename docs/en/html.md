@@ -93,7 +93,7 @@ a sibling ExoEOS checkout. ExoEOS selects all its registered local contracts and
 has no default calculation case. Existing provider API documentation may import
 provider packages; MCEG source generation does not.
 
-For MCEG's own documentation, install `.[docs]` and run:
+For MCEG's own documentation, install `.[docs,symbolic]` and run:
 
 ```bash
 ./update_doc.sh -W --keep-going
@@ -101,7 +101,8 @@ For MCEG's own documentation, install `.[docs]` and run:
 
 Open `docs/_build/html/index.html`. This repository's authored Markdown guides
 still use MyST, separately from the generated RST. Its catalog includes five
-reference contracts and the v0.2 H2 example. The original 1700 K manual case and
+reference contracts, the v0.2 H2 example, and the newer equation, Decision and
+mathematical-model examples, including a mixed SymPy/LaTeX model. The original 1700 K manual case and
 the v0.2 example's 1750 K assessments retain their distinct scopes.
 
 ## Navigate the generated documentation

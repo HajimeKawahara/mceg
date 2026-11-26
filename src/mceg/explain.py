@@ -730,7 +730,7 @@ def main(argv=None):
         contracts = [explain_contract(p, context, args.evidence, args.claim, args.assessment, root=root,
                                      investigation=args.investigation, decision_id=args.decision,
                                      decision_revision=args.decision_revision) for p in paths]
-        if context_options(args) and any(c["schema_version"] in {"0.2", "0.3", "0.4", "0.5"} for c in contracts):
+        if context_options(args) and any(c["schema_version"] in {"0.2", "0.3", "0.4", "0.5", "0.6"} for c in contracts):
             raise ValueError("v0.2+ contexts belong to recorded assessments; use --assessment ID or mceg assess")
         if args.evidence or args.claim or args.assessment or args.decision:
             contracts = [c for c in contracts if c["items"]]

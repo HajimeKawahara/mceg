@@ -406,7 +406,7 @@ def main(argv=None):
         parser.error("Requested Assessment ID not found in the selected contracts; assessments require v0.2 or newer")
     if args.decision is not None and selected and not contracts:
         parser.error("Requested Decision ID/revision not found in the selected contracts")
-    if context_options(args) and any(c.get("schema_version") in {"0.2", "0.3", "0.4", "0.5"} for c in contracts):
+    if context_options(args) and any(c.get("schema_version") in {"0.2", "0.3", "0.4", "0.5", "0.6"} for c in contracts):
         parser.error("For v0.2+ contexts, use mceg assess CONTRACT --context FILE --subject ID --output NEW_FILE")
     counts = Counter(check["status"] for entry in contracts for check in entry["checks"])
     curated_context = any(c["model"] == "exogibbs.curated_gas.v1" and c.get("schema_version") == "0.1"

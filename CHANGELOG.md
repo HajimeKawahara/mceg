@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add experimental schema `"0.6"` with optional SymPy Equation definitions.
+  A supplied symbolic definition is authoritative; LaTeX-only definitions keep
+  their existing meaning and digests. Derive displayed LaTeX from the selected
+  source across exports, Graph JSON and generated documentation.
+- Add the optional `symbolic` dependency and a bounded constructor codec, with
+  explicit errors for unsupported expressions or a missing backend. Contract
+  loading does not evaluate Python strings or import provider code. Include a
+  mixed-source worked example and scoped self-verification records.
 - Add experimental schema `"0.5"` for revisioned quantity definitions and
   mathematical model assemblies. Reuse Equation definitions and record explicit
   symbol connections, quantity roles and relation instances without inferring

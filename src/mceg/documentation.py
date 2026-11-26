@@ -21,6 +21,7 @@ from mceg.schema_v04 import decision_basis_digest
 from mceg._sources import (ContractSource, SourceEntry, SourceCatalog,
                            digest, identity, load_case)
 from mceg.graph import _case_graph, _contract_graph
+from mceg.equations import equation_latex
 from mceg.validator import read_document
 
 
@@ -503,7 +504,9 @@ def records_page(catalog, entry):
             out += [section(entry, "equation", r), text(r.description) + "\n",
                     "Revision: " + text(r.revision) + "\n",
                     "Scope: " + text(r.scope) + "\n",
-                    ".. math::\n\n" + indent("\\begin{aligned}\n" + r.latex + "\n\\end{aligned}", "   ") + "\n",
+                    "Definition source: " + ("SymPy (LaTeX generated)." if getattr(r, "sympy", None)
+                                             else "LaTeX.") + "\n",
+                    ".. math::\n\n" + indent("\\begin{aligned}\n" + equation_latex(r) + "\n\\end{aligned}", "   ") + "\n",
                     table(["Symbol ID", "Symbol", "Meaning", "Unit"],
                           ((text(key), inline_math(s.latex), text(s.description), text(s.unit))
                            for key, s in r.symbols.items())),

@@ -9,7 +9,7 @@ import sys
 
 import yaml
 
-from .equations import equation_label, tex_text
+from .equations import equation_label, equation_latex, tex_text
 from .schema_v05 import ContractV05, mathematical_model_digest
 from .validator import load_contract
 
@@ -47,6 +47,8 @@ def model_graph(contract, model_id, revision=None):
         nodes.append({"id": "relation:" + relation.id, "type": "relation",
                       "instance": relation.id, "kind": relation.kind, "role": relation.role,
                       "equation": equation.model_dump(mode="json")})
+        if getattr(equation, "sympy", None) is not None:
+            nodes[-1]["display_latex"] = equation_latex(equation)
         for symbol, alias in sorted(relation.quantities.items()):
             edges.append({"quantity": "quantity:" + alias, "relation": "relation:" + relation.id,
                           "symbol": symbol})
@@ -119,7 +121,7 @@ def render_model_tex(contract, model_id, revision=None):
         lines.extend([
             r"\paragraph{" + _prose(relation.id) + "}",
             _prose(relation.role) + " (" + _prose(relation.kind) + "). " + _prose(equation.description),
-            r"\begin{equation}", r"\begin{aligned}", equation.latex,
+            r"\begin{equation}", r"\begin{aligned}", equation_latex(equation),
             r"\end{aligned}", r"\label{" + label + "}", r"\end{equation}",
             r"\noindent\textbf{Definition:} " + _prose(equation.id) + " (revision "
             + _prose(equation.revision) + ").",

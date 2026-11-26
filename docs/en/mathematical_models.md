@@ -1,7 +1,9 @@
 # Mathematical model graphs
 
 Schema `"0.5"` records **quantities**, **relationships**, and **their assembly
-into a model**. The existing Equation remains the source of mathematical text.
+into a model**. The Equation remains the mathematical definition. Schema
+`"0.6"` adds [optional SymPy definitions](symbolic.md) without changing how
+quantities are connected: SymPy is authoritative when supplied, otherwise LaTeX.
 A model explicitly connects its relations through shared quantities. Recording
 one relationship is useful even when it cannot determine a solution on its own.
 
@@ -10,7 +12,7 @@ one relationship is useful even when it cannot determine a solution on its own.
 | Record | Meaning |
 | --- | --- |
 | `QuantityDefinition` | A revisioned quantity meaning, LaTeX spelling, unit, domain and coordinate references. This differs from a Context's numeric `{value, unit}` datum. |
-| `Equation` | A relationship's mathematical text, local symbols, scope, assumptions and sources. This remains unchanged from v0.3. |
+| `Equation` | A relationship's mathematical definition, local symbols, scope, assumptions and sources. Schema 0.5 uses the v0.3 LaTeX definition; 0.6 also accepts SymPy. |
 | `MathematicalModel` | Selected relation instances and their explicit symbol-to-quantity connections. This differs from the existing Model's registration metadata. |
 | Nested `ModelQuantity` | A local alias for one QuantityDefinition revision and its role in this model: `coordinate`, `input`, `parameter`, `unknown`, or `derived`. |
 | Nested `RelationInstance` | An Equation revision, a role such as boundary condition or likelihood, a `kind`, and a complete local-symbol mapping. |
@@ -150,9 +152,10 @@ pdflatex -no-shell-escape -interaction=nonstopmode -halt-on-error \
 ```
 
 Providers need MCEG only when authoring or checking these records. Their runtime
-code need not import or depend on it. SymPy, general dimensional analysis,
-solver generation and cross-contract component composition are outside this
-first implementation.
+code need not import or depend on it. The optional SymPy authoring backend
+stores expressions and derives their LaTeX. General dimensional analysis,
+solver generation and cross-contract component composition remain outside this
+implementation.
 
 Earlier schemas and Equation digests retain their behavior. Existing symbol
 tables may be incomplete or group several symbols into one entry, so migration

@@ -19,7 +19,7 @@ inspection. It consumes exported Graph JSON; MCEG itself does not depend on it.
 ## Main record types
 
 A **Contract** groups records describing a model, its evidence and the judgments
-made about it. These are the main **record types** in schemas 0.2–0.5. Each type
+made about it. These are the main **record types** in schemas 0.2–0.6. Each type
 has its own role; there is no single status shared by all records.
 
 | Record type | What it records | Kinds, states and interpretation |
@@ -29,7 +29,7 @@ has its own role; there is no single status shared by all records.
 | Evidence | What was inspected or measured, with sources and provenance | Numerical tests and benchmarks have `result`: `passed`, `failed`, `not_run`, or `unknown`. Other evidence kinds have no numerical result. Source inspection is recorded separately. |
 | **Assessment** | A judgment about a Claim or Condition for one Subject and Context | For `kind: evidence_support`, `status` is **`supported`** (supporting evidence), **`contradicted`** (reviewed contrary evidence), or **`unknown`** (insufficient or inconclusive evidence). Range/sample membership uses separate classifications below. |
 | Decision | Which alternative was chosen, why, and when to reconsider it | `selected` identifies an authored option; there is no scientific support status. A choice can be provisional even when support is unknown. |
-| Equation | A mathematical definition, symbols, units and assumptions | Has an explicit revision; defining an equation does not establish implementation correctness or physical accuracy. |
+| Equation | A mathematical definition, symbols, units and assumptions | Has an explicit revision. In schema 0.6, SymPy is authoritative when supplied; otherwise LaTeX is authoritative. A definition does not establish code correctness or physical accuracy. |
 | QuantityDefinition | The meaning, unit, domain and coordinates of a mathematical quantity | Has an explicit revision; distinct from a Context's numeric value. Equal symbols or units do not imply identity. |
 | MathematicalModel | Adopted relations connected through explicitly shared quantities | Has an explicit revision; records nested relation instances and model-specific quantity roles. Has no scientific support status or inferred execution order. |
 | EquationBinding | The declared correspondence between an Equation and code in a Subject | Maps a function, arguments and result to mathematical symbols; has no verified/unverified status. |
@@ -56,7 +56,7 @@ changes the Subject, then add a new scoped judgment.
 
 These tables describe the development reader: Equation/EquationBinding require
 schema 0.3 or later, Decision requires 0.4, and QuantityDefinition/MathematicalModel
-require 0.5. Older readers reject the new
+require 0.5; optional SymPy definitions require 0.6. Older readers reject the new
 `contradicted` value. Frozen v0.1 Claims retain their original status fields.
 See [scoped assessments](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md),
 [source provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md),
@@ -283,6 +283,14 @@ connection requires review even when equation text stays unchanged. Definitions
 and structural checks do not prove solvability, physical completeness or code
 equivalence; provider code remains independent of MCEG.
 
+Schema `"0.6"` adds [optional SymPy definitions](docs/en/symbolic.md). If an
+Equation supplies `sympy`, that expression is the mathematical source and MCEG
+derives its displayed LaTeX. Otherwise its authored `latex` stays authoritative.
+The choice is per Equation, so both sources can coexist in one model. Install
+`mceg[symbolic]` in the authoring environment to read or export SymPy definitions;
+the provider's runtime does not need SymPy or MCEG. A missing backend gives an
+explicit error, never a fallback to an outdated formula.
+
 `check` and `explain` discover YAML contracts under `mceg/contracts/` or
 `contracts/`. Filter by name or give an explicit path:
 
@@ -373,7 +381,7 @@ For a browsable model catalog and linked calculation/evidence graphs, see the
 [HTML guide](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/html.md). Build it with Graphviz installed:
 
 ```bash
-python -m pip install -e '.[docs]'
+python -m pip install -e '.[docs,symbolic]'
 ./update_doc.sh -W --keep-going
 ```
 
@@ -387,7 +395,7 @@ Each repository builds HTML with its own Sphinx configuration and update script.
 | Model registration | [LLM and manual setup](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/initialization.md), [inventory coverage](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/coverage.md), [provider workflow](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_onboarding.md) |
 | Checks and source review | [CLI checks](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/checks.md), [provenance](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provenance.md), [evidence audit](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/evidence_audit.md) |
 | Relationship graphs | [Graph JSON API](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/graph.md), [HTML documentation](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/html.md) |
-| Mathematical definitions | [Quantity–relation model graphs](docs/en/mathematical_models.md), [equations and code bindings](docs/en/equations.md) |
+| Mathematical definitions | [Quantity–relation model graphs](docs/en/mathematical_models.md), [equations and code bindings](docs/en/equations.md), [SymPy authoring](docs/en/symbolic.md) |
 | Contract formats | [v0.2](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/v02.md), [v0.1](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/schema.md), [compatibility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/versioning.md) |
 | Worked connections | [H2 solubility](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_solubility.md), [provider trials](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_trials.md), [provider-owned pilot](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/provider_pilot.md) |
 | Evidence studies | [H2 sources](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/h2_primary_audit.md), [curated gas](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/curated_assessment.md), [assessment lifecycle](https://github.com/HajimeKawahara/mceg/blob/main/docs/en/assessment_lifecycle.md) |
@@ -403,10 +411,11 @@ See the [changelog](https://github.com/HajimeKawahara/mceg/blob/main/CHANGELOG.m
 ## Development
 
 MCEG's own [minimal self-description](mceg/README.md) records three design
-principles and one existing document-loading feature under `mceg/`. These are
+principles and selected document-loading, mathematical-graph and symbolic-source
+features under `mceg/`. These are
 optional development records; package execution does not depend on them.
 
 ```bash
-python -m pip install -e '.[test]'
+python -m pip install -e '.[test,symbolic]'
 python -m pytest
 ```

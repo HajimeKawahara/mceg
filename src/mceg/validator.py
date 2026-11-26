@@ -11,6 +11,7 @@ from .schema_v02 import ContractV02
 from .schema_v03 import ContractV03
 from .schema_v04 import ContractV04
 from .schema_v05 import ContractV05
+from .schema_v06 import ContractV06
 
 
 class _UniqueKeyLoader(yaml.SafeLoader):
@@ -53,9 +54,11 @@ def read_document(path: str | Path):
     return yaml.load(text, Loader=_UniqueKeyLoader)
 
 
-def load_contract(path: str | Path) -> Contract | ContractV02 | ContractV03 | ContractV04 | ContractV05:
+def load_contract(path: str | Path) -> Contract | ContractV02 | ContractV03 | ContractV04 | ContractV05 | ContractV06:
     """Dispatch explicitly by version; validate structure, not scientific truth."""
     data = read_document(path)
+    if isinstance(data, dict) and data.get("schema_version") == "0.6":
+        return ContractV06.model_validate(data)
     if isinstance(data, dict) and data.get("schema_version") == "0.5":
         return ContractV05.model_validate(data)
     if isinstance(data, dict) and data.get("schema_version") == "0.4":

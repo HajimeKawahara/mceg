@@ -10,6 +10,15 @@ from .schema_v03 import ContractV03, equation_digest
 from .validator import load_contract
 
 
+def equation_latex(equation):
+    """Render the chosen source; never fall back when a symbolic definition fails."""
+    source = getattr(equation, "sympy", None)
+    if source is not None:
+        from .symbolic import latex_from_sympy
+        return latex_from_sympy(source, equation.symbols)
+    return equation.latex
+
+
 def tex_text(value):
     """Escape prose while leaving the separate authored math fields untouched."""
     replacements = {
@@ -48,7 +57,7 @@ def render_equations(contract):
             tex_text(equation.description),
             r"\begin{equation}",
             r"\begin{aligned}",
-            equation.latex,
+            equation_latex(equation),
             r"\end{aligned}",
             r"\label{" + label + "}",
             r"\end{equation}",

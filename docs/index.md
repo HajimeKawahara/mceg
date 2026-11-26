@@ -31,6 +31,7 @@ en/evidence_audit
 en/v02
 en/equations
 en/mathematical_models
+en/symbolic
 en/decisions
 en/schema
 en/versioning

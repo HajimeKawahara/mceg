@@ -4,9 +4,20 @@ The current package release is `0.1.1`, with explicit readers for schemas
 `"0.1"` and `"0.2"`. The development version also reads experimental `"0.3"`
 [equation definitions and bindings](equations.md) and `"0.4"`
 [Decision records](decisions.md), plus `"0.5"`
-[mathematical model graphs](mathematical_models.md). Existing contracts keep their formats and
+[mathematical model graphs](mathematical_models.md), and `"0.6"`
+[optional SymPy definitions](symbolic.md). Existing contracts keep their formats and
 semantics; older readers reject unsupported versions explicitly.
 Package versions and contract schema versions are separate.
+
+Schema `"0.6"` lets an Equation supply a serialized SymPy expression. When
+present, it is authoritative and any supplied `latex` is ignored in canonical
+serialization, rendering and definition pins. Without a symbolic definition,
+LaTeX stays authoritative and the Equation's earlier digest is preserved.
+Changing from LaTeX to SymPy changes the definition identity and requires a new
+review, even if the formulas look equivalent. Reading symbolic definitions
+requires the optional `symbolic` extra (SymPy 1.14.x); a missing backend or an
+unsupported expression produces an explicit error. LaTeX-only contracts do not need SymPy.
+Older readers reject schema 0.6. No automatic migration is performed.
 
 Schema `"0.5"` adds quantity definitions and explicit mathematical model
 assemblies. It reuses unchanged Equation definitions and their digests. Model

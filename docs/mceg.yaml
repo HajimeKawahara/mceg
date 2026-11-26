@@ -9,6 +9,7 @@ contracts:
       - examples/v02/h2_solubility.yaml
       - examples/equations/continuity.yaml
       - examples/mathematical_models/isothermal.yaml
+      - examples/symbolic/atmosphere.yaml
       - examples/decisions/*.yaml
 cases:
   - ../examples/html/case.yaml

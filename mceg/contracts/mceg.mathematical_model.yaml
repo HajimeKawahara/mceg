@@ -6,7 +6,7 @@ model:
     MCEG can run without these records.
   implementation:
     repository: https://github.com/HajimeKawahara/mceg
-    revision: 38f7e780f29c73c7298331df6e7306b59eb0fdc4
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
     entry_points:
     - src/mceg/mathematical.py:model_graph
     - src/mceg/schema_v05.py:mathematical_model_records
@@ -92,6 +92,32 @@ evidence:
     inspection: inspected
     note: Executed the named suites and inspected their assertions and captured output; selected source/test
       bytes matched the frozen commit before and after execution.
+- id: symbolic_regression_run_20261126
+  kind: numerical_test
+  result: passed
+  summary: The selected finite regression cases passed on the pinned source.
+  sources:
+  - tests/test_mathematical_schema.py
+  - tests/test_mathematical_lifecycle.py
+  - tests/test_mathematical_output.py
+  - mceg/evidence/mathematical_model_sympy_20261126/receipt.json
+  - mceg/evidence/mathematical_model_sympy_20261126/pytest.txt
+  scope: The original finite schema-0.5 model graph, review-lifecycle and export regressions rerun after adding
+    optional SymPy sources. No physical completeness or package-wide correctness is established; historical
+    judgments remain unchanged.
+  subject: symbolic_source_20261126
+  context: symbolic_environment_20261126
+  artifacts:
+  - source: mceg/evidence/mathematical_model_sympy_20261126/receipt.json
+    sha256: 0f4a7604fd0e45e4ce6575a9c9990436ed27fdc5b7b85a235a996ee099da83a3
+  - source: mceg/evidence/mathematical_model_sympy_20261126/pytest.txt
+    sha256: f09f708bdcc3d0c501127fd6d3ba423a9243f047ed3cb0bb0716e0ad6855a0c5
+  provenance:
+    role: primary
+    location: mceg/evidence/mathematical_model_sympy_20261126/receipt.json
+    inspection: inspected
+    note: Executed the selected cases and inspected their assertions and captured output. Selected source bytes
+      match the frozen commit and did not change during execution.
 limitations:
 - statement: Finite software regressions do not prove mathematical well-posedness, completeness of a physical
     model, equivalence of code to equations, or exhaustive MCEG correctness.
@@ -136,6 +162,41 @@ subjects:
     tests/test_mathematical_lifecycle.py: 94134e31e979aec630b687fbaa34ff97ba60251949712bb634b182cdbffbc029
     tests/test_mathematical_output.py: 2403045b93bc0064d340a67c362a1f8baf5f1507821390e0447247bfb4ce06a8
     tests/test_mathematical_schema.py: e8ee21c1036735291d0dbe40c8c6e5f73c76ffff4ed50b2c0b65877200c0614f
+- id: symbolic_source_20261126
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
+    entry_points:
+    - src/mceg/mathematical.py:model_graph
+    - src/mceg/schema_v05.py:mathematical_model_records
+    - src/mceg/schema_v05.py:mathematical_model_digest
+  selected_files:
+    examples/equations/continuity.yaml: 846df94d3965c78cb87079ffd57be78ef59aeea98beb5b0e6f30eae0aeda976d
+    examples/mathematical_models/isothermal.yaml: c1abf4da38a3930ed7702a70449343a2022a5a800d1d1d95a857ab9c16adbc0f
+    examples/mathematical_models/model.tex: bc41bac71337b4bcbaa5cb2db7d9104ac448b159426fb030e8515971a56ab697
+    src/mceg/__init__.py: 45a62a9f9790895fc151cd8f58fb6bd265d95cdf933b3f9c434b0100ac751ef8
+    src/mceg/__main__.py: 25b060dae462ad2950dbc6be20fafdb30940c818781369a106c12d0a8795305d
+    src/mceg/check.py: 92eb6abeedf422b003ae297bb1eabc109539e14aa7627450b17a7260a2e2be57
+    src/mceg/decisions.py: 4ef60d6eff76588b899b9a18804bd8e5c80f2b8eda4aa96b54fc19728d603650
+    src/mceg/documentation.py: c2ee8bb2d28bf9ce0f589aad7ca2775f4eb0c26f16334f6fc75d0ef1403c1619
+    src/mceg/equation_checks.py: c7f4cc3b1a57963dc06e0dfe003909dd37b112ff8ce7fd40cfa597cba162ba55
+    src/mceg/equations.py: 161d6eb055885ffc17782423c9b8af40fd9a4d1642271fd530b837f47fb81bf7
+    src/mceg/explain.py: b2d26cbaad86feee56ad96e615d06278c13dd4cd66bfc9abe53b39c307ed10a1
+    src/mceg/graph.py: d612db3158f2a557e335b0d1b0c6785fbbad81f4785ddc25f3aa248015b7fadf
+    src/mceg/mathematical.py: 23339ee1e894452072882cb65ffb8c4838111092e7c074d4cb8faaa438d9a2f1
+    src/mceg/readiness.py: 41707017d11143e6170ef4ed73a2e18abd1dd6e7cdf2b535155a5ec119c9ce3c
+    src/mceg/schema.py: c72483c13dceaeddb96a34c36e0c99e88a045371620cea8af564969301f33eae
+    src/mceg/schema_v02.py: 6c36b8662d718a865c6a4ee041c77bee090eeadc5998af1723b65b3644d9077c
+    src/mceg/schema_v03.py: 86e538d84f7605e70d3eb07b0e99248cad9d064c659af2a0ca483978573c48cd
+    src/mceg/schema_v04.py: e3a0557579d5b287d02f0934ddd3c6c5252c52d80bd17f9597e4d3b4b3992883
+    src/mceg/schema_v05.py: 02ba2fbd6abfebe72eced1cde219e971d41f15148c58e78aa2d5eb7db7bf2fe3
+    src/mceg/schema_v06.py: 1ed49264923e4bf478275f3970cdc1580ed0220f8f423b6f78fe621a7c3f9804
+    src/mceg/symbolic.py: c43c3c72367894bd19d17f134cac3aaaa631c15c5f61b2174425c39ae60cb6f4
+    src/mceg/validator.py: bec90f90ed14ed8dd2b42ce2a2b15d5e1f5aca6bac48769fac25ad67c8668b0a
+    tests/test_equation_schema.py: 04ad5019457ae3834bd4fec0cad12d65a4aa45fee6a63ff1f7e2b2dd18362ce9
+    tests/test_mathematical_lifecycle.py: 94134e31e979aec630b687fbaa34ff97ba60251949712bb634b182cdbffbc029
+    tests/test_mathematical_output.py: 2403045b93bc0064d340a67c362a1f8baf5f1507821390e0447247bfb4ce06a8
+    tests/test_mathematical_schema.py: e8ee21c1036735291d0dbe40c8c6e5f73c76ffff4ed50b2c0b65877200c0614f
 contexts:
 - id: recorded_environment
   scope: Local finite software regressions.
@@ -144,6 +205,15 @@ contexts:
     pytest: 8.3.3
     pydantic: 2.13.3
     PyYAML: 6.0.2
+    pytest_plugin_autoload: false
+- id: symbolic_environment_20261126
+  scope: Finite software regression execution.
+  settings:
+    python: 3.12.2
+    pytest: 8.3.3
+    pydantic: 2.13.3
+    PyYAML: 6.0.2
+    sympy: 1.14.0
     pytest_plugin_autoload: false
 quantities:
 - id: catalog
@@ -365,6 +435,51 @@ bindings:
     closure: Local snapshot returned by mathematical_model_records(contract, model_id, revision).
   note: The closure is computed inside the function, not a caller argument. The descriptive locator is not
     executed by a Binding check; regression tests check the resulting snapshot behavior.
+- id: incidence_export_sympy_20261126
+  equation:
+    id: incidence
+    revision: '1'
+  subject: symbolic_source_20261126
+  source: src/mceg/mathematical.py
+  symbol: model_graph
+  arguments:
+    contract:
+      symbol: catalog
+    model_id:
+      symbol: model_id
+    revision:
+      symbol: revision
+  result: graph
+  note: The result also includes descriptive metadata and the model definition digest. No computation order
+    is inferred from incidence edges.
+- id: definition_collection_sympy_20261126
+  equation:
+    id: definition_closure
+    revision: '1'
+  subject: symbolic_source_20261126
+  source: src/mceg/schema_v05.py
+  symbol: mathematical_model_records
+  arguments:
+    contract:
+      symbol: catalog
+    model_id:
+      symbol: model_id
+    revision:
+      symbol: revision
+  result: closure
+  note: Collect only explicitly referenced definitions for the selected model revision.
+- id: definition_hash_sympy_20261126
+  equation:
+    id: snapshot_digest
+    revision: '1'
+  subject: symbolic_source_20261126
+  source: src/mceg/schema_v05.py
+  symbol: mathematical_model_digest
+  result: digest
+  constants:
+    closure: Local snapshot returned by mathematical_model_records(contract, model_id, revision).
+  note: The closure is computed inside the function, not a caller argument. The descriptive locator is not
+    executed by a Binding check; regression tests check the resulting snapshot behavior.
 assessments:
 - id: mathematical_model_review
   kind: evidence_support
@@ -402,6 +517,45 @@ assessments:
     sha256: 3af791bb2374b45bbf4256b90248d07b6f0367c112ad867fcf3a9df29a56f403
   - id: definition_hash
     sha256: dbf8a5330b6c8efc7a7fc23196f53fe575b8e6af794db87e9270117f97af2f8a
+  mathematical_model_pins:
+  - id: declared_model_identity
+    revision: '1'
+    sha256: cda8de5ff1923843271183ea36d2a4ab738d746570f3adc1f9f7fc108f5dc8c6
+- id: mathematical_model_review_sympy_20261126
+  kind: evidence_support
+  claim: model_graph_regressions
+  claim_revision: '1'
+  subject: symbolic_source_20261126
+  context: symbolic_environment_20261126
+  method:
+    id: finite_model_regressions
+    revision: '1'
+    description: Run and inspect the named finite regression tests; retain source hashes and captured output.
+  status: supported
+  origin: reviewed
+  evidence:
+  - symbolic_regression_run_20261126
+  reasons:
+  - All selected finite regression cases passed on the pinned source.
+  - Earlier Subjects, evidence and assessments remain historical records; this review does not infer package-wide
+    correctness or physical validity.
+  equation_pins:
+  - id: incidence
+    revision: '1'
+    sha256: b928d88b5f258981127fb834d54eab276f54373192d7e93c1bbb0413c2b4782a
+  - id: definition_closure
+    revision: '1'
+    sha256: d1f5e0be99918437c6a26f7a1fda57b01ac75e5325eb0a6c35eb39c1dbc97480
+  - id: snapshot_digest
+    revision: '1'
+    sha256: a2734ed17acbe21c7922bc71261755488ae3642973ad6b6e2a7dc3c62672f82b
+  binding_pins:
+  - id: incidence_export_sympy_20261126
+    sha256: 3d3e85a63ddf253c7b82952c9e791c85b51f30b7e2d970669fff63c3c290e433
+  - id: definition_collection_sympy_20261126
+    sha256: bae29973e1ad0359fc542b2dfa0f676ff9ec6c766de47b050d0834329bd275a8
+  - id: definition_hash_sympy_20261126
+    sha256: b14a2f0f93ecb0cf106f91b86d5a2705fe00b4d8c6b1422ae72cb5476fd65da9
   mathematical_model_pins:
   - id: declared_model_identity
     revision: '1'

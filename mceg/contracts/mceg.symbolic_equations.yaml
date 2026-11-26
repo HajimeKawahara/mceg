@@ -1,0 +1,178 @@
+schema_version: '0.6'
+model:
+  id: mceg.symbolic_equations
+  name: Canonical symbolic equation definitions
+  description: Optional mathematical authoring and scoped software verification.
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
+    entry_points:
+    - src/mceg/schema_v06.py:Equation
+    - src/mceg/symbolic.py:from_sympy
+    - src/mceg/symbolic.py:to_sympy
+    - src/mceg/equations.py:equation_latex
+assumptions:
+- statement: These optional self-records are not a prerequisite for MCEG execution.
+  evidence:
+  - design
+- statement: A supplied SymPy definition is authoritative; otherwise LaTeX remains authoritative.
+  evidence:
+  - design
+domains:
+- kind: numerical_evaluation
+  status: documented
+  description: Finite software fixtures for schema 0.6 with SymPy 1.14.x.
+  conditions:
+  - Supported bounded scalar constructor vocabulary and explicit symbol meanings.
+  evidence:
+  - regression_run
+claims:
+- id: symbolic_source_regressions
+  revision: '1'
+  kind: numerical_verification
+  statement: The recorded cases select the declared mathematical source, preserve scoped round trips and legacy
+    identities, reject tested unsafe/unsupported inputs, and detect symbolic-definition changes in review and
+    use pins.
+  scope: Finite cases for symbolic source priority, supported expression round trips, declaration checks, executable
+    and malformed input rejection, missing-backend errors, LaTeX-only digest compatibility, derived display
+    and stale Assessment/Decision/Use pins. No exhaustive parser security, complete SymPy support, mathematical/code
+    equivalence or physical validity is established.
+evidence:
+- id: design
+  kind: theory
+  summary: Authored source-priority and bounded-codec policy.
+  sources:
+  - docs/en/symbolic.md
+  - src/mceg/schema_v06.py
+  - src/mceg/symbolic.py
+  scope: Software intent; presence of a definition does not establish scientific support.
+- id: regression_run
+  kind: numerical_test
+  result: passed
+  summary: The selected finite regression cases passed on the pinned source.
+  sources:
+  - tests/test_symbolic.py
+  - tests/test_symbolic_lifecycle.py
+  - mceg/evidence/symbolic_20261126/receipt.json
+  - mceg/evidence/symbolic_20261126/pytest.txt
+  scope: Finite cases for symbolic source priority, supported expression round trips, declaration checks, executable
+    and malformed input rejection, missing-backend errors, LaTeX-only digest compatibility, derived display
+    and stale Assessment/Decision/Use pins. No exhaustive parser security, complete SymPy support, mathematical/code
+    equivalence or physical validity is established.
+  subject: recorded_source
+  context: symbolic_environment_20261126
+  artifacts:
+  - source: mceg/evidence/symbolic_20261126/receipt.json
+    sha256: 86ccde45af82729432adef09639ed86712e9ec64d378f9996ea1aea6296f4544
+  - source: mceg/evidence/symbolic_20261126/pytest.txt
+    sha256: 403dfa205f0e399d921bc38c8018a196de795c5315dab6943ff68bdcdaf54e5a
+  provenance:
+    role: primary
+    location: mceg/evidence/symbolic_20261126/receipt.json
+    inspection: inspected
+    note: Executed the selected cases and inspected their assertions and captured output. Selected source bytes
+      match the frozen commit and did not change during execution.
+limitations:
+- statement: Finite cases for symbolic source priority, supported expression round trips, declaration checks,
+    executable and malformed input rejection, missing-backend errors, LaTeX-only digest compatibility, derived
+    display and stale Assessment/Decision/Use pins. No exhaustive parser security, complete SymPy support,
+    mathematical/code equivalence or physical validity is established.
+  evidence:
+  - regression_run
+- statement: Selected file hashes are change detectors, not complete test coverage or an environment lock.
+    Maintainer review remains pending.
+  evidence:
+  - design
+subjects:
+- id: recorded_source
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
+    entry_points:
+    - src/mceg/schema_v06.py:Equation
+    - src/mceg/symbolic.py:from_sympy
+    - src/mceg/symbolic.py:to_sympy
+    - src/mceg/equations.py:equation_latex
+  selected_files:
+    examples/symbolic/atmosphere.yaml: a6877f986941d0f8d8bcda837ebd29efa816aee13f4f4158ebab524a338aca75
+    examples/symbolic/define.py: 78075fa1dfc795df7c1d69a11fe350db7acb376ead85c3092aa966fb3e931425
+    pyproject.toml: e7ca48b022f06f1eb566bab4aa2719ae80db96eb7ce3bbc1e9aae7ae4fb8b4e5
+    src/mceg/__init__.py: 45a62a9f9790895fc151cd8f58fb6bd265d95cdf933b3f9c434b0100ac751ef8
+    src/mceg/__main__.py: 25b060dae462ad2950dbc6be20fafdb30940c818781369a106c12d0a8795305d
+    src/mceg/_curated.py: bf5cecfb704df8d7d06372ca89d01691e2d76cf1077d7ca737de6eb389774191
+    src/mceg/_display.py: 7c08a29b6d0ee38e343b10f4e0e778cb44879b320d7410c6ce5e65bff0fb0424
+    src/mceg/_sources.py: 1e5758f0d35f5154adbdae963364fe2880f20a1e0863622d7f7a4c2f6624ee34
+    src/mceg/assessment.py: 373917b6d6aa471b93c0c4c79a50104d5f86c89fa803d953cd9b0b72b22278e8
+    src/mceg/catalog.py: 46f1a0a9749507fd3b0c380b5914273579d3ec90881b95567ddda9112465e13a
+    src/mceg/check.py: 92eb6abeedf422b003ae297bb1eabc109539e14aa7627450b17a7260a2e2be57
+    src/mceg/coverage.py: 516c1d5953016df9c36e1504e150c5363b0514434c5422955395a8db8c1b5e0a
+    src/mceg/curated.py: 5e4dc6545068e3e9567b26e83f875b543afb69dd5fb5ff1ca997779c8dac13f2
+    src/mceg/decisions.py: 4ef60d6eff76588b899b9a18804bd8e5c80f2b8eda4aa96b54fc19728d603650
+    src/mceg/documentation.py: c2ee8bb2d28bf9ce0f589aad7ca2775f4eb0c26f16334f6fc75d0ef1403c1619
+    src/mceg/equation_checks.py: c7f4cc3b1a57963dc06e0dfe003909dd37b112ff8ce7fd40cfa597cba162ba55
+    src/mceg/equations.py: 161d6eb055885ffc17782423c9b8af40fd9a4d1642271fd530b837f47fb81bf7
+    src/mceg/explain.py: b2d26cbaad86feee56ad96e615d06278c13dd4cd66bfc9abe53b39c307ed10a1
+    src/mceg/graph.py: d612db3158f2a557e335b0d1b0c6785fbbad81f4785ddc25f3aa248015b7fadf
+    src/mceg/handling.py: c84bead9b403013c4b0fae5c26887b7ceda334c53f166b08d76edfc16f8b679a
+    src/mceg/initialization.py: bea0897aefbac636af722c057efbebed417f8b0d16c34af911522295a3f36fa6
+    src/mceg/integrity.py: 0220a0933c8a875fd4dce0c920531669795802263b7501e5e415f7f824245627
+    src/mceg/investigation.py: e573eccfbbef1fbfd8ab3905e278c4d75070173647419d8f41681b222ff9cb3d
+    src/mceg/mathematical.py: 23339ee1e894452072882cb65ffb8c4838111092e7c074d4cb8faaa438d9a2f1
+    src/mceg/migration.py: 452f8ed664a008d25a2ff6a81f74af451627f7cc9a40faf95c22d58039a9c196
+    src/mceg/provenance.py: 56967479e092deffb14a9601750a765271d610bab8f0b896507c799385c3f296
+    src/mceg/readiness.py: 41707017d11143e6170ef4ed73a2e18abd1dd6e7cdf2b535155a5ec119c9ce3c
+    src/mceg/schema.py: c72483c13dceaeddb96a34c36e0c99e88a045371620cea8af564969301f33eae
+    src/mceg/schema_v02.py: 6c36b8662d718a865c6a4ee041c77bee090eeadc5998af1723b65b3644d9077c
+    src/mceg/schema_v03.py: 86e538d84f7605e70d3eb07b0e99248cad9d064c659af2a0ca483978573c48cd
+    src/mceg/schema_v04.py: e3a0557579d5b287d02f0934ddd3c6c5252c52d80bd17f9597e4d3b4b3992883
+    src/mceg/schema_v05.py: 02ba2fbd6abfebe72eced1cde219e971d41f15148c58e78aa2d5eb7db7bf2fe3
+    src/mceg/schema_v06.py: 1ed49264923e4bf478275f3970cdc1580ed0220f8f423b6f78fe621a7c3f9804
+    src/mceg/symbolic.py: c43c3c72367894bd19d17f134cac3aaaa631c15c5f61b2174425c39ae60cb6f4
+    src/mceg/validator.py: bec90f90ed14ed8dd2b42ce2a2b15d5e1f5aca6bac48769fac25ad67c8668b0a
+    tests/test_equation_schema.py: 04ad5019457ae3834bd4fec0cad12d65a4aa45fee6a63ff1f7e2b2dd18362ce9
+    tests/test_mathematical_lifecycle.py: 94134e31e979aec630b687fbaa34ff97ba60251949712bb634b182cdbffbc029
+    tests/test_mathematical_schema.py: e8ee21c1036735291d0dbe40c8c6e5f73c76ffff4ed50b2c0b65877200c0614f
+    tests/test_symbolic.py: b7bb419ef329365443864debb6309abe0684ef1313702a754861f79c81fa4a4b
+    tests/test_symbolic_lifecycle.py: 38093db620adf2354306f81d7f173c6af8d108e31b329ec969862528a25f2786
+contexts:
+- id: symbolic_environment_20261126
+  scope: Finite software regression execution.
+  settings:
+    python: 3.12.2
+    pytest: 8.3.3
+    pydantic: 2.13.3
+    PyYAML: 6.0.2
+    sympy: 1.14.0
+    pytest_plugin_autoload: false
+assessments:
+- id: symbolic_source_review
+  kind: evidence_support
+  claim: symbolic_source_regressions
+  claim_revision: '1'
+  subject: recorded_source
+  context: symbolic_environment_20261126
+  method:
+    id: finite_symbolic_regressions
+    revision: '1'
+    description: Execute and inspect the named tests and saved output on pinned source.
+  status: supported
+  origin: reviewed
+  evidence:
+  - regression_run
+  reasons:
+  - The recorded finite cases passed.
+  - Successful decoding and matching pins do not certify model physics or code equivalence.
+follow_ups:
+- id: review_boundary
+  target_kind: claim
+  target: symbolic_source_regressions
+  revision: '1'
+  action: Have a maintainer review the feature boundary, source-priority policy, test scope and inventory links.
+  requires:
+  - mceg/models.yaml
+  - docs/en/symbolic.md
+  - tests/test_symbolic.py
+  - tests/test_symbolic_lifecycle.py
+  - mceg/evidence/symbolic_20261126/receipt.json
+  - mceg/evidence/symbolic_20261126/pytest.txt
+  completion: Record maintainer review evidence and a FollowUpResolution before clearing review_pending.

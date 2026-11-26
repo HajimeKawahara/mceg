@@ -6,7 +6,7 @@ model:
     Schema validation and other MCEG features are outside this pilot.'
   implementation:
     repository: https://github.com/HajimeKawahara/mceg
-    revision: 38f7e780f29c73c7298331df6e7306b59eb0fdc4
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
     entry_points:
     - src/mceg/validator.py:read_document
 assumptions:
@@ -120,6 +120,31 @@ evidence:
     inspection: inspected
     note: Executed the original selected node IDs again; inspected exit status, assertions and
       captured output. Historical records remain unchanged.
+- id: symbolic_regression_run_20261126
+  kind: numerical_test
+  result: passed
+  summary: The selected finite regression cases passed on the pinned source.
+  sources:
+  - tests/test_validator.py::test_ambiguous_or_unsafe_yaml_is_rejected
+  - tests/test_v02.py::test_json_exponents_and_duplicate_keys_are_handled_consistently
+  - mceg/evidence/read_document_sympy_20261126/receipt.json
+  - mceg/evidence/read_document_sympy_20261126/pytest.txt
+  scope: Seven existing loader regression cases rerun after schema-0.6 dispatch was added. Selected parser
+    bodies are unchanged from commit 38f7e78 by AST comparison. Finite cases do not establish exhaustive parser
+    security.
+  subject: symbolic_source_20261126
+  context: symbolic_environment_20261126
+  artifacts:
+  - source: mceg/evidence/read_document_sympy_20261126/receipt.json
+    sha256: 5b0e5f556cc73b5b27cc4fd6ba9450683d20c0fec00ee7e505efc43ae3a69f59
+  - source: mceg/evidence/read_document_sympy_20261126/pytest.txt
+    sha256: 22dda2ca00ae6324a6f97b96c400ce0c3cb8bf22b31857fc022eeba879e7e569
+  provenance:
+    role: primary
+    location: mceg/evidence/read_document_sympy_20261126/receipt.json
+    inspection: inspected
+    note: Executed the selected cases and inspected their assertions and captured output. Selected source bytes
+      match the frozen commit and did not change during execution.
 limitations:
 - statement: Finite regression cases do not establish exhaustive input safety, resource limits,
     schema correctness or scientific truth.
@@ -151,6 +176,18 @@ subjects:
     src/mceg/validator.py: 635497e3a68220fd1d7eb359317c0b22f15e5e1cca88c11dbbcd341c4cd3f063
     tests/test_v02.py: b16aea57536b242ad312ee007da6f0b9eba7aae3c9414a8082baa66ea5cdd7f7
     tests/test_validator.py: 6c02689784ee8ce7ebfe23ccb22f93f564f566b68fb6ce94e4a56485b46296bc
+- id: symbolic_source_20261126
+  implementation:
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: 48912543002e02af51d4cc1b19c9e5260508916a
+    entry_points:
+    - src/mceg/validator.py:read_document
+  selected_files:
+    src/mceg/schema_v06.py: 1ed49264923e4bf478275f3970cdc1580ed0220f8f423b6f78fe621a7c3f9804
+    src/mceg/symbolic.py: c43c3c72367894bd19d17f134cac3aaaa631c15c5f61b2174425c39ae60cb6f4
+    src/mceg/validator.py: bec90f90ed14ed8dd2b42ce2a2b15d5e1f5aca6bac48769fac25ad67c8668b0a
+    tests/test_v02.py: b16aea57536b242ad312ee007da6f0b9eba7aae3c9414a8082baa66ea5cdd7f7
+    tests/test_validator.py: 6c02689784ee8ce7ebfe23ccb22f93f564f566b68fb6ce94e4a56485b46296bc
 contexts:
 - id: recorded_environment
   scope: Local regression execution recorded by the receipt, not a user calculation.
@@ -167,6 +204,15 @@ contexts:
     pytest: 8.3.3
     pydantic: 2.13.3
     PyYAML: 6.0.2
+    pytest_plugin_autoload: false
+- id: symbolic_environment_20261126
+  scope: Finite software regression execution.
+  settings:
+    python: 3.12.2
+    pytest: 8.3.3
+    pydantic: 2.13.3
+    PyYAML: 6.0.2
+    sympy: 1.14.0
     pytest_plugin_autoload: false
 assessments:
 - id: regression_review
@@ -210,6 +256,24 @@ assessments:
     because schema dispatch now also accepts version 0.5.
   - Support remains limited to these finite parser regressions, not parser security or package-wide
     correctness.
+- id: regression_review_sympy_20261126
+  kind: evidence_support
+  claim: document_loading_regressions
+  claim_revision: '1'
+  subject: symbolic_source_20261126
+  context: symbolic_environment_20261126
+  method:
+    id: existing_pytest_regressions
+    revision: '1'
+    description: Run and inspect the named finite regression tests; retain source hashes and captured output.
+  status: supported
+  origin: reviewed
+  evidence:
+  - symbolic_regression_run_20261126
+  reasons:
+  - All selected finite regression cases passed on the pinned source.
+  - Earlier Subjects, evidence and assessments remain historical records; this review does not infer package-wide
+    correctness or physical validity.
 follow_ups:
 - id: review_boundary
   target_kind: evidence

@@ -1,7 +1,6 @@
 inventory_version: '0.1'
-scope: 'Selected software self-description: document loading and schema-0.5 model assembly, incidence export
-  and review-identity integration. Other functions and package files remain outside this inventory; file hashes
-  do not imply package-wide coverage.'
+scope: 'Selected software self-description: document loading, mathematical model graphs and optional canonical
+  SymPy definitions. Other functions remain outside this inventory; file hashes do not imply package-wide coverage.'
 source_roots:
 - src/mceg/validator.py
 - src/mceg/schema_v05.py
@@ -13,11 +12,14 @@ source_roots:
 - src/mceg/check.py
 - src/mceg/explain.py
 - src/mceg/readiness.py
+- src/mceg/schema_v06.py
+- src/mceg/symbolic.py
+- src/mceg/equations.py
 contract_roots:
 - mceg/contracts
 files:
   src/mceg/validator.py:
-    sha256: 635497e3a68220fd1d7eb359317c0b22f15e5e1cca88c11dbbcd341c4cd3f063
+    sha256: bec90f90ed14ed8dd2b42ce2a2b15d5e1f5aca6bac48769fac25ad67c8668b0a
     role: model
     note: Inspected selected document-loading and schema-dispatch paths; finite tests do not establish full
       parser or schema correctness.
@@ -27,7 +29,7 @@ files:
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
   src/mceg/mathematical.py:
-    sha256: 47e0fd56fcbb13ec3e6f6afec97030cc67f2d89e380d59a1769f602aebd08443
+    sha256: 23339ee1e894452072882cb65ffb8c4838111092e7c074d4cb8faaa438d9a2f1
     role: model
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
@@ -47,17 +49,17 @@ files:
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
   src/mceg/documentation.py:
-    sha256: 70537e78273699d205eda4ab2e2206a1aa2983d01cbc05be8219a8229c2bab59
+    sha256: c2ee8bb2d28bf9ce0f589aad7ca2775f4eb0c26f16334f6fc75d0ef1403c1619
     role: support
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
   src/mceg/check.py:
-    sha256: 339d6a805fe4fde19946a8d3624bf5ce3a21febe36c2274229779742f7252b8a
+    sha256: 92eb6abeedf422b003ae297bb1eabc109539e14aa7627450b17a7260a2e2be57
     role: support
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
   src/mceg/explain.py:
-    sha256: 0ed597292d0949e586fb538b2ee26edc346b70638fc79d7716e953c78bd672c3
+    sha256: b2d26cbaad86feee56ad96e615d06278c13dd4cd66bfc9abe53b39c307ed10a1
     role: support
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
@@ -66,6 +68,21 @@ files:
     role: support
     note: Selected mathematical model definitions, export or review-identity integration; the whole-file pin
       is a change detector, not complete function coverage.
+  src/mceg/schema_v06.py:
+    role: model
+    note: Selected source-priority, expression codec and rendering behavior; whole-file pins do not imply complete
+      function coverage.
+    sha256: 1ed49264923e4bf478275f3970cdc1580ed0220f8f423b6f78fe621a7c3f9804
+  src/mceg/symbolic.py:
+    role: model
+    note: Selected source-priority, expression codec and rendering behavior; whole-file pins do not imply complete
+      function coverage.
+    sha256: c43c3c72367894bd19d17f134cac3aaaa631c15c5f61b2174425c39ae60cb6f4
+  src/mceg/equations.py:
+    role: model
+    note: Selected source-priority, expression codec and rendering behavior; whole-file pins do not imply complete
+      function coverage.
+    sha256: 161d6eb055885ffc17782423c9b8af40fd9a4d1642271fd530b837f47fb81bf7
 models:
 - id: mceg.read_document
   description: YAML/JSON document loading with duplicate-key rejection; software behavior, not a physical model.
@@ -90,4 +107,19 @@ models:
   contracts:
   - path: mceg/contracts/mceg.mathematical_model.yaml
     model_id: mceg.mathematical_model
+  review_pending: true
+- id: mceg.symbolic_equations
+  description: Optional canonical SymPy source selection, bounded decoding and display.
+  bindings:
+  - path: src/mceg/schema_v06.py
+    symbol: Equation
+  - path: src/mceg/symbolic.py
+    symbol: from_sympy
+  - path: src/mceg/symbolic.py
+    symbol: to_sympy
+  - path: src/mceg/equations.py
+    symbol: equation_latex
+  contracts:
+  - path: mceg/contracts/mceg.symbolic_equations.yaml
+    model_id: mceg.symbolic_equations
   review_pending: true

@@ -84,7 +84,9 @@ class _Graph:
         collections = {"claim": "claims", "evidence": "evidence", "subject": "subjects",
                        "context": "contexts", "condition": "conditions", "assessment": "assessments",
                        "follow_up": "follow_ups", "resolution": "follow_up_resolutions",
-                       "equation": "equations", "binding": "bindings", "decision": "decisions"}
+                       "equation": "equations", "binding": "bindings", "decision": "decisions",
+                       "quantity": "quantities", "mathematical_model": "mathematical_models"}
+        versioned = {"claim", "condition", "equation", "decision", "quantity", "mathematical_model"}
 
         def node_id(kind, key, revision=None):
             return _node_id(source, kind, key, revision)
@@ -95,10 +97,33 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition", "equation", "decision"} else None
+                revision = record.get("revision") if kind in versioned else None
                 pointer = _pointer(collection, i)
                 identifier = self.node(source, kind, key, record, pointer, revision)
                 self.edge(model, identifier, "contains", source, pointer)
+                if kind == "mathematical_model":
+                    parent = {"id": key, "revision": revision}
+                    aliases = {}
+                    for alias, quantity in record["quantities"].items():
+                        local_pointer = _pointer(collection, i, "quantities", alias)
+                        aliases[alias] = self.node(source, "model_quantity", alias, quantity,
+                                                  local_pointer, parent=parent)
+                        self.edge(identifier, aliases[alias], "uses_quantity", source, local_pointer)
+                        ref = quantity["quantity"]
+                        link(aliases[alias], "quantity", ref["id"], "defines_quantity",
+                             local_pointer + "/quantity", ref["revision"])
+                    for j, relation in enumerate(record["relations"]):
+                        local_pointer = _pointer(collection, i, "relations", j)
+                        relation_node = self.node(source, "relation_instance", relation["id"], relation,
+                                                  local_pointer, parent=parent)
+                        self.edge(identifier, relation_node, "adopts_relation", source, local_pointer)
+                        ref = relation["equation"]
+                        link(relation_node, "equation", ref["id"], "uses_definition",
+                             local_pointer + "/equation", ref["revision"])
+                        for symbol, alias in relation["quantities"].items():
+                            self.edge(relation_node, aliases[alias], "involves_quantity", source,
+                                      local_pointer + "/quantities/" + _pointer(symbol)[1:],
+                                      {"symbol": symbol, "directed": False})
                 if kind == "decision":
                     parent = {"id": key, "revision": revision}
                     for j, option in enumerate(record["options"]):
@@ -119,7 +144,7 @@ class _Graph:
         for kind, collection in collections.items():
             for i, record in enumerate(data.get(collection, [])):
                 key = record["follow_up"] if kind == "resolution" else record["id"]
-                revision = record.get("revision") if kind in {"claim", "condition", "equation", "decision"} else None
+                revision = record.get("revision") if kind in versioned else None
                 start = node_id(kind, key, revision)
 
                 def field(*parts):
@@ -134,6 +159,13 @@ class _Graph:
                     for j, equation in enumerate(record.get("equations", [])):
                         link(start, "equation", equation["id"], "refers_to_equation",
                              field("equations", j), equation["revision"])
+                    for j, ref in enumerate(record.get("mathematical_models", [])):
+                        link(start, "mathematical_model", ref["id"], "refers_to_mathematical_model",
+                             field("mathematical_models", j), ref["revision"])
+                elif kind == "quantity":
+                    for j, ref in enumerate(record["coordinates"]):
+                        link(start, "quantity", ref["id"], "has_coordinate",
+                             field("coordinates", j), ref["revision"])
                 elif kind == "binding":
                     equation = record["equation"]
                     link(start, "equation", equation["id"], "binds_equation", field("equation"),
@@ -152,6 +184,10 @@ class _Graph:
                              pin["revision"], data={"sha256": pin["sha256"]})
                     for j, pin in enumerate(record.get("binding_pins", [])):
                         link(start, "binding", pin["id"], "pins_binding", field("binding_pins", j),
+                             data={"sha256": pin["sha256"]})
+                    for j, pin in enumerate(record.get("mathematical_model_pins", [])):
+                        link(start, "mathematical_model", pin["id"], "pins_mathematical_model",
+                             field("mathematical_model_pins", j), pin["revision"],
                              data={"sha256": pin["sha256"]})
                 elif kind == "follow_up":
                     link(start, record["target_kind"], record["target"], "targets", field("target"),

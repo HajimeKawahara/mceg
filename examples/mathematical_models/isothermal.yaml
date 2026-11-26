@@ -1,0 +1,218 @@
+schema_version: '0.5'
+model:
+  id: example.isothermal_atmosphere
+  name: Isothermal hydrostatic atmosphere
+  description: An authored composition example with an analytic implementation declaration.
+  implementation: &implementation
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: working-tree:mathematical-model-example-v1
+    entry_points:
+    - examples/mathematical_models/provider.py:pressure
+assumptions:
+- statement: Ideal gas, fixed composition, constant gravity, and gas-pressure support.
+  evidence: [definition]
+domains:
+- kind: numerical_evaluation
+  status: documented
+  description: The domain of the authored analytic example.
+  conditions:
+  - Nonnegative height and positive R, g, T0, and P0.
+  evidence: [definition]
+limitations:
+- statement: Recorded composition is not evidence of physical adequacy or a proof of code correspondence.
+  evidence: [definition]
+claims:
+- id: analytic_correspondence
+  revision: '1'
+  kind: theoretical
+  statement: The declared analytic profile satisfies the selected isothermal hydrostatic model.
+  scope: An authoring example awaiting a separately recorded mathematical and code review.
+  equations:
+  - {id: analytic_pressure, revision: '1'}
+  mathematical_models:
+  - {id: atmosphere, revision: '1'}
+evidence:
+- id: definition
+  kind: theory
+  summary: Authored quantity meanings, four adopted relations, and an analytic profile.
+  sources: [docs/en/mathematical_models.md]
+  scope: Definition and intended interpretation only; no numerical or physical support is asserted.
+subjects:
+- id: example_source
+  implementation: *implementation
+  selected_files:
+    examples/mathematical_models/provider.py: null
+contexts:
+- id: authoring_example
+  scope: Structural documentation example; no experimental validation.
+equations:
+- id: ideal_gas
+  revision: '1'
+  latex: 'P(z)=\rho(z)R T(z)'
+  description: Ideal gas with a fixed specific gas constant.
+  scope: Gas pressure and mass density of the same atmosphere at the same height.
+  symbols:
+    P: {latex: P, description: Gas pressure, unit: Pa}
+    rho: {latex: '\rho', description: Mass density, unit: kg m^-3}
+    R: {latex: R, description: Specific gas constant, unit: J kg^-1 K^-1}
+    T: {latex: T, description: Gas temperature, unit: K}
+    z: {latex: z, description: Height, unit: m}
+  assumptions: [Composition is fixed.]
+  evidence: [definition]
+- id: hydrostatic_balance
+  revision: '1'
+  latex: '\frac{dP}{dz}=-\rho(z)g'
+  description: Gas-pressure support against constant downward gravity.
+  scope: A static plane-parallel atmosphere with height increasing upward.
+  symbols:
+    P: {latex: P, description: Gas pressure, unit: Pa}
+    rho: {latex: '\rho', description: Mass density, unit: kg m^-3}
+    z: {latex: z, description: Height, unit: m}
+    g: {latex: g, description: Positive gravity magnitude, unit: m s^-2}
+  assumptions: [Other pressure components and acceleration are omitted.]
+  evidence: [definition]
+- id: isothermal_closure
+  revision: '1'
+  latex: 'T(z)=T_0'
+  description: Prescribe a constant gas temperature.
+  scope: The entire declared atmospheric domain.
+  symbols:
+    T: {latex: T, description: Gas temperature, unit: K}
+    T0: {latex: T_0, description: Supplied constant temperature, unit: K}
+    z: {latex: z, description: Height, unit: m}
+  evidence: [definition]
+- id: base_pressure
+  revision: '1'
+  latex: 'P(0)=P_0'
+  description: Specify pressure at the reference height.
+  scope: The boundary z=0 of the same pressure field used in the interior.
+  symbols:
+    P: {latex: P, description: Gas pressure field, unit: Pa}
+    P0: {latex: P_0, description: Supplied boundary pressure, unit: Pa}
+  evidence: [definition]
+- id: analytic_pressure
+  revision: '1'
+  latex: 'P(z)=P_0\exp\!\left(-\frac{gz}{RT_0}\right)'
+  description: Analytic pressure profile for the selected four relations.
+  scope: Positive supplied constants and nonnegative height.
+  symbols:
+    P: {latex: P, description: Gas pressure, unit: Pa}
+    z: {latex: z, description: Height, unit: m}
+    R: {latex: R, description: Specific gas constant, unit: J kg^-1 K^-1}
+    T0: {latex: T_0, description: Supplied constant temperature, unit: K}
+    P0: {latex: P_0, description: Supplied boundary pressure, unit: Pa}
+    g: {latex: g, description: Positive gravity magnitude, unit: m s^-2}
+  evidence: [definition]
+quantities:
+- id: atmosphere.height
+  revision: '1'
+  latex: z
+  description: Height above the pressure boundary.
+  unit: m
+  domain: The plane-parallel atmosphere, z >= 0.
+- id: atmosphere.gas_pressure
+  revision: '1'
+  latex: P(z)
+  description: Gas pressure, excluding radiation pressure, at height z.
+  unit: Pa
+  domain: The plane-parallel atmosphere.
+  coordinates: [{id: atmosphere.height, revision: '1'}]
+- id: atmosphere.mass_density
+  revision: '1'
+  latex: '\rho(z)'
+  description: Total mass density of the gas at height z.
+  unit: kg m^-3
+  domain: The plane-parallel atmosphere.
+  coordinates: [{id: atmosphere.height, revision: '1'}]
+- id: atmosphere.temperature
+  revision: '1'
+  latex: T(z)
+  description: Gas temperature at height z.
+  unit: K
+  domain: The plane-parallel atmosphere.
+  coordinates: [{id: atmosphere.height, revision: '1'}]
+- id: composition.gas_constant
+  revision: '1'
+  latex: R
+  description: Specific gas constant for the fixed gas composition.
+  unit: J kg^-1 K^-1
+  domain: A positive constant supplied to this model.
+- id: gravity.acceleration
+  revision: '1'
+  latex: g
+  description: Magnitude of the constant downward gravitational acceleration.
+  unit: m s^-2
+  domain: A positive constant supplied to this model.
+- id: boundary.pressure
+  revision: '1'
+  latex: P_0
+  description: Supplied gas pressure at z=0.
+  unit: Pa
+  domain: The lower boundary of the atmosphere.
+- id: prescribed.temperature
+  revision: '1'
+  latex: T_0
+  description: Supplied uniform temperature.
+  unit: K
+  domain: A positive constant prescribed across the atmosphere.
+mathematical_models:
+- id: atmosphere
+  revision: '1'
+  description: An ideal-gas atmosphere with hydrostatic balance, isothermal closure, and a pressure boundary.
+  scope: Four adopted relations; positive R, g, T0, and P0 are supplied. Structural checks do not prove solvability.
+  quantities:
+    height: {quantity: {id: atmosphere.height, revision: '1'}, role: coordinate}
+    pressure: {quantity: {id: atmosphere.gas_pressure, revision: '1'}, role: unknown}
+    density: {quantity: {id: atmosphere.mass_density, revision: '1'}, role: unknown}
+    temperature: {quantity: {id: atmosphere.temperature, revision: '1'}, role: unknown}
+    gas_constant: {quantity: {id: composition.gas_constant, revision: '1'}, role: input}
+    gravity: {quantity: {id: gravity.acceleration, revision: '1'}, role: input}
+    base_pressure: {quantity: {id: boundary.pressure, revision: '1'}, role: input}
+    fixed_temperature: {quantity: {id: prescribed.temperature, revision: '1'}, role: input}
+  relations:
+  - id: eos
+    equation: {id: ideal_gas, revision: '1'}
+    role: State equation
+    quantities: {P: pressure, rho: density, R: gas_constant, T: temperature, z: height}
+  - id: balance
+    equation: {id: hydrostatic_balance, revision: '1'}
+    role: Mechanical balance
+    quantities: {P: pressure, rho: density, z: height, g: gravity}
+  - id: temperature_closure
+    equation: {id: isothermal_closure, revision: '1'}
+    role: Prescribed temperature
+    quantities: {T: temperature, T0: fixed_temperature, z: height}
+  - id: pressure_boundary
+    equation: {id: base_pressure, revision: '1'}
+    role: Boundary condition
+    quantities: {P: pressure, P0: base_pressure}
+bindings:
+- id: analytic_profile
+  equation: {id: analytic_pressure, revision: '1'}
+  subject: example_source
+  source: examples/mathematical_models/provider.py
+  symbol: pressure
+  arguments:
+    height_m: {symbol: z}
+    gas_constant: {symbol: R}
+    temperature_k: {symbol: T0}
+    base_pressure_pa: {symbol: P0}
+    gravity_m_s2: {symbol: g}
+  result: P
+  note: Analytic implementation declaration; the model graph does not prove this correspondence.
+assessments:
+- id: initial_record
+  kind: evidence_support
+  claim: analytic_correspondence
+  claim_revision: '1'
+  subject: example_source
+  context: authoring_example
+  method:
+    id: initial_inventory
+    revision: '1'
+    description: Record explicit quantity identity and model composition for inspection.
+  status: unknown
+  origin: reviewed
+  evidence: [definition]
+  reasons:
+  - The definitions and implementation mapping are illustrative; no scientific support is inferred.

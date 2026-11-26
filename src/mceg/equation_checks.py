@@ -117,8 +117,9 @@ def equation_checks(contract, assessment, root=None):
     claim = next(c for c in contract.claims
                  if (c.id, c.revision) == (assessment.claim, assessment.claim_revision))
     references = getattr(claim, "equations", [])
+    checks = mathematical_model_checks(contract, assessment, claim)
     if not references:
-        return []
+        return checks
     equations = {(e.id, e.revision): e for e in contract.equations}
     equation_pins = {(p.id, p.revision): p.sha256
                      for p in assessment.equation_pins}
@@ -133,8 +134,8 @@ def equation_checks(contract, assessment, root=None):
             definitions.append(("FAIL", f"{label}: definition hash differs from the recorded review"))
         else:
             definitions.append(("PASS", f"{label}: definition hash matches"))
-    checks = [_check("equation_definitions", definitions,
-                     "Equation bytes and metadata, not mathematical equivalence")]
+    checks.append(_check("equation_definitions", definitions,
+                         "Equation bytes and metadata, not mathematical equivalence"))
     if assessment.binding_pins:
         bindings = {binding.id: binding for binding in contract.bindings}
         pinned = [bindings[pin.id] for pin in assessment.binding_pins]
@@ -149,3 +150,26 @@ def equation_checks(contract, assessment, root=None):
         ], "Python declarations and arguments before decoration; no runtime signature, "
            "provider execution or constant evaluation"))
     return checks
+
+
+def mathematical_model_checks(contract, assessment, claim):
+    """Compare a whole declared model with its reviewed snapshot, without solving it."""
+    references = getattr(claim, "mathematical_models", [])
+    if not references:
+        return []
+    from .schema_v05 import mathematical_model_digest
+
+    pins = {(pin.id, pin.revision): pin.sha256
+            for pin in getattr(assessment, "mathematical_model_pins", [])}
+    outcomes = []
+    for reference in references:
+        expected = pins.get((reference.id, reference.revision))
+        label = f"{reference.id}@{reference.revision}"
+        if expected is None:
+            outcomes.append(("UNKNOWN", f"{label}: no reviewed model hash recorded"))
+        elif mathematical_model_digest(contract, reference.id, reference.revision) != expected:
+            outcomes.append(("FAIL", f"{label}: quantities, relations or connections changed since review"))
+        else:
+            outcomes.append(("PASS", f"{label}: mathematical model snapshot matches"))
+    return [_check("mathematical_model_definitions", outcomes,
+                   "Declared quantities, adopted relations and connections; not completeness or code equivalence")]

@@ -7,7 +7,9 @@ The format and its documented semantics are frozen with package `0.1.0`;
 see the [version policy](versioning.md) for compatibility and evidence updates.
 For separate Claim/Assessment records, structured conditions and migration,
 see the [v0.2 guide](v02.md). The experimental extensions document
-[v0.3 equations](equations.md) and [v0.4 model choices](decisions.md).
+[v0.3 equations](equations.md), [v0.4 model choices](decisions.md), and
+[v0.5 mathematical model graphs](mathematical_models.md), and
+[v0.6 optional SymPy definitions](symbolic.md).
 This page continues to describe v0.1 only.
 
 ## Fields

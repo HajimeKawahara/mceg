@@ -27,6 +27,7 @@ Issues = "https://github.com/HajimeKawahara/mceg/issues"
 [project.optional-dependencies]
 test = ["pytest>=8"]
 docs = ["sphinx>=7,<10", "myst-parser>=4,<6"]
+symbolic = ["sympy>=1.14,<1.15"]
 
 [project.scripts]
 mceg = "mceg.__main__:main"

@@ -1,0 +1,277 @@
+schema_version: '0.6'
+model:
+  id: example.symbolic_atmosphere
+  name: Atmosphere relations with a pressure observation law
+  description: Mixed symbolic and LaTeX definitions with explicitly shared quantities.
+  implementation: &id001
+    repository: https://github.com/HajimeKawahara/mceg
+    revision: working-tree:symbolic-example-v1
+    entry_points:
+    - examples/symbolic/define.py:definitions
+assumptions:
+- statement: Ideal gas, fixed composition, constant downward gravity, and gas-pressure support.
+  evidence:
+  - definition
+domains:
+- kind: numerical_evaluation
+  status: documented
+  description: A mathematical authoring example, with positive gas quantities and observation uncertainty.
+  conditions:
+  - Positive gas pressure, density, temperature, specific gas constant, gravity and observation uncertainty.
+  evidence:
+  - definition
+limitations:
+- statement: Temperature and boundary conditions are unspecified. This is not a closed atmosphere solver
+    or a validated observation model.
+  evidence:
+  - definition
+claims:
+- id: intended_relations
+  revision: '1'
+  kind: theoretical
+  statement: The recorded expressions describe the intended ideal-gas, hydrostatic and observation relations.
+  scope: Definition only; correspondence and physical applicability await review.
+  mathematical_models:
+  - id: atmosphere
+    revision: '1'
+evidence:
+- id: definition
+  kind: theory
+  summary: An authored example of source selection and explicit quantity sharing.
+  sources:
+  - docs/en/symbolic.md
+  - examples/symbolic/define.py
+  scope: Mathematical definition; no independent validation is claimed.
+subjects:
+- id: authored_example
+  implementation: *id001
+  selected_files:
+    examples/symbolic/define.py: null
+contexts:
+- id: authoring
+  scope: Mixed-source mathematical records, without a numerical solver.
+equations:
+- id: ideal_gas
+  revision: '1'
+  description: Ideal gas with a fixed specific gas constant.
+  scope: Gas pressure and mass density at the same height.
+  symbols:
+    P:
+      latex: P
+      description: Gas pressure
+      unit: Pa
+    rho:
+      latex: \rho
+      description: Mass density
+      unit: kg m^-3
+    R:
+      latex: R
+      description: Specific gas constant
+      unit: J kg^-1 K^-1
+    T:
+      latex: T
+      description: Gas temperature
+      unit: K
+    z:
+      latex: z
+      description: Height
+      unit: m
+  evidence:
+  - definition
+  sympy:
+    format: sympy-srepr-v1
+    expression: Equality(Function('P')(Symbol('z')), Mul(Symbol('R'), Function('T')(Symbol('z')), Function('rho')(Symbol('z'))))
+- id: hydrostatic_balance
+  revision: '1'
+  description: Gas-pressure support against constant downward gravity.
+  scope: A static plane-parallel atmosphere with height increasing upward.
+  symbols:
+    P:
+      latex: P
+      description: Gas pressure
+      unit: Pa
+    rho:
+      latex: \rho
+      description: Mass density
+      unit: kg m^-3
+    z:
+      latex: z
+      description: Height
+      unit: m
+    g:
+      latex: g
+      description: Gravity magnitude
+      unit: m s^-2
+  evidence:
+  - definition
+  sympy:
+    format: sympy-srepr-v1
+    expression: Equality(Derivative(Function('P')(Symbol('z')), Tuple(Symbol('z'), Integer(1))), Mul(Integer(-1),
+      Symbol('g'), Function('rho')(Symbol('z'))))
+- id: pressure_observation
+  revision: '1'
+  latex: y(z)\mid P(z),\sigma\sim\mathcal N(P(z),\sigma^2)
+  description: A prescribed Gaussian pressure measurement distribution.
+  scope: Marginal distribution at each height with fixed positive standard deviation.
+  symbols:
+    y:
+      latex: y
+      description: Measured gas pressure
+      unit: Pa
+    P:
+      latex: P
+      description: Gas pressure
+      unit: Pa
+    sigma:
+      latex: \sigma
+      description: Observation standard deviation
+      unit: Pa
+    z:
+      latex: z
+      description: Height
+      unit: m
+  assumptions:
+  - Correlation between measurements is not specified.
+  evidence:
+  - definition
+quantities:
+- id: height
+  revision: '1'
+  latex: z
+  description: Height increasing upward in the same atmosphere.
+  unit: m
+  domain: Nonnegative heights.
+- id: pressure
+  revision: '1'
+  latex: P(z)
+  description: Gas pressure of the atmosphere.
+  unit: Pa
+  domain: Positive gas pressure.
+  coordinates:
+  - id: height
+    revision: '1'
+- id: density
+  revision: '1'
+  latex: \rho(z)
+  description: Mass density of the atmosphere.
+  unit: kg m^-3
+  domain: Positive mass density.
+  coordinates:
+  - id: height
+    revision: '1'
+- id: temperature
+  revision: '1'
+  latex: T(z)
+  description: Gas temperature of the atmosphere.
+  unit: K
+  domain: Positive temperature; no profile specified.
+  coordinates:
+  - id: height
+    revision: '1'
+- id: gas_constant
+  revision: '1'
+  latex: R
+  description: Specific gas constant for the fixed composition.
+  unit: J kg^-1 K^-1
+  domain: Positive constant.
+- id: gravity
+  revision: '1'
+  latex: g
+  description: Constant downward gravity magnitude.
+  unit: m s^-2
+  domain: Positive constant.
+- id: measurement
+  revision: '1'
+  latex: y(z)
+  description: Measured gas pressure at the specified height.
+  unit: Pa
+  domain: Real measurements under the adopted Gaussian approximation.
+  coordinates:
+  - id: height
+    revision: '1'
+- id: uncertainty
+  revision: '1'
+  latex: \sigma
+  description: Fixed standard deviation of the pressure measurements.
+  unit: Pa
+  domain: Positive constant.
+mathematical_models:
+- id: atmosphere
+  revision: '1'
+  description: Hydrostatic ideal-gas relations with a prescribed observation law.
+  scope: Shared gas pressure, density and height; a partial model with no temperature closure or boundary
+    condition.
+  quantities:
+    z:
+      quantity:
+        id: height
+        revision: '1'
+      role: coordinate
+    P:
+      quantity:
+        id: pressure
+        revision: '1'
+      role: unknown
+    rho:
+      quantity:
+        id: density
+        revision: '1'
+      role: unknown
+    T:
+      quantity:
+        id: temperature
+        revision: '1'
+      role: unknown
+    R:
+      quantity:
+        id: gas_constant
+        revision: '1'
+      role: parameter
+    g:
+      quantity:
+        id: gravity
+        revision: '1'
+      role: parameter
+    y:
+      quantity:
+        id: measurement
+        revision: '1'
+      role: input
+    sigma:
+      quantity:
+        id: uncertainty
+        revision: '1'
+      role: parameter
+  relations:
+  - id: state
+    equation:
+      id: ideal_gas
+      revision: '1'
+    role: State relation
+    quantities:
+      P: P
+      rho: rho
+      R: R
+      T: T
+      z: z
+  - id: balance
+    equation:
+      id: hydrostatic_balance
+      revision: '1'
+    role: Force balance
+    quantities:
+      P: P
+      rho: rho
+      z: z
+      g: g
+  - id: observation
+    equation:
+      id: pressure_observation
+      revision: '1'
+    kind: distribution
+    role: Observation law
+    quantities:
+      y: y
+      P: P
+      sigma: sigma
+      z: z

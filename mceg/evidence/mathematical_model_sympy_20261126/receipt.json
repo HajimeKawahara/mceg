@@ -1,0 +1,49 @@
+{
+  "command": "taskset -c 46 env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 /tmp/mceg-sympy-env/bin/python -m pytest -q -p no:cacheprovider tests/test_mathematical_schema.py tests/test_mathematical_lifecycle.py tests/test_mathematical_output.py",
+  "working_directory": ".",
+  "started_at": "2026-11-26T00:31:50.055103+00:00",
+  "implementation_revision": "48912543002e02af51d4cc1b19c9e5260508916a",
+  "python": "3.12.2",
+  "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.35",
+  "dependencies": {
+    "pytest": "8.3.3",
+    "pydantic": "2.13.3",
+    "PyYAML": "6.0.2",
+    "sympy": "1.14.0"
+  },
+  "exit_code": 0,
+  "selected_files": {
+    "examples/equations/continuity.yaml": "846df94d3965c78cb87079ffd57be78ef59aeea98beb5b0e6f30eae0aeda976d",
+    "examples/mathematical_models/isothermal.yaml": "c1abf4da38a3930ed7702a70449343a2022a5a800d1d1d95a857ab9c16adbc0f",
+    "examples/mathematical_models/model.tex": "bc41bac71337b4bcbaa5cb2db7d9104ac448b159426fb030e8515971a56ab697",
+    "src/mceg/__init__.py": "45a62a9f9790895fc151cd8f58fb6bd265d95cdf933b3f9c434b0100ac751ef8",
+    "src/mceg/__main__.py": "25b060dae462ad2950dbc6be20fafdb30940c818781369a106c12d0a8795305d",
+    "src/mceg/check.py": "92eb6abeedf422b003ae297bb1eabc109539e14aa7627450b17a7260a2e2be57",
+    "src/mceg/decisions.py": "4ef60d6eff76588b899b9a18804bd8e5c80f2b8eda4aa96b54fc19728d603650",
+    "src/mceg/documentation.py": "c2ee8bb2d28bf9ce0f589aad7ca2775f4eb0c26f16334f6fc75d0ef1403c1619",
+    "src/mceg/equation_checks.py": "c7f4cc3b1a57963dc06e0dfe003909dd37b112ff8ce7fd40cfa597cba162ba55",
+    "src/mceg/equations.py": "161d6eb055885ffc17782423c9b8af40fd9a4d1642271fd530b837f47fb81bf7",
+    "src/mceg/explain.py": "b2d26cbaad86feee56ad96e615d06278c13dd4cd66bfc9abe53b39c307ed10a1",
+    "src/mceg/graph.py": "d612db3158f2a557e335b0d1b0c6785fbbad81f4785ddc25f3aa248015b7fadf",
+    "src/mceg/mathematical.py": "23339ee1e894452072882cb65ffb8c4838111092e7c074d4cb8faaa438d9a2f1",
+    "src/mceg/readiness.py": "41707017d11143e6170ef4ed73a2e18abd1dd6e7cdf2b535155a5ec119c9ce3c",
+    "src/mceg/schema.py": "c72483c13dceaeddb96a34c36e0c99e88a045371620cea8af564969301f33eae",
+    "src/mceg/schema_v02.py": "6c36b8662d718a865c6a4ee041c77bee090eeadc5998af1723b65b3644d9077c",
+    "src/mceg/schema_v03.py": "86e538d84f7605e70d3eb07b0e99248cad9d064c659af2a0ca483978573c48cd",
+    "src/mceg/schema_v04.py": "e3a0557579d5b287d02f0934ddd3c6c5252c52d80bd17f9597e4d3b4b3992883",
+    "src/mceg/schema_v05.py": "02ba2fbd6abfebe72eced1cde219e971d41f15148c58e78aa2d5eb7db7bf2fe3",
+    "src/mceg/schema_v06.py": "1ed49264923e4bf478275f3970cdc1580ed0220f8f423b6f78fe621a7c3f9804",
+    "src/mceg/symbolic.py": "c43c3c72367894bd19d17f134cac3aaaa631c15c5f61b2174425c39ae60cb6f4",
+    "src/mceg/validator.py": "bec90f90ed14ed8dd2b42ce2a2b15d5e1f5aca6bac48769fac25ad67c8668b0a",
+    "tests/test_equation_schema.py": "04ad5019457ae3834bd4fec0cad12d65a4aa45fee6a63ff1f7e2b2dd18362ce9",
+    "tests/test_mathematical_lifecycle.py": "94134e31e979aec630b687fbaa34ff97ba60251949712bb634b182cdbffbc029",
+    "tests/test_mathematical_output.py": "2403045b93bc0064d340a67c362a1f8baf5f1507821390e0447247bfb4ce06a8",
+    "tests/test_mathematical_schema.py": "e8ee21c1036735291d0dbe40c8c6e5f73c76ffff4ed50b2c0b65877200c0614f"
+  },
+  "selected_files_match_revision": true,
+  "selected_files_unchanged_during_run": true,
+  "artifacts": {
+    "mceg/evidence/mathematical_model_sympy_20261126/pytest.txt": "f09f708bdcc3d0c501127fd6d3ba423a9243f047ed3cb0bb0716e0ad6855a0c5"
+  },
+  "scope": "The original finite schema-0.5 model graph, review-lifecycle and export regressions rerun after adding optional SymPy sources. No physical completeness or package-wide correctness is established; historical judgments remain unchanged."
+}

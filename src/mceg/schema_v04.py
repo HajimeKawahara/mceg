@@ -74,8 +74,9 @@ def decision_basis_records(contract: ContractV03, kind: str, record_id: str) -> 
         "evidence": "evidence", "assessment": "assessments", "claim": "claims",
         "condition": "conditions", "subject": "subjects", "context": "contexts",
         "equation": "equations", "binding": "bindings",
+        "mathematical_model": "mathematical_models", "quantity": "quantities",
     }
-    versioned = {"claim", "condition", "equation"}
+    versioned = {"claim", "condition", "equation", "mathematical_model", "quantity"}
     records = {
         (category, item.id, item.revision if category in versioned else None): item
         for category, collection in collections.items()
@@ -107,10 +108,21 @@ def decision_basis_records(contract: ContractV03, kind: str, record_id: str) -> 
             pending.append((target, getattr(record, target), getattr(record, target + "_revision")))
             pending.extend(("equation", pin.id, pin.revision) for pin in getattr(record, "equation_pins", []))
             pending.extend(("binding", pin.id, None) for pin in getattr(record, "binding_pins", []))
+            pending.extend(("mathematical_model", pin.id, pin.revision)
+                           for pin in getattr(record, "mathematical_model_pins", []))
         elif category == "claim":
             pending.extend(("equation", ref.id, ref.revision) for ref in getattr(record, "equations", []))
+            pending.extend(("mathematical_model", ref.id, ref.revision)
+                           for ref in getattr(record, "mathematical_models", []))
         elif category == "binding":
             pending.append(("equation", record.equation.id, record.equation.revision))
+        elif category == "mathematical_model":
+            pending.extend(("equation", relation.equation.id, relation.equation.revision)
+                           for relation in record.relations)
+            pending.extend(("quantity", item.quantity.id, item.quantity.revision)
+                           for item in record.quantities.values())
+        elif category == "quantity":
+            pending.extend(("quantity", ref.id, ref.revision) for ref in record.coordinates)
     return [selected[key] for key in sorted(selected, key=lambda key: (key[0], key[1], key[2] or ""))]
 
 

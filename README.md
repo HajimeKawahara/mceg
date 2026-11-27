@@ -291,6 +291,13 @@ The choice is per Equation, so both sources can coexist in one model. Install
 the provider's runtime does not need SymPy or MCEG. A missing backend gives an
 explicit error, never a fallback to an outdated formula.
 
+The recorded expression is the source MCEG reads, hashes and displays; the
+schema does not require a companion Python authoring script. A repository can
+maintain the expression directly in its contract, using SymPy interactively when
+editing. The worked example's Python-to-YAML generator is an optional workflow
+with a separate editing location. Choose and document one editing workflow for
+each equation; see [symbolic authoring](docs/en/symbolic.md#choose-an-editing-workflow).
+
 `check` and `explain` discover YAML contracts under `mceg/contracts/` or
 `contracts/`. Filter by name or give an explicit path:
 

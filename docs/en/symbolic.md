@@ -22,6 +22,40 @@ python -m pip install -e '.[symbolic]'
 The initial codec targets SymPy 1.14.x. The scientific provider's runtime still
 needs neither MCEG nor SymPy. Reading LaTeX-only records also needs no SymPy.
 
+## Choose an editing workflow
+
+The source rule above applies to the **record that MCEG reads, hashes and
+displays**. It does not require a second Python file containing the same
+equation, or prescribe where a repository's authors edit expressions. Choose
+and document one editing location for each equation:
+
+| Workflow | Where the expression is maintained | What is stored in the contract |
+| --- | --- | --- |
+| Contract only | The Equation's `sympy` field; temporary Python operations may help edit it | The maintained expression, together with its meanings and assumptions |
+| Optional generated expression | A named Python authoring script | The generated `sympy` field, plus separately maintained semantic metadata |
+
+For a shared library aiming to keep each equation in one maintained location,
+the contract-only workflow avoids a parallel formula registry and synchronization
+step. Load the contract with `load_contract` and select the Equation by ID and
+revision. Recover its expression with `to_sympy(equation.sympy)`, and use SymPy
+to inspect or edit that object. Serialize
+an edited object with `from_sympy(expression).model_dump(mode="json")` and save
+the result in the selected Equation's `sympy` field. The temporary editing code
+does not need to become another maintained definition. The construction example
+below also applies to this workflow.
+
+If a repository chooses the generated-expression workflow, edit the expression
+only in its documented authoring script. Regenerate the corresponding `sympy`
+field; do not edit that generated field independently. Meanings, units,
+assumptions and any LaTeX-only equations may still be maintained in the contract.
+The worked example below uses this optional workflow. It is not a required
+architecture for libraries or numerical providers using MCEG.
+
+Both workflows require review of definition revisions and evidence when the
+recorded expression or its meaning changes. Changing the editing workflow alone
+need not change the recorded definition, but source-file pins must be reviewed
+if they name an authoring script that is changed or removed.
+
 ## Author an expression
 
 Construct expressions in trusted Python, then serialize them with `from_sympy`:
@@ -60,11 +94,10 @@ single symbol with that label. Units, domains and physical assumptions remain
 authored metadata. MCEG does not infer dimensional consistency or physical
 meaning from the expression tree.
 
-The portable serialized expression is the definition read by MCEG. An authoring
-script helps construct it and can check whether the committed definition matches
-that script. Contract loading never executes the authoring script.
+The portable serialized expression is the definition read by MCEG in either
+workflow. Contract loading never imports or executes an authoring script.
 
-## A model using both sources
+## A model with SymPy and LaTeX equations
 
 The [worked example](../../examples/symbolic/atmosphere.yaml) assembles:
 
@@ -80,17 +113,32 @@ Temperature and boundary conditions are deliberately unspecified, so this
 authoring example is not a closed atmosphere solver or a validated likelihood.
 
 ```bash
-python examples/symbolic/define.py --check
 mceg examples/symbolic/atmosphere.yaml
 mceg model examples/symbolic/atmosphere.yaml --model atmosphere --format json
 mceg model examples/symbolic/atmosphere.yaml --model atmosphere \
   --format tex --output /tmp/symbolic-model.tex
 ```
 
-Edit the trusted [authoring script](../../examples/symbolic/define.py) to change
-the symbolic relations, then run it without `--check` to update their stored
-definitions. Edit the LaTeX relation and semantic metadata in the contract.
-Review definition revisions and evidence after either kind of model change.
+These validation and rendering commands use the contract alone. They do not
+require a generation step.
+
+### Optional generator used by this example
+
+This example also retains a trusted [authoring script](../../examples/symbolic/define.py)
+to demonstrate the generated-expression workflow. To change this example's
+symbolic relations, edit that script, then run it without `--check` to update
+their stored expressions. Edit the LaTeX relation and semantic metadata in the
+contract. Do not independently edit its generated `sympy` fields.
+
+```bash
+python examples/symbolic/define.py --check
+```
+
+This optional check compares the generated expressions with the committed
+record. It detects drift; it does not show that keeping both representations
+is necessary, or establish mathematical consistency or scientific support.
+The [example guide](https://github.com/HajimeKawahara/mceg/blob/main/examples/symbolic/README.md)
+records its editing locations.
 
 ## What MCEG checks
 
